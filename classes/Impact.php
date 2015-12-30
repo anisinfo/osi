@@ -54,8 +54,8 @@ class Impact
 		$rq="UPDATE ".SCHEMA.".IMPACT SET ";
 		$rq.="INCIDENT_ID='".$this->getIncidentId()."',";
 		$rq.="APPLICATION_ID='".$this->getApplicationId()."',";
-		$rq.="DATESTART='".$this->getDateDebut()."',";
-		$rq.="DATEEND='".$this->getDateFin()."',";
+		$rq.="DATESTART=TO_TIMESTAMP('".$this->getDateDebut()."','YYYY-MM-DD'),";
+		$rq.="DATEEND=TO_TIMESTAMP('".$this->getDateFin()."','YYYY-MM-DD'),";
 		$rq.="DUREEREELLE='".$this->getDureeReelle()."',";
 		$rq.="JOURHOMME='".$this->getJourHomme()."',";
 		$rq.="IMPACTMETIER='".$this->getImpactMetier()."',";
@@ -96,6 +96,34 @@ class Impact
         return $this;           
     }
 
+
+      public function chargerIncident($id)
+    {
+        $req="SELECT ID,INCIDENT_ID,APPLICATION_ID,DATESTART,DATEEND,DUREEREELLE,JOURHOMME,IMPACTMETIER,IMPACT,SLA,SEVERITE,DESCRIPTION,CREATED,UPDATED ";
+        $req.="FROM ".SCHEMA.".IMPACT WHERE INCIDENT_ID=".$id." ";
+        $req.="ORDER BY ID ASC";
+
+        $base= new db();
+        $base->db_connect();
+        $base->db_query($req);
+        $res=$base->db_fetch_array();
+        return $res;           
+    }
+
+
+      public function chargerImpact($id)
+    {
+        $req="SELECT ID,INCIDENT_ID,APPLICATION_ID,DATESTART,DATEEND,DUREEREELLE,JOURHOMME,IMPACTMETIER,IMPACT,SLA,SEVERITE,DESCRIPTION,CREATED,UPDATED ";
+        $req.="FROM ".SCHEMA.".IMPACT WHERE ID=".$id." ";
+        $req.="ORDER BY ID ASC";
+
+        $base= new db();
+        $base->db_connect();
+        $base->db_query($req);
+        $res=$base->db_fetch_array();
+        $this->setParam($res[0][0],$res[0][1],$res[0][2],$res[0][3],$res[0][4],$res[0][5],$res[0][6],$res[0][7],$res[0][8],$res[0][9],$res[0][10],$res[0][11],$res[0][12],$res[0][13]);
+        return $this;           
+    }
 
 
     /**

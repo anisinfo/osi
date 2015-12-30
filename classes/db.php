@@ -51,6 +51,10 @@ class db{
     }
   }
 
+   function close(){
+           oci_close ($this->connection);
+           }
+
        function get_error_msg($error_no,$msg=""){
           $log_msg=NULL;
           $error_msg="<b>Custom Error :</b> <pre><font color=red>\n\t".ereg_replace(",",",\n\t",$msg)."</font></pre>";

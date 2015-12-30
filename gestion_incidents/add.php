@@ -4,6 +4,7 @@ define('TITLE','Ajouter un incident');
 require_once('../inc/config.inc.php');
 require_once('../classes/Impact.php');
 require_once('../classes/incidents.php');
+require_once('../classes/Calendrier.php');
 require_once('../classes/db.php');
 //$dbc = new PDO('oci:dbname='.HOST.':'.PORT.'/'.SCHEMA.';charset=CL8MSWIN1251', SCHEMA_LOGIN, SCHEMA_PASS);
 if(!empty($_POST)){
@@ -50,11 +51,25 @@ if(!empty($_POST)){
 		$errors['Incident_Impact_description']="Vous devez remplir le champ Description de l'impact!";
 	}
 
+	if(empty($_POST['IdIncident'])){
+		$errors['IdIncident']="Le numéro de l'incident est vide";
+	}else{
+		require_once('../classes/db.php');
+		$rq="SELECT ID FROM ".SCHEMA.".INCIDENT WHERE INCIDENT='".$_POST['IdIncident']."'";	 
+			$SCHEMA= new db();
+			$SCHEMA->db_connect();
+			$SCHEMA->db_query($rq);
+			$res=$SCHEMA->total_record();
+			if($res){
+				$errors['IdIncident']="Ce Numéro est déjà utlisé";
+			}
+		}	
+
 
 	if(empty($errors))
 	{
 	$incident = new incidents();
-	$incident->setIncident(NULL,$_POST['titreincident'],$_POST['Incident_departement'],$_POST['Incident_statut'],$_POST['Incident_priorite'],$_POST['incidentuserimpacte'],$_POST['debutincident'],$_POST['finincident'],$_POST['Incident_duree'],$_POST['IncImpact_description'],$_POST['Incident_risqueAggravation'],$_POST['Incident_cause'],$_POST['incidentConnex'],$_POST['incidentprobleme'],$_POST['Incident_retablissement'],$_POST['incidentresponsabilite'],$_POST['incidentserviceacteur'],$_POST['Incident_localisation'],$_POST['Incident_useraction'],$_POST['incidentdatecreci'],$_POST['Incident_commentaire'],$_POST['Incident_dejaApparu'],$_POST['Incident_previsible']);
+	$incident->setIncident(NULL,$_POST['IdIncident'],$_POST['titreincident'],$_POST['Incident_departement'],$_POST['Incident_statut'],$_POST['Incident_priorite'],$_POST['incidentuserimpacte'],$_POST['debutincident'],$_POST['finincident'],$_POST['Incident_duree'],$_POST['IncImpact_description'],$_POST['Incident_risqueAggravation'],$_POST['Incident_cause'],$_POST['incidentConnex'],$_POST['incidentprobleme'],$_POST['Incident_retablissement'],$_POST['incidentresponsabilite'],$_POST['incidentserviceacteur'],$_POST['Incident_localisation'],$_POST['Incident_useraction'],$_POST['incidentdatecreci'],$_POST['Incident_commentaire'],$_POST['Incident_dejaApparu'],$_POST['Incident_previsible']);
 	$id_incident=$incident->sauvegarder();
 	$_SESSION['flash']['success'] =" L'incident est bien ajouté."; 
 	 // Ajoutde l'impact
@@ -63,13 +78,18 @@ if(!empty($_POST)){
 	$imp->creer();
 
 	//AJout de calendrier
-
+	if (!empty($_POST['IdAppli'])) {
+	$calendrier= new Calendrier();
+	$calendrier->setParam(NULL,$_POST['IdAppli'],$_POST['Edit_OuvertLu'],$_POST['Edit_FermerLu'],$_POST['Edit_OuvertMa'],$_POST['Edit_FermerMa'],$_POST['Edit_OuvertMe'],$_POST['Edit_FermerMe'],$_POST['Edit_OuvertJe'],$_POST['Edit_FermerJe'],$_POST['Edit_OuvertVe'],$_POST['Edit_FermerVe'],$_POST['Edit_OuvertSa'],$_POST['Edit_FermerSa'],$_POST['Edit_OuvertDi'],$_POST['Edit_FermerDi'],$_POST['Edit_OuvertJf'],$_POST['Edit_FermerJf']);
+	$calendrier->creer();
+	}
+	
 	// AJout de chronogramme
 
 	$_SESSION['flash']['success'] =" L'impacte de l'incident est bien ajouté."; 
 
 	header('Location:index.php');
-//	die();
+	die();
 	# code...
 	}
 }
@@ -93,17 +113,24 @@ if(!empty($errors)){?>
 ?>
 <form action="" method="POST">
 <div class="bloc">
-	<div class="width100 input-group-addon">
+<!--	<div class="width100 input-group-addon">
 		<label class="lib width50"> N°Incident </label> <input type="number" name="numincident" size="12" > <input type="button" value="?" onclick="info()">
 		<input type="button" value="<" onclick="prec()"> 
 		<input type="button" value=">" onclick="suiv()">
 		<input type="button" value=">>" onclick="lastone()">
 		<span class="fl-left">
 	      <button class="btn btn-success" type="button">Ajouter</button>
-	    </span></div>
+	    </span>
+	    </div> -->
 
 	<div class="width100 bcg">
 		<div class=" width50 mr_35">
+			<div class="width100">
+		    	<label  class="lib"  for="titreincident"> Incident *</label> 
+		    	<input type="text" name="IdIncident" id="IdIncident" value="<?php getVar('IdIncident'); ?>"  >
+		    	
+	    	</div>
+
 			<div class="width100">
 		    	<label  class="lib"  for="titreincident"> Titre Incident</label> 
 		    	<input type="text" name="titreincident" id="titreincident" value="<?php getVar('titreincident'); ?>"  >
@@ -361,59 +388,52 @@ if(!empty($errors)){?>
 							<table class="table"  id="calendar-sogessur">
 							<tr>
 								<td align="center"><label class="lib"> JF
-								<br/>
-  						<input type="checkbox" id="calender_sogessur_jf" name="calender_sogessur_jf" value="0"  <?php Check('calender_sogessur_jf'); ?>>
+								
                         
            			</label></td>
 								<td align="center"><label class="lib"> L<br/>
-  						<input type="checkbox" id="calender_sogessur_lu" name="calender_sogessur_lu" value="0" <?php Check('calender_sogessur_lu'); ?>>
+  						
+           			</label></td>
+           			<td align="center"><label class="lib"> M<br/>
+  					
                         
            			</label></td>
            			<td align="center"><label class="lib"> M<br/>
-  						<input type="checkbox" id="calender_sogessur_mar" name="calender_sogessur_mar" value="0" <?php Check('calender_sogessur_mar'); ?>>
-                        
-           			</label></td>
-           			<td align="center"><label class="lib"> M<br/>
-  						<input type="checkbox" id="calender_sogessur_mer" name="calender_sogessur_mer" value="0" <?php Check('calender_sogessur_mer'); ?>>
-                        
+  						
            			</label></td>
            			<td align="center"><label class="lib"> J<br/>
-  						<input type="checkbox" id="calender_sogessur_jeu" name="calender_sogessur_jeu" value="0" <?php Check('calender_sogessur_jeu'); ?>>
+  						
                         
            			</label></td>
            			<td align="center"><label class="lib"> V<br/>
-  						<input type="checkbox" id="calender_sogessur_ven" name="calender_sogessur_ven" value="0" <?php Check('calender_sogessur_ven'); ?>>
-                        
+  						
            			</label></td>
            			<td align="center"><label class="lib"> S<br/>
-  						<input type="checkbox" id="calender_sogessur_sam" name="calender_sogessur_sam" value="0" <?php Check('calender_sogessur_sam'); ?>>
                         
            			</label></td>
            			<td align="center"><label class="lib"> D<br/>
-  						<input type="checkbox" id="calender_sogessur_dim" name="calender_sogessur_dim" value="0" <?php Check('calender_sogessur_dim'); ?>>
                         
            			</label></td>
 							</tr>
 	                     	<tr>
-								<td align="center">00:00</td>
-								<td align="center">00:00</td>
-								<td align="center">00:00</td>
-								<td align="center">00:00</td>
-								<td align="center">00:00</td>
-								<td align="center">00:00</td>
-								<td align="center">00:00</td>
-								<td align="center">00:00</td>
+								<td align="center"><input type="text" id="Edit_O_Jf" name="Edit_OuvertJf" value="<?php getVarDate('Edit_OuvertJf',1);?>" style="width:53px;" placeholder="HH:MM" /></td>
+								<td align="center"><input type="text" id="Edit_O_Lu" name="Edit_OuvertLu" value="<?php getVarDate('Edit_OuvertLu',1);?>" style="width:53px;" placeholder="HH:MM" /></td>
+								<td align="center"><input type="text" id="Edit_O_Ma" name="Edit_OuvertMa" value="<?php getVarDate('Edit_OuvertMa',1);?>" style="width:53px;" placeholder="HH:MM" /></td>
+								<td align="center"><input type="text" id="Edit_O_Me" name="Edit_OuvertMe" value="<?php getVarDate('Edit_OuvertMe',1);?>" style="width:53px;" placeholder="HH:MM" /></td>
+								<td align="center"><input type="text" id="Edit_O_Je" name="Edit_OuvertJe" value="<?php getVarDate('Edit_OuvertJe',1);?>" style="width:53px;" placeholder="HH:MM" /></td>
+								<td align="center"><input type="text" id="Edit_O_Ve" name="Edit_OuvertVe" value="<?php getVarDate('Edit_OuvertVe',1);?>" style="width:53px;" placeholder="HH:MM" /></td>
+								<td align="center"><input type="text" id="Edit_O_Sa" name="Edit_OuvertSa" value="<?php getVarDate('Edit_OuvertSa',1);?>" style="width:53px;" placeholder="HH:MM" /></td>
+								<td align="center"><input type="text" id="Edit_O_Di" name="Edit_OuvertDi" value="<?php getVarDate('Edit_OuvertDi',1);?>" style="width:53px;" placeholder="HH:MM" /></td>
 							</tr>
 							<tr>
-								<td align="center">23:59</td>
-								<td align="center">23:59</td>
-								<td align="center">23:59</td>
-								<td align="center">23:59</td>
-								<td align="center">23:59</td>
-								<td align="center">23:59</td>
-								<td align="center">23:59</td>
-								<td align="center">23:59</td>
-
+								<td align="center"><input type="text" id="Edit_Jf" name="Edit_FermerJf" value="<?php getVarDate('Edit_FermerJf','');?>" style="width:53px;" placeholder="HH:MM" /></td>
+								<td align="center"><input type="text" id="Edit_Lu" name="Edit_FermerLu" value="<?php getVarDate('Edit_FermerLu','');?>" style="width:53px;" placeholder="HH:MM" /></td>
+								<td align="center"><input type="text" id="Edit_Ma" name="Edit_FermerMa" value="<?php getVarDate('Edit_FermerMa','');?>" style="width:53px;" placeholder="HH:MM" /></td>
+								<td align="center"><input type="text" id="Edit_Me" name="Edit_FermerMe" value="<?php getVarDate('Edit_FermerMe','');?>" style="width:53px;" placeholder="HH:MM" /></td>
+								<td align="center"><input type="text" id="Edit_Je" name="Edit_FermerJe" value="<?php getVarDate('Edit_FermerJe','');?>" style="width:53px;" placeholder="HH:MM" /></td>
+								<td align="center"><input type="text" id="Edit_Ve" name="Edit_FermerVe" value="<?php getVarDate('Edit_FermerVe','');?>" style="width:53px;" placeholder="HH:MM" /></td>
+								<td align="center"><input type="text" id="Edit_Sa" name="Edit_FermerSa" value="<?php getVarDate('Edit_FermerSa','');?>" style="width:53px;" placeholder="HH:MM" /></td>
+								<td align="center"><input type="text" id="Edit_Di" name="Edit_FermerDi" value="<?php getVarDate('Edit_FermerDi','');?>" style="width:53px;" placeholder="HH:MM" /></td>
 							</tr>	
 	                     	</table>
     				</div>
@@ -454,8 +474,46 @@ if(!empty($errors)){?>
     		</div>
 
     		<div class="width100">
-                <label class="lib" for="Incident_Impact_description">Description de l'impact *</label>
-                <textarea id="Incident_Impact_description" name="Incident_Impact_description" required maxlength="4000"><?php getVar('Incident_Impact_description'); ?></textarea>
+	    		<div class=" width50 mr_35">
+	                <label class="lib" for="Incident_Impact_description">Description de l'impact *</label>
+	                <textarea id="Incident_Impact_description" name="Incident_Impact_description" required maxlength="4000"><?php getVar('Incident_Impact_description'); ?></textarea>
+	    		</div>
+	    		<div class=" width50">
+	    		<label class="lib" style="float:left;">Chronogramme</label> 
+	    		<input type="button" value="+" class="btn-plus" id="btn_chrono">
+
+	    			<div id="element_to_pop_up3">
+    					<a class="b-close">x</a>
+					Ajout d'un chronogramme
+					
+    					<label for="dateChrono" class="lib">Date</label>
+    					<input type="text" id="dateChrono" name="dateChrono" >
+    				
+
+    				
+    					<label for="ativiteChrono" class="lib">Activité</label>
+    					<input type="text" id="ativiteChrono" name="ativiteChrono" >
+
+    					<input type="button" value="Ajouter" onclick="CreateActivite()">
+    				</div>
+
+	    			<table class="table"  id="table-chrono">
+							<tr>
+								<td align="center"><label class="lib"> Date
+								
+                        
+           			</label></td>
+								<td align="center"><label class="lib"> Activité
+  						
+           			</label></td>
+           			<td width="70px"><input type="text" id="ListeId" name="ListeId" /></td>
+           			<td width="70px"></td>
+           			</tr>
+           			<tbody id="ChronosLignes">
+           			</tbody>
+           			</table>
+
+	    		</div>
     		</div>
     	</fieldset>
 

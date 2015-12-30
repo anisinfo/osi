@@ -52,7 +52,7 @@ require_once('config.inc.php');
 
      <!--   Définition des styles; à copier dans un fichier css  -->
       <STYLE type="text/css">
-      #element_to_pop_up, #element_to_pop_up2 { 
+      #element_to_pop_up, #element_to_pop_up2, #element_to_pop_up3 { 
     background-color:#fff;
     border-radius:15px;
     color:#000;
@@ -89,7 +89,7 @@ require_once('config.inc.php');
       .bloc input[type="datetime-local"], .bloc input[type="month"], 
       .bloc input[type="week"], .bloc input[type="email"],
        .bloc input[type="number"], .bloc input[type="search"], .bloc input[type="button"],
-       .bloc input[type="tel"], .bloc input[type="time"], 
+       .bloc input[type="submit"], .bloc input[type="tel"], .bloc input[type="time"], 
        .bloc input[type="url"], textarea, .bloc select { float:left; margin-right: 5px;  height: 30px; margin-bottom: 0;}
        .bloc input[type="number"]{ width:48%; margin-right: 35px;}
        .mr_35{margin-right: 30px;}
@@ -101,6 +101,7 @@ require_once('config.inc.php');
        .bloc .fl-right span{ margin-right: 20px;}
        .right{ float: right;}
        .bloc fieldset span{ font-size: 11px}
+       input[type="button"].btn-plus{    float: left;    height: 20px;    margin-left: 25px;}
        .bloc fieldset legend{ font-size: 14px; border: 1px solid #d3d3d3;; background: #eee; text-align: center;border-bottom: none;padding: 10px;}
   
       </STYLE>

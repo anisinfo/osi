@@ -17,4 +17,10 @@ $IMPACTMETIER=array('Indisponibilité','Im2','Im3');
 $INCIDENTIMPACTMETIER=array('High','I2','I3');
 $SLA=array('Sl1','Sl2','SL3');
 $CRITICITE=array('Mineur','Majeur','Significatif');
+$STATTYPECAUSE=array('Hj');
+$STATCOMPOSANT=array('AZ');
+$STATTYPOGTS=array('test');
+$STATKINDIMPACT=array('test');
+$STATPOWERPROD=array('test');
+$STATLEGACY= array('None','Oui','Non');
 ?>

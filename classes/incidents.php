@@ -25,13 +25,14 @@
 	private $_commentaire;	
 	private $_dejaApparu;
 	private $_previsible;
+    private $_incident;
 	
 
 	public function CreateIncident()
 	{
 		// Insertion du partie commun d'un incidents
 		$rq="INSERT INTO ".SCHEMA.".INCIDENT (INCIDENT,TITRE,DEPARTEMENT,STATUT,PRIORITE,AFFECTEDUSER,DATEDEBUT,DATEFIN,DUREE,DESCRIPTION,RISQUEAGGRAVATION,CAUSE,INCIDENTSCONNEXES,PROBLEME,RETABLISSEMENT,RESPONSABILITE,SERVICEACTEUR,LOCALISATION,USERACTION,DATEPUBLICATION,COMMENTAIRE,DEJAAPPARU,PREVISIBLE,CREATED,UPDATED)";
-		$rq.=" VALUES ('".$this->getTitre().rand()."','".$this->getTitre()."','".$this->getDepartement()."','".$this->getStatut()."','".$this->getPriorite()."','".$this->getUtilisImpacte()."','".$this->getDateDebut()."','".$this->getDateFin()."','".$this->getDuree()."',";
+		$rq.=" VALUES ('".$this->getIncident().rand()."','".$this->getTitre()."','".$this->getDepartement()."','".$this->getStatut()."','".$this->getPriorite()."','".$this->getUtilisImpacte()."','".$this->getDateDebut()."','".$this->getDateFin()."','".$this->getDuree()."',";
 		$rq.="'".str_replace("'","", $this->getDescripIncident())."',".$this->getRisqueAggravation().",'".addslashes($this->getCause())."','".$this->getConnexe()."','".addslashes($this->getProbleme())."','".addslashes($this->getRetablissement())."','".$this->getResponsabilite()."','".$this->getActeur()."','".addslashes($this->getLocalisation())."','".addslashes($this->getActionUtlisateur())."',TO_TIMESTAMP('".$this->getDateCreci()."','YYYY-MM-DD'),'".addslashes($this->getCommentaire())."',".$this->getDejaApparu().",".$this->getPrevisible().",sysdate,sysdate)";
         // Insertion de l'application impactée
         //$rq.=parent::creer();
@@ -61,9 +62,10 @@
 	}
 	
 
-	public function setIncident($id,$titre,$departement,$statut,$priorite,$affectesuser,$datedebut,$datefin,$duree,$description,$risqueAggravation,$cause,$incidentsconnexes,$probleme,$retablissement,$responsabilite,$serviceacteur,$localisation,$useraction,$creci,$commentaire,$dejaApparu,$previsible)
+	public function setIncident($id,$incident,$titre,$departement,$statut,$priorite,$affectesuser,$datedebut,$datefin,$duree,$description,$risqueAggravation,$cause,$incidentsconnexes,$probleme,$retablissement,$responsabilite,$serviceacteur,$localisation,$useraction,$creci,$commentaire,$dejaApparu,$previsible)
 	{
 		$this->_setNumero($id);
+        $this->_setIncident($incident);
 		$this->_setTitre($titre);
 		$this->_setDepartement($departement);
 		$this->_setStatut($statut);
@@ -96,14 +98,14 @@ return $this;
     */
     public function chargerIncident($id)
     {
-        $req="SELECT ID,TITRE,DEPARTEMENT,STATUT,PRIORITE,AFFECTEDUSER,DATEDEBUT,DATEFIN,DUREE,DESCRIPTION,RISQUEAGGRAVATION,CAUSE,INCIDENTSCONNEXES,PROBLEME,RETABLISSEMENT,RESPONSABILITE,SERVICEACTEUR,LOCALISATION,USERACTION,DATEPUBLICATION,COMMENTAIRE,DEJAAPPARU,PREVISIBLE FROM ".SCHEMA.".INCIDENT WHERE ID=".$id;
+        $req="SELECT ID,INCIDENT,TITRE,DEPARTEMENT,STATUT,PRIORITE,AFFECTEDUSER,DATEDEBUT,DATEFIN,DUREE,DESCRIPTION,RISQUEAGGRAVATION,CAUSE,INCIDENTSCONNEXES,PROBLEME,RETABLISSEMENT,RESPONSABILITE,SERVICEACTEUR,LOCALISATION,USERACTION,DATEPUBLICATION,COMMENTAIRE,DEJAAPPARU,PREVISIBLE FROM ".SCHEMA.".INCIDENT WHERE ID=".$id;
       //  $req="SELECT * FROM ".SCHEMA.".INCIDENT WHERE ID=".$id;
   
        $SCHEMA= new db();
 			$SCHEMA->db_connect();
 			$SCHEMA->db_query($req);
 			$res=$SCHEMA->db_fetch_array();
-			  $this->setIncident($res[0][0],$res[0][1],$res[0][2],$res[0][3],$res[0][4],$res[0][5],$res[0][6],$res[0][7],$res[0][8],$res[0][9],$res[0][10],$res[0][11],$res[0][12],$res[0][13],$res[0][14],$res[0][15],$res[0][16],$res[0][17],$res[0][18],$res[0][19],$res[0][20],$res[0][21],$res[0][22]);
+			  $this->setIncident($res[0][0],$res[0][1],$res[0][2],$res[0][3],$res[0][4],$res[0][5],$res[0][6],$res[0][7],$res[0][8],$res[0][9],$res[0][10],$res[0][11],$res[0][12],$res[0][13],$res[0][14],$res[0][15],$res[0][16],$res[0][17],$res[0][18],$res[0][19],$res[0][20],$res[0][21],$res[0][22],$res[0][23]);
 			//debug($res[0]);
 
 
@@ -116,6 +118,7 @@ return $this;
 	{
 		$rq="UPDATE ".SCHEMA.".INCIDENT SET ";
 		$rq.="TITRE='".$this->getTitre()."',";
+        $rq.="INCIDENT='".$this->getIncident()."',";
 		$rq.="DEPARTEMENT='".$this->getDepartement()."',";
 		$rq.="STATUT='".$this->getStatut()."',";
 		$rq.="PRIORITE='".$this->getPriorite()."',";
@@ -702,6 +705,30 @@ return $this;
     private function _setActionUtlisateur($actionUtlisateur)
     {
         $this->_actionUtlisateur = $actionUtlisateur;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of _incident.
+     *
+     * @return mixed
+     */
+    public function getIncident()
+    {
+        return $this->_incident;
+    }
+
+    /**
+     * Sets the value of _incident.
+     *
+     * @param mixed $_incident the incident
+     *
+     * @return self
+     */
+    private function _setIncident($incident)
+    {
+        $this->_incident = $incident;
 
         return $this;
     }

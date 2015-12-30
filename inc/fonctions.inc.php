@@ -27,13 +27,26 @@ function Check($var)
 	echo (isset($_POST[$var]))?'selected':'';
 }
 
+function Radio($var,$arr)
+{
+
+$option='';
+  for($i=0;$i<count($arr);$i++) 
+    {
+    $selected=(isset($_POST[$var]) &&  ($_POST[$var]==$arr[$i]))?'selected':'';
+    $option.='<input type= "radio" name="'.$var.'" value="'.$arr[$i].'" '.$selected.'><label>'.$arr[$i].'</label>';  
+    }
+    echo $option;
+}
+
 /*
 *  Fonctions pour la page modification
 */
 
-function getVarUpdate($var,$obj){
+function getVarUpdate($var,$obj)
+{
 	echo (isset($_POST[$var]))?$var:$obj;
-	}
+}
 
 function SelectUpdate($var,$obj,$arr)
 {
@@ -54,8 +67,26 @@ function CheckUpdate($var,$obj)
 function dmYdatetoYmd($date)
 {
 $ligneDate=explode('/', $date);
-debug($date);
 // Y-m-d H:i:s
 $dateReturn=$ligneDate[2].'-'.$ligneDate[1].'-'.$ligneDate[0];
 return  $dateReturn;
+}
+
+function getVarDate($var,$d)
+{
+  if ($d==1) {
+     echo (isset($_POST[$var]))?$_POST[$var]:'00:00';
+  }
+  else  echo (isset($_POST[$var]))?$_POST[$var]:'23:59';
+ 
+
+}
+
+function getVarDateUpdate($var,$obj,$d)
+{ 
+   if ($d==1) {
+     echo (isset($_POST[$var]))?$_POST[$var]:($obj)?$obj:'00:00';
+  }
+  else  echo (isset($_POST[$var]))?$_POST[$var]:($obj)?$obj:'23:59';
+ 
 }
