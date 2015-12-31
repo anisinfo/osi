@@ -10,13 +10,14 @@ define("LIEN_BASE","oci:dbname=(DESCRIPTION =(ADDRESS_LIST =(ADDRESS =(PROTOCOL 
 
 
 $STATUT =array('Nouveau','En Cours','Résolu');
-$PRIORITE =array('P1','P2');
-$RESPONSABILITE=array('res1','res2');
-$SERVICEACTEUR=array('Service1','Service2');
-$IMPACTMETIER=array('Indisponibilité','Im2','Im3');
-$INCIDENTIMPACTMETIER=array('High','I2','I3');
-$SLA=array('Sl1','Sl2','SL3');
+$PRIORITE =array('P1','P2','P3');
+$RESPONSABILITE=array('GTS','CLIENT','AUTRE');
+$SERVICEACTEUR=array('RET','TFO','EUS','ENSEIGNE','PARTENAIRE','AUTRE');
+$IMPACTMETIER=array('Indisponibilité','Fraîcheur Infos','Dégradation Perf');
+$INCIDENTIMPACTMETIER=array('Low','High','Medium','Non communiqué');
+$SLA=array('Non définie','Respecté','Non Respecté');
 $CRITICITE=array('Mineur','Majeur','Significatif');
+
 $STATTYPECAUSE=array('Hj');
 $STATCOMPOSANT=array('AZ');
 $STATTYPOGTS=array('test');
