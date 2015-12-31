@@ -1,5 +1,5 @@
 <?php
- class incidents extends Impact
+ class incidents 
 {
 	private $_numero;
 	
@@ -26,6 +26,8 @@
 	private $_dejaApparu;
 	private $_previsible;
     private $_incident;
+    private $_user;
+    private $_estOuvert;
 	
 
 	public function CreateIncident()
@@ -62,7 +64,7 @@
 	}
 	
 
-	public function setIncident($id,$incident,$titre,$departement,$statut,$priorite,$affectesuser,$datedebut,$datefin,$duree,$description,$risqueAggravation,$cause,$incidentsconnexes,$probleme,$retablissement,$responsabilite,$serviceacteur,$localisation,$useraction,$creci,$commentaire,$dejaApparu,$previsible)
+	public function setIncident($id,$incident,$titre,$departement,$statut,$priorite,$affectesuser,$datedebut,$datefin,$duree,$description,$risqueAggravation,$cause,$incidentsconnexes,$probleme,$retablissement,$responsabilite,$serviceacteur,$localisation,$useraction,$creci,$commentaire,$dejaApparu,$previsible,$user)
 	{
 		$this->_setNumero($id);
         $this->_setIncident($incident);
@@ -88,6 +90,7 @@
 		$this->_setCommentaire($commentaire);
 		$this->_setDejaApparu($dejaApparu);
 		$this->_setPrevisible($previsible);
+        $this->_setUser($user);
 
 return $this;
 	}
@@ -98,21 +101,33 @@ return $this;
     */
     public function chargerIncident($id)
     {
-        $req="SELECT ID,INCIDENT,TITRE,DEPARTEMENT,STATUT,PRIORITE,AFFECTEDUSER,DATEDEBUT,DATEFIN,DUREE,DESCRIPTION,RISQUEAGGRAVATION,CAUSE,INCIDENTSCONNEXES,PROBLEME,RETABLISSEMENT,RESPONSABILITE,SERVICEACTEUR,LOCALISATION,USERACTION,DATEPUBLICATION,COMMENTAIRE,DEJAAPPARU,PREVISIBLE FROM ".SCHEMA.".INCIDENT WHERE ID=".$id;
-      //  $req="SELECT * FROM ".SCHEMA.".INCIDENT WHERE ID=".$id;
-  
-       $SCHEMA= new db();
-			$SCHEMA->db_connect();
-			$SCHEMA->db_query($req);
-			$res=$SCHEMA->db_fetch_array();
-			  $this->setIncident($res[0][0],$res[0][1],$res[0][2],$res[0][3],$res[0][4],$res[0][5],$res[0][6],$res[0][7],$res[0][8],$res[0][9],$res[0][10],$res[0][11],$res[0][12],$res[0][13],$res[0][14],$res[0][15],$res[0][16],$res[0][17],$res[0][18],$res[0][19],$res[0][20],$res[0][21],$res[0][22],$res[0][23]);
-			//debug($res[0]);
+        $req="SELECT ID,INCIDENT,TITRE,DEPARTEMENT,STATUT,PRIORITE,AFFECTEDUSER,DATEDEBUT,DATEFIN,DUREE,DESCRIPTION,RISQUEAGGRAVATION,CAUSE,INCIDENTSCONNEXES,PROBLEME,RETABLISSEMENT,RESPONSABILITE,SERVICEACTEUR,LOCALISATION,USERACTION,DATEPUBLICATION,COMMENTAIRE,DEJAAPPARU,PREVISIBLE,USERNAME FROM ".SCHEMA.".INCIDENT ";
+        $req.="LEFT JOIN ".SCHEMA.".INCIDENT_OUVERT ON INCIDENT.ID = INCIDENT_OUVERT.IDINCIDENT ";
+        $req.="WHERE ID=".$id;
+      
+       $db= new db();
+	   $db->db_connect();
+	   $db->db_query($req);
+	   $res=$db->db_fetch_array();
+
+       if (empty($res[0][24])) {
+            $rq="INSERT INTO ".SCHEMA.".INCIDENT_OUVERT (IDINCIDENT,USERNAME,CREATED) ";
+            $rq.="VALUES (".$id.",'".$this->getUser()."',sysdate) ";
+             $db->db_query($rq);
+             $userOpen=$this->getUser();
+       }else $userOpen=$res[0][24];
+
+        $this->_setEstOuvert(($userOpen != $this->getUser())?true:false);
+	    $this->setIncident($res[0][0],$res[0][1],$res[0][2],$res[0][3],$res[0][4],$res[0][5],$res[0][6],$res[0][7],$res[0][8],$res[0][9],$res[0][10],$res[0][11],$res[0][12],$res[0][13],$res[0][14],$res[0][15],$res[0][16],$res[0][17],$res[0][18],$res[0][19],$res[0][20],$res[0][21],$res[0][22],$res[0][23],$userOpen);
+	
+       
 
 
  
          return $this; 
               
     }
+
 
 	public function Modifier()
 	{
@@ -148,6 +163,11 @@ return $this;
 		$base= new db();
 		$base->db_connect();
 		$base->db_query($rq);
+
+        $rq="DELETE FROM ".SCHEMA.".INCIDENT_OUVERT";
+        $rq.=" WHERE IDINCIDENT=".$this->getNumero();
+        $base->db_query($rq);
+        $base->close();
 	}
 	public function sauvegarder()
 	{
@@ -156,6 +176,17 @@ return $this;
 		else
 			return $this->Modifier();			
 	}
+
+
+    public function Liberer()
+    {
+        $rq="DELETE FROM ".SCHEMA.".INCIDENT_OUVERT";
+        $rq.=" WHERE IDINCIDENT=".$this->getNumero();
+        $base= new db();
+        $base->db_connect();
+        $base->db_query($rq);
+        $base->close();
+    }
 
     /**
      * Gets the value of _numero.
@@ -729,6 +760,54 @@ return $this;
     private function _setIncident($incident)
     {
         $this->_incident = $incident;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of _user.
+     *
+     * @return mixed
+     */
+    public function getUser()
+    {
+        return $this->_user;
+    }
+
+    /**
+     * Sets the value of _user.
+     *
+     * @param mixed $_user the user
+     *
+     * @return self
+     */
+    public function _setUser($user)
+    {
+        $this->_user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of _estOuvert.
+     *
+     * @return mixed
+     */
+    public function getEstOuvert()
+    {
+        return $this->_estOuvert;
+    }
+
+    /**
+     * Sets the value of _estOuvert.
+     *
+     * @param mixed $_estOuvert the est ouvert
+     *
+     * @return self
+     */
+    private function _setEstOuvert($estOuvert)
+    {
+        $this->_estOuvert = $estOuvert;
 
         return $this;
     }

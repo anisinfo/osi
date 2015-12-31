@@ -55,7 +55,7 @@ class Chronogramme
 	public function Creer()
 	{
 		$rq="INSERT INTO ".SCHEMA.".CHRONOGRAMME (INCIDENT_ID,ACTIONDATE,DESCRIPTION,CREATED,UPDATED) VALUES ";
-		$rq.="(".$this->getIncidentId().",TO_TIMESTAMP('2015-12-22 ".$this->getActionDate()."','YYYY-MM-DD HH24:MI'),'".$this->getDescription()."',sysdate,sysdate)";
+		$rq.="(".$this->getIncidentId().",TO_TIMESTAMP('".$this->getActionDate()."','DD/MM/YYYY HH24:MI'),'".$this->getDescription()."',sysdate,sysdate)";
         $req="SELECT max(ID) FROM ".SCHEMA.".CHRONOGRAMME";
 		$db = new db();
         $db->db_connect();
@@ -71,7 +71,7 @@ class Chronogramme
 	public function Modifier($id)
 	{
 		$rq="UPDATE ".SCHEMA.".CHRONOGRAMME SET ";
-		$rq.="ACTIONDATE=TO_TIMESTAMP('2015-12-22 ".$this->getActionDate()."','YYYY-MM-DD HH24:MI'),";
+		$rq.="ACTIONDATE=TO_TIMESTAMP('".$this->getActionDate()."','YYYY-MM-DD HH24:MI'),";
 		$rq.="DESCRIPTION='".$this->getDescription()."',";
 		$rq.="UPDATED=sysdate ";
 		$rq.="WHERE ID=".$id;

@@ -8,6 +8,7 @@ if(!isset($_SESSION['auth'])){
 			 
 
 	}
+$userConnected=$_SESSION['auth'][2].' '.$_SESSION['auth'][1];	
 $numero=(isset($_GET['id']))?$_GET['id']:'';
 define('TITLE',"Modification de l'incident N°<".$numero.">");
 require_once('../inc/config.inc.php');
@@ -64,13 +65,16 @@ if(!empty($_POST)){
 	if(empty($_POST['Incident_Impact_description'])){
 		$errors['Incident_Impact_description']="Vous devez remplir le champ Description de l'impact!";
 	}
+	if ($_POST['EstOuvert']) {
+		$errors['EstOuvert']="Cet Incident est Ouvert par ".$incident->getUser().". Il n'est accessible que en lecture!";
+	}
 
 
 	if(empty($errors))
 	{
 	//Incident	
 	
-	$incident->setIncident($numero,$_POST['IdIncident'],$_POST['titreincident'],$_POST['Incident_departement'],$_POST['Incident_statut'],$_POST['Incident_priorite'],$_POST['incidentuserimpacte'],$_POST['debutincident'],$_POST['finincident'],$_POST['Incident_duree'],addslashes($_POST['IncImpact_description']),$_POST['Incident_risqueAggravation'],$_POST['Incident_cause'],$_POST['incidentConnex'],$_POST['incidentprobleme'],$_POST['Incident_retablissement'],$_POST['incidentresponsabilite'],$_POST['incidentserviceacteur'],$_POST['Incident_localisation'],$_POST['Incident_useraction'],$_POST['incidentdatecreci'],$_POST['Incident_commentaire'],$_POST['Incident_dejaApparu'],$_POST['Incident_previsible']);
+	$incident->setIncident($numero,$_POST['IdIncident'],$_POST['titreincident'],$_POST['Incident_departement'],$_POST['Incident_statut'],$_POST['Incident_priorite'],$_POST['incidentuserimpacte'],$_POST['debutincident'],$_POST['finincident'],$_POST['Incident_duree'],addslashes($_POST['IncImpact_description']),$_POST['Incident_risqueAggravation'],$_POST['Incident_cause'],$_POST['incidentConnex'],$_POST['incidentprobleme'],$_POST['Incident_retablissement'],$_POST['incidentresponsabilite'],$_POST['incidentserviceacteur'],$_POST['Incident_localisation'],$_POST['Incident_useraction'],$_POST['incidentdatecreci'],$_POST['Incident_commentaire'],$_POST['Incident_dejaApparu'],$_POST['Incident_previsible'],$userConnected);
 	$incident->sauvegarder();
 
 	// Impacte
@@ -97,7 +101,10 @@ if(!empty($_POST)){
 	}
 }else
 {
+
+$incident->_setUser($userConnected);
 $incident->chargerIncident($numero);
+
 $impacte->chargerFirstIncident($numero);
 $appli->SelectAppliById($impacte->getApplicationId());
 if ($impacte->getApplicationId()) {
@@ -106,7 +113,12 @@ if ($impacte->getApplicationId()) {
 
 //debug($appli);
 }
-?>
+if ($incident->getEstOuvert()) {?>
+<div class="alert alert-danger">
+<?="Cet Incident est Ouvert par ".$incident->getUser().". Il n'est accessible que en lecture!";?>
+
+	</div>
+<?php } ?>
 <h1>Modifier l'incident n°: <?=$incident->getIncident();?></h1>
 <?php
 if(!empty($errors)){?>

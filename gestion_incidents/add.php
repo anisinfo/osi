@@ -2,11 +2,14 @@
 session_start();
 define('TITLE','Ajouter un incident');
 require_once('../inc/config.inc.php');
+//require_once('../inc/fonctions.inc.php');
 require_once('../classes/Impact.php');
 require_once('../classes/incidents.php');
 require_once('../classes/Calendrier.php');
+require_once('../classes/Chronogramme.php');
 require_once('../classes/db.php');
 //$dbc = new PDO('oci:dbname='.HOST.':'.PORT.'/'.SCHEMA.';charset=CL8MSWIN1251', SCHEMA_LOGIN, SCHEMA_PASS);
+//debug($_POST);
 if(!empty($_POST)){
 	$errors=array();
 
@@ -50,6 +53,9 @@ if(!empty($_POST)){
 	if(empty($_POST['Incident_Impact_description'])){
 		$errors['Incident_Impact_description']="Vous devez remplir le champ Description de l'impact!";
 	}
+	if(empty($_POST['IdAppli'])){
+		$errors['IdAppli']="Vous devez remplir le application Impactée!";
+	}
 
 	if(empty($_POST['IdIncident'])){
 		$errors['IdIncident']="Le numéro de l'incident est vide";
@@ -85,7 +91,14 @@ if(!empty($_POST)){
 	}
 	
 	// AJout de chronogramme
-
+	if (!empty($_POST['ListeId'])) {
+		$chrono = new Chronogramme();
+		$listeIdChrono=explode(',', $_POST['ListeId']);
+		for ($i=1; $i < count($listeIdChrono); $i++) { 
+			$chrono->setParam(NULL,$id_incident,$_POST['chrono_input_date_'.$listeIdChrono[$i]],$_POST['chrono_input_activite_'.$listeIdChrono[$i]]);
+			$chrono->Creer();
+		}
+	}
 	$_SESSION['flash']['success'] =" L'impacte de l'incident est bien ajouté."; 
 
 	header('Location:index.php');

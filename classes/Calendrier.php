@@ -69,11 +69,12 @@ class Calendrier
         $db->db_connect();
         $db->db_query($rq);
         $res=$db->db_fetch_array();
-      //  debug($res);
         $db->close();
-        $tab = array();
-        $valeur=$res[0];
+        if (isset($res[0])) {
+             $valeur=$res[0];
         $this->setParam($valeur[0],$valeur[1],$valeur[2],$valeur[3],$valeur[4],$valeur[5],$valeur[6],$valeur[7],$valeur[8],$valeur[9],$valeur[10],$valeur[11],$valeur[12],$valeur[13],$valeur[14],$valeur[15],$valeur[16],$valeur[17]);  
+        }
+       
         return $this;
      }
 
@@ -84,6 +85,7 @@ class Calendrier
      */
      public function creer()
      {
+
         $rq="INSERT INTO ".SCHEMA.".CALENDRIER ";
         $rq.="(APPLICATION_ID,LUNDIOUVERTURE,LUNDIFERMETURE,MARDIOUVERTURE,MARDIFERMETURE,MERCREDIOUVERTURE,MERCREDIFERMETURE,JEUDIOUVERTURE,JEUDIFERMETURE,VENDREDIOUVERTURE,VENDREDIFERMETURE,SAMEDIOUVERTURE,SAMEDIFERMETURE,DIMANCHEOUVERTURE,DIMANCHEFERMETURE,FERIESOUVERTURE,FERIESFERMETURE) VALUES (";
         $rq.=$this->getIdApplication().",";
@@ -103,10 +105,19 @@ class Calendrier
         $rq.="TO_DATE('2015-12-22 ".$this->getDimancheFermer()."', 'YYYY-MM-DD HH24:MI'),";
         $rq.="TO_DATE('2015-12-22 ".$this->getJourFerierOuvert()."', 'YYYY-MM-DD HH24:MI'),";
         $rq.="TO_DATE('2015-12-22 ".$this->getJourFerierFermer()."', 'YYYY-MM-DD HH24:MI'))";
+        
+        $req="SELECT ID FROM ".SCHEMA.".CALENDRIER ";
+        $req.="WHERE APPLICATION_ID=".$this->getIdApplication();
 
         $db = new db();
         $db->db_connect();
-        $db->db_query($rq);
+        $db->db_query($req);
+        $res=$db->db_fetch_array();
+        if (is_array($res)) {
+            $this->modifier();
+        }else{
+        $db->db_query($rq);   
+        }
         $db->close();
      }
 
@@ -120,31 +131,32 @@ class Calendrier
      {
         $rq="UPDATE ".SCHEMA.".CALENDRIER ";
         $rq.="SET ";
-        $rq.="APPLICATION_ID=".$this->getIdApplication().",";
-        $rq.="LUNDIOUVERTURE='".$this->getLundiOuvert()."',";
-        $rq.="LUNDIFERMETURE='".$this->getLundiFermer()."',";
-        $rq.="MARDIOUVERTURE='".$this->getMardiOuvert()."',";
-        $rq.="MARDIFERMETURE='".$this->getMardiFermer()."',";
-        $rq.="MERCREDIOUVERTURE='".$this->getMercrediOuvert()."',";
-        $rq.="MERCREDIFERMETURE='".$this->getMercrediFermer()."',";
-        $rq.="JEUDIOUVERTURE='".$this->getJeudiOuvert()."',";
-        $rq.="JEUDIFERMETURE='".$this->getJeudiFermer()."',";
-        $rq.="VENDREDIOUVERTURE='".$this->getVendrediOuvert()."',";
-        $rq.="VENDREDIFERMETURE='".$this->getVendrediFermer()."',";
-        $rq.="SAMEDIOUVERTURE='".$this->getSamediOuvert()."',";
-        $rq.="SAMEDIFERMETURE='".$this->getSamediFermer()."',";
-        $rq.="DIMANCHEOUVERTURE='".$this->getDimancheOuvert()."',";
-        $rq.="DIMANCHEFERMETURE='".$this->getDimancheFermer()."',";
-        $rq.="FERIESOUVERTURE='".$this->getJourFerierOuvert()."',";
-        $rq.="FERIESFERMETURE='".$this->getJourFerierFermer()."'";
+        $rq.="LUNDIOUVERTURE=TO_DATE('2015-12-22 ".$this->getLundiOuvert()."','YYYY-MM-DD HH24:MI'),";
+        $rq.="LUNDIFERMETURE=TO_DATE('2015-12-22 ".$this->getLundiFermer()."','YYYY-MM-DD HH24:MI'),";
+        $rq.="MARDIOUVERTURE=TO_DATE('2015-12-22 ".$this->getMardiOuvert()."','YYYY-MM-DD HH24:MI'),";
+        $rq.="MARDIFERMETURE=TO_DATE('2015-12-22 ".$this->getMardiFermer()."','YYYY-MM-DD HH24:MI'),";
+        $rq.="MERCREDIOUVERTURE=TO_DATE('2015-12-22 ".$this->getMercrediOuvert()."','YYYY-MM-DD HH24:MI'),";
+        $rq.="MERCREDIFERMETURE=TO_DATE('2015-12-22 ".$this->getMercrediFermer()."','YYYY-MM-DD HH24:MI'),";
+        $rq.="JEUDIOUVERTURE=TO_DATE('2015-12-22 ".$this->getJeudiOuvert()."','YYYY-MM-DD HH24:MI'),";
+        $rq.="JEUDIFERMETURE=TO_DATE('2015-12-22 ".$this->getJeudiFermer()."','YYYY-MM-DD HH24:MI'),";
+        $rq.="VENDREDIOUVERTURE=TO_DATE('2015-12-22 ".$this->getVendrediOuvert()."','YYYY-MM-DD HH24:MI'),";
+        $rq.="VENDREDIFERMETURE=TO_DATE('2015-12-22 ".$this->getVendrediFermer()."','YYYY-MM-DD HH24:MI'),";
+        $rq.="SAMEDIOUVERTURE=TO_DATE('2015-12-22 ".$this->getSamediOuvert()."','YYYY-MM-DD HH24:MI'),";
+        $rq.="SAMEDIFERMETURE=TO_DATE('2015-12-22 ".$this->getSamediFermer()."','YYYY-MM-DD HH24:MI'),";
+        $rq.="DIMANCHEOUVERTURE=TO_DATE('2015-12-22 ".$this->getDimancheOuvert()."','YYYY-MM-DD HH24:MI'),";
+        $rq.="DIMANCHEFERMETURE=TO_DATE('2015-12-22 ".$this->getDimancheFermer()."','YYYY-MM-DD HH24:MI'),";
+        $rq.="FERIESOUVERTURE=TO_DATE('2015-12-22 ".$this->getJourFerierOuvert()."','YYYY-MM-DD HH24:MI'),";
+        $rq.="FERIESFERMETURE=TO_DATE('2015-12-22 ".$this->getJourFerierFermer()."','YYYY-MM-DD HH24:MI')";
 
-        $rq.=" WHERE APPLICATION_ID=".$id;
+        $rq.=" WHERE APPLICATION_ID=".$this->getIdApplication();
 
         $db = new db();
         $db->db_connect();
         $db->db_query($rq);
         $db->close();
      }
+
+     
 
 
        /**

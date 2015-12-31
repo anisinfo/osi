@@ -79,7 +79,7 @@ $appli->SelectAppliById($idAppli);
 	    </span>
 		
 		<label class="lib" style="float:left; margin-left:25px; line-height:2.5;"> Titre comm </label>
-		<input type="text" name="numincident" size="12" style=" display:inline-block; margin-left:25px; " value="<?php getVarUpdate('numincident',$incident->getTitre()); ?>"> 
+		<input type="text" name="numincident" size="12" style="width:400px;display:inline-block; margin-left:25px; " value="<?php getVarUpdate('numincident',$incident->getTitre()); ?>"> 
 		
 	      <button class="btn btn-success" type="button">Actualiser</button>
 	    
@@ -89,7 +89,7 @@ $appli->SelectAppliById($idAppli);
 	    </div>
 	<div class="width100 bcg">
 	<fieldset>
-    		<legend>Application Impactée par l'incident : <?php $incident->getNumero(); ?></legend>
+    		<legend>Application Impactée par l'incident : <?= $incident->getIncident(); ?></legend>
     		<div class=" width50 mr_35"> 
     			<div class="width100">
 		    		<label  class="lib"  for="Incident_Impact_application_libelle"> Application</label> 

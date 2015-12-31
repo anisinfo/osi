@@ -250,6 +250,9 @@ function CreateActivite()
 function Supprimer(idLigne)
 {
   $('#ligne_'+idLigne).remove();
+  var ListeId=$('#ListeId').val();
+  var reg=new RegExp("(,"+idLigne+")", "g");
+  $('#ListeId').val(ListeId.replace(reg,''));
 }
 
 
@@ -281,4 +284,12 @@ $("#chrono_input_activite_"+id).css('display','none');
 $("#chrono_valid_"+id).css('display','none');
 $("#chrono_annul_"+id).css('display','none');
 
+}
+function Valider(id)
+{
+  nouveauDate=$('#chrono_input_date_'+id).val();
+  nouveauActivite=$('#chrono_input_activite_'+id).val();
+  $("#chrono_date_"+id).text(nouveauDate);
+  $("#chrono_activite_"+id).text(nouveauActivite);
+  Annuler(id);
 }
