@@ -10,22 +10,22 @@ function supprimer(adresse){
 	}
 }
 
-var options = {
+//var options = {
 
-  url: "../inc/applications.json.php?name=appli",
+ // url: "../inc/applications.json.php?name=appli",
 
-  getValue: "NAME",
+//  getValue: "NAME",
 
-  list: {	
-    match: {
-      enabled: true
-    }
-  },
+//  list: {	
+//    match: {
+//      enabled: true
+//    }
+//  },
 
-  theme: "square"
-};
+//  theme: "square"
+//};
 
-$("#Incident_Impact_application_libelle").easyAutocomplete(options);
+//$("#Incident_Impact_application_libelle").easyAutocomplete(options);
 
 // Semicolon (;) to ensure closing of earlier scripting
     // Encapsulation
@@ -249,10 +249,11 @@ function CreateActivite()
 
 function Supprimer(idLigne)
 {
-  $('#ligne_'+idLigne).remove();
+
   var ListeId=$('#ListeId').val();
   var reg=new RegExp("(,"+idLigne+")", "g");
   $('#ListeId').val(ListeId.replace(reg,''));
+    $('#ligne_'+idLigne).remove();
 }
 
 

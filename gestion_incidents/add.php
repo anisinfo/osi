@@ -1,5 +1,13 @@
 <?php
 session_start();
+if(!isset($_SESSION['auth'])){
+		
+			 	 $_SESSION['flash']['danger'] ="Vous devez être connecté!"; 
+			 	 header('Location:index.php');
+			 	 die();
+			 
+
+	}
 define('TITLE','Ajouter un incident');
 require_once('../inc/config.inc.php');
 //require_once('../inc/fonctions.inc.php');
@@ -16,19 +24,19 @@ if(!empty($_POST)){
 	$_POST['Incident_risqueAggravation'] = (isset($_POST['Incident_risqueAggravation']))?1:0;
 	$_POST['Incident_dejaApparu'] = (isset($_POST['Incident_dejaApparu']))?1:0; 
 	$_POST['Incident_previsible'] = (isset($_POST['Incident_previsible']))?1:0;
-	$_POST['calender_sogessur_jf'] = (isset($_POST['calender_sogessur_jf']))?1:0;
-
-	$_POST['calender_sogessur_lu'] = (isset($_POST['calender_sogessur_lu']))?1:0;
-	$_POST['calender_sogessur_mar'] = (isset($_POST['calender_sogessur_mar']))?1:0;
-	$_POST['calender_sogessur_mer'] = (isset($_POST['calender_sogessur_mer']))?1:0;
-	$_POST['calender_sogessur_jeu'] = (isset($_POST['calender_sogessur_jeu']))?1:0;
-	$_POST['calender_sogessur_ven'] = (isset($_POST['calender_sogessur_ven']))?1:0;
-	$_POST['calender_sogessur_sam'] = (isset($_POST['calender_sogessur_sam']))?1:0;
-	$_POST['calender_sogessur_dim'] = (isset($_POST['calender_sogessur_dim']))?1:0;
+	
 
 	/*
 	Contrôle des champs obligatoire
 	*/
+	if(empty($_POST['debutincident'])){
+		$errors['debutincident']="Vous devez remplir le champ date début incident!";
+	}
+
+	if(empty($_POST['finincident'])){
+		$errors['finincident']="Vous devez remplir le champ date fin incident!";
+	}
+
 	if (!$_POST['Incident_statut']) {
 		$errors['Incident_statut']="Le Statut n'est pas valide!";
 	}
@@ -39,7 +47,11 @@ if(!empty($_POST)){
 	}
 
 	if(empty($_POST['Incident_Impact_datedebut'])){
-		$errors['Incident_cause']="Vous devez remplir le champ début impact!";
+		$errors['Incident_Impact_datedebut']="Vous devez remplir le champ date début impact!";
+	}
+
+	if(empty($_POST['Incident_Impact_datefin'])){
+		$errors['Incident_Impact_datefin']="Vous devez remplir le champ date fin impact!";
 	}
 
 	if (!$_POST['Incident_Impact_impactmetier']) {
@@ -140,7 +152,7 @@ if(!empty($errors)){?>
 		<div class=" width50 mr_35">
 			<div class="width100">
 		    	<label  class="lib"  for="titreincident"> Incident *</label> 
-		    	<input type="text" name="IdIncident" id="IdIncident" value="<?php getVar('IdIncident'); ?>"  >
+		    	<input type="text" name="IdIncident" id="IdIncident" value="<?php getVar('IdIncident'); ?>"  required>
 		    	
 	    	</div>
 
@@ -170,12 +182,12 @@ if(!empty($errors)){?>
 
   			<div class="width100">
   				<div class=" width50">
-  					<label  class="lib" for="debutincident"> Début Incident</label> 
-  					<input type="datetime" name="debutincident"  id="debutincident" value="<?php getVar('debutincident'); ?>">
+  					<label  class="lib" for="debutincident"> Début Incident *</label> 
+  					<input type="text" name="debutincident"  id="debutincident" value="<?php getVar('debutincident'); ?>" required>
   				</div>
   				<div class=" width50 right">
-  					<label  class="lib"  for="finincident"> Fin Incident</label> 
-  					<input type="datetime" name="finincident" id="finincident"  value="<?php getVar('finincident'); ?>">
+  					<label  class="lib"  for="finincident"> Fin Incident *</label> 
+  					<input type="text" name="finincident" id="finincident"  value="<?php getVar('finincident'); ?>" required>
   				</div>
   			</div>
 
@@ -227,7 +239,7 @@ if(!empty($errors)){?>
 
 	  		<div class=" width100">
 	  			<label  class="lib" for="incidentdatecreci"> Date du Creci</label> 
-	  			<input type="date"  name="incidentdatecreci" id="incidentdatecreci" value="<?php getVar('incidentdatecreci'); ?>" >
+	  			<input type="text"  name="incidentdatecreci" id="incidentdatecreci" value="<?php getVar('incidentdatecreci'); ?>" >
 	  		</div>
 
 	  		<div class=" width100">
@@ -257,7 +269,7 @@ if(!empty($errors)){?>
 		    </div>
 		
 	    	<div class="width100">
-  				<label class="lib" for="Incident_IncImpact_description">Description de l'incident*</label>
+  				<label class="lib" for="Incident_IncImpact_description">Description de l'incident *</label>
   				<textarea  rows="3" id="IncImpact_description" name="IncImpact_description" required><?php getVar('IncImpact_description'); ?></textarea>
   			</div>
 
@@ -301,12 +313,12 @@ if(!empty($errors)){?>
 	    		<div class="width100">
 	    			<div class=" width50 mr_10">
 	    				<label  class="lib"  for="Incident_Impact_datedebut"> Début impact *</label> 
-		    			<input type="date" name="Incident_Impact_datedebut" id="Incident_Impact_datedebut" value="<?php getVar('Incident_Impact_datedebut'); ?>" required>
+		    			<input type="text" name="Incident_Impact_datedebut" id="Incident_Impact_datedebut" value="<?php getVar('Incident_Impact_datedebut'); ?>" required>
 	    			</div>
 
 	    			<div class=" width50">
-	    				<label  class="lib"  for="Incident_Impact_datefin"> Fin impact </label> 
-		    			<input type="date" name="Incident_Impact_datefin" id="Incident_Impact_datefin"  value="<?php getVar('Incident_Impact_datefin'); ?>">
+	    				<label  class="lib"  for="Incident_Impact_datefin"> Fin impact  *</label> 
+		    			<input type="text" name="Incident_Impact_datefin" id="Incident_Impact_datefin"  value="<?php getVar('Incident_Impact_datefin'); ?>"  required>
 	    			</div>	    			
 	    		</div>
 
@@ -367,9 +379,9 @@ if(!empty($errors)){?>
     			
     				<div id="element_to_pop_up">
     					<a class="b-close">x</a>
-					Ajout d'une application
+					<h2>Ajout d'une application</h2>
 
-						<div id="infoAjout" class="alert alert-success" >L'application est bien ajoutée</div>
+						<div id="infoAjout" class="alert alert-success" style="display:none;">L'application est bien ajoutée</div>
 					
     					<label for="NomSearch" class="lib">Nom de l'application</label>
     					<input type="text" id="NomSearch" name="NomSearch" >
@@ -396,37 +408,17 @@ if(!empty($errors)){?>
 
     				<div id="element_to_pop_up2">
     					<a class="b-close">x</a>
-					Calendrier pour l'application <span id="CalendarNomAppli"></span>
-
+							Calendrier pour l'application <span id="CalendarNomAppli"></span>
 							<table class="table"  id="calendar-sogessur">
 							<tr>
-								<td align="center"><label class="lib"> JF
-								
-                        
-           			</label></td>
-								<td align="center"><label class="lib"> L<br/>
-  						
-           			</label></td>
-           			<td align="center"><label class="lib"> M<br/>
-  					
-                        
-           			</label></td>
-           			<td align="center"><label class="lib"> M<br/>
-  						
-           			</label></td>
-           			<td align="center"><label class="lib"> J<br/>
-  						
-                        
-           			</label></td>
-           			<td align="center"><label class="lib"> V<br/>
-  						
-           			</label></td>
-           			<td align="center"><label class="lib"> S<br/>
-                        
-           			</label></td>
-           			<td align="center"><label class="lib"> D<br/>
-                        
-           			</label></td>
+								<td align="center"><label class="lib"> JF </label></td>
+								<td align="center"><label class="lib"> L<br/></label></td>
+			           			<td align="center"><label class="lib"> M<br/></label></td>
+			           			<td align="center"><label class="lib"> M<br/></label></td>
+			           			<td align="center"><label class="lib"> J<br/></label></td>
+			           			<td align="center"><label class="lib"> V<br/></label></td>
+			           			<td align="center"><label class="lib"> S<br/></label></td>
+			           			<td align="center"><label class="lib"> D<br/></label></td>
 							</tr>
 	                     	<tr>
 								<td align="center"><input type="text" id="Edit_O_Jf" name="Edit_OuvertJf" value="<?php getVarDate('Edit_OuvertJf',1);?>" style="width:53px;" placeholder="HH:MM" /></td>
@@ -519,7 +511,7 @@ if(!empty($errors)){?>
 								<td align="center"><label class="lib"> Activité
   						
            			</label></td>
-           			<td width="70px"><input type="text" id="ListeId" name="ListeId" /></td>
+           			<td width="70px"><input type="hidden" id="ListeId" name="ListeId" /></td>
            			<td width="70px"></td>
            			</tr>
            			<tbody id="ChronosLignes">

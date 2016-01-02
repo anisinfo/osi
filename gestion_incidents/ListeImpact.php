@@ -1,5 +1,11 @@
 <?php
 session_start();
+if(!isset($_SESSION['auth'])){
+		
+			 	 $_SESSION['flash']['danger'] ="Vous devez être connecté!"; 
+			 	 header('Location:index.php');
+			 	 die();
+	}
 $incident=(isset($_GET['idIncident']))?$_GET['idIncident']:'';
 if (!$incident) {
 	$_SESSION['flash']['erreur']="Pas de numéro d'incident passé !";
@@ -21,7 +27,10 @@ $appli= new Application();
 
 ?>
 <h3>Liste d'impactes pour l'incident N°:<?= $inci->getIncident();?></h3>
-
+<br />
+<a class="btn btn-success"  href="impact.php?idIncident=<?= $incident;?>">Ajouter un impacte</a>
+<br />
+<br />
 <form action="" method="POST">
 <div class="bloc">
 
@@ -35,25 +44,26 @@ $appli= new Application();
 		<th>Action</th>
 	</thead>
 	<tbody>
-		<tr>
+		
 		<?php
 
 		for ($i=0 ; $i < count($resultats) ; $i++ ) { 
 
 			$value=$resultats[$i];
+
 			$appli= new Application();
 			$appli->SelectAppliById($value[2]);
 		
-			$ligne='<td>'.$value[3].'</td>';
+			$ligne='<tr><td>'.$value[3].'</td>';
 			$ligne.='<td>'.$value[4].'</td>';
 			$ligne.='<td>'.$appli->getName().'</td>';
 			$ligne.='<td>'.$value[11].'</td><td>';
 			$ligne.=($value[8] !='')?$INCIDENTIMPACTMETIER[$value[8]-1]:'';
-			$ligne.='</td><td><a href="modifImpact.php?IdImpact='.$value[0].'">Modifier</a></td>';
+			$ligne.='</td><td><a href="modifImpact.php?IdImpact='.$value[0].'">Modifier</a></td></tr>';
 			echo $ligne;
 		}
 		?>
-		</tr>
+		
 	</tbody>
 	</table>
 </div>

@@ -18,7 +18,7 @@ class Chronogramme
 	}
 	public function getChronogrammeByIncidentId($id)
 	{
-		$rq="SELECT ID,INCIDENT_ID,ACTIONDATE,DESCRIPTION ";
+		$rq="SELECT ID,INCIDENT_ID,TO_CHAR(ACTIONDATE,'DD/MM/YYYY HH24:MI'),DESCRIPTION ";
 		$rq.="FROM ".SCHEMA.".CHRONOGRAMME ";
 		$rq.="WHERE INCIDENT_ID=".$id;
 
@@ -37,9 +37,10 @@ class Chronogramme
 	}
 
 
+
 	public function getChronogrammeBytId($id)
 	{
-		$rq="SELECT ID,INCIDENT_ID,ACTIONDATE,DESCRIPTION ";
+		$rq="SELECT ID,INCIDENT_ID,TO_CHAR(ACTIONDATE,'DD/MM/YYYY HH24:MI'),DESCRIPTION ";
 		$rq.="FROM ".SCHEMA.".CHRONOGRAMME ";
 		$rq.="WHERE ID=".$id;
 
@@ -93,6 +94,18 @@ class Chronogramme
         $db->db_query($rq);
         $db->close();
 	}
+
+    public function DeleteAll($id)
+    {
+        $rq="DELETE FROM ".SCHEMA.".CHRONOGRAMME    ";
+        $rq.="WHERE INCIDENT_ID=".$id;
+
+        $db = new db();
+        $db->db_connect();
+        $db->db_query($rq);
+        $db->close();
+
+    }
     /**
      * Gets the value of _id.
      *

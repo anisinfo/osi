@@ -41,11 +41,12 @@ class Impact
 	public function creer()
 	{
 		$rq="INSERT INTO ".SCHEMA.".IMPACT (INCIDENT_ID,APPLICATION_ID,DATESTART,DATEEND,DUREEREELLE,JOURHOMME,IMPACTMETIER,IMPACT,SLA,SEVERITE,DESCRIPTION,CREATED,UPDATED)";
-		$rq.=" VALUES (".$this->getIncidentId().",".$this->getApplicationId().",TO_TIMESTAMP('".$this->getDateDebut()."','YYYY-MM-DD'),TO_TIMESTAMP('".$this->getDateFin()."','YYYY-MM-DD'),'".$this->getDureeReelle()."','".$this->getJourHomme()."','".$this->getImpactMetier()."','".$this->getImpact()."','".$this->getSla()."','".$this->getSeverite()."','".addslashes($this->getDescription())."',sysdate,sysdate)";
-	
+		$rq.=" VALUES (".$this->getIncidentId().",".$this->getApplicationId().",TO_TIMESTAMP('".$this->getDateDebut()."','DD/MM/YYYY HH24:MI'),TO_TIMESTAMP('".$this->getDateFin()."','DD/MM/YYYY HH24:MI'),'".$this->getDureeReelle()."','".$this->getJourHomme()."','".$this->getImpactMetier()."','".$this->getImpact()."','".$this->getSla()."','".$this->getSeverite()."','".addslashes($this->getDescription())."',sysdate,sysdate)";
+	   echo $rq;
 		$db = new db();
 		$db->db_connect();
 		$db->db_query($rq);
+        $db->close();
 	}
 
 
@@ -54,8 +55,8 @@ class Impact
 		$rq="UPDATE ".SCHEMA.".IMPACT SET ";
 		$rq.="INCIDENT_ID='".$this->getIncidentId()."',";
 		$rq.="APPLICATION_ID='".$this->getApplicationId()."',";
-		$rq.="DATESTART=TO_TIMESTAMP('".$this->getDateDebut()."','YYYY-MM-DD'),";
-		$rq.="DATEEND=TO_TIMESTAMP('".$this->getDateFin()."','YYYY-MM-DD'),";
+		$rq.="DATESTART=TO_TIMESTAMP('".$this->getDateDebut()."','DD/MM/YYYY HH24:MI'),";
+		$rq.="DATEEND=TO_TIMESTAMP('".$this->getDateFin()."','DD/MM/YYYY HH24:MI'),";
 		$rq.="DUREEREELLE='".$this->getDureeReelle()."',";
 		$rq.="JOURHOMME='".$this->getJourHomme()."',";
 		$rq.="IMPACTMETIER='".$this->getImpactMetier()."',";
@@ -69,6 +70,7 @@ class Impact
 		$db = new db();
 		$db->db_connect();
 		$db->db_query($rq);
+         $db->close();
 
 	}
 
@@ -79,12 +81,13 @@ class Impact
 
 		$db = new db();
 		$db->db_connect();
-		$res=$db->db_query($rq);
+		$db->db_query($rq);
+        $db->close();
 	}
 
 	  public function chargerFirstIncident($id)
     {
-        $req="SELECT ID,INCIDENT_ID,APPLICATION_ID,DATESTART,DATEEND,DUREEREELLE,JOURHOMME,IMPACTMETIER,IMPACT,SLA,SEVERITE,DESCRIPTION,CREATED,UPDATED ";
+        $req="SELECT ID,INCIDENT_ID,APPLICATION_ID,TO_CHAR(DATESTART,'DD/MM/YYYY HH24:MI'),TO_CHAR(DATEEND,'DD/MM/YYYY HH24:MI'),DUREEREELLE,JOURHOMME,IMPACTMETIER,IMPACT,SLA,SEVERITE,DESCRIPTION,CREATED,UPDATED ";
         $req.="FROM ".SCHEMA.".IMPACT WHERE INCIDENT_ID=".$id." ";
         $req.="ORDER BY ID ASC";
 
@@ -92,14 +95,16 @@ class Impact
         $base->db_connect();
         $base->db_query($req);
         $res=$base->db_fetch_array();
+        $base->close();
         $this->setParam($res[0][0],$res[0][1],$res[0][2],$res[0][3],$res[0][4],$res[0][5],$res[0][6],$res[0][7],$res[0][8],$res[0][9],$res[0][10],$res[0][11],$res[0][12],$res[0][13]);
+        
         return $this;           
     }
 
 
       public function chargerIncident($id)
     {
-        $req="SELECT ID,INCIDENT_ID,APPLICATION_ID,DATESTART,DATEEND,DUREEREELLE,JOURHOMME,IMPACTMETIER,IMPACT,SLA,SEVERITE,DESCRIPTION,CREATED,UPDATED ";
+        $req="SELECT ID,INCIDENT_ID,APPLICATION_ID,TO_CHAR(DATESTART,'DD/MM/YYYY HH24:MI'),TO_CHAR(DATEEND,'DD/MM/YYYY HH24:MI'),DUREEREELLE,JOURHOMME,IMPACTMETIER,IMPACT,SLA,SEVERITE,DESCRIPTION ";
         $req.="FROM ".SCHEMA.".IMPACT WHERE INCIDENT_ID=".$id." ";
         $req.="ORDER BY ID ASC";
 
@@ -107,13 +112,14 @@ class Impact
         $base->db_connect();
         $base->db_query($req);
         $res=$base->db_fetch_array();
+        $base->close();
         return $res;           
     }
 
 
       public function chargerImpact($id)
     {
-        $req="SELECT ID,INCIDENT_ID,APPLICATION_ID,DATESTART,DATEEND,DUREEREELLE,JOURHOMME,IMPACTMETIER,IMPACT,SLA,SEVERITE,DESCRIPTION,CREATED,UPDATED ";
+        $req="SELECT ID,INCIDENT_ID,APPLICATION_ID,TO_CHAR(DATESTART,'DD/MM/YYYY HH24:MI'),TO_CHAR(DATEEND,'DD/MM/YYYY HH24:MI'),DUREEREELLE,JOURHOMME,IMPACTMETIER,IMPACT,SLA,SEVERITE,DESCRIPTION,CREATED,UPDATED ";
         $req.="FROM ".SCHEMA.".IMPACT WHERE ID=".$id." ";
         $req.="ORDER BY ID ASC";
 
@@ -121,6 +127,7 @@ class Impact
         $base->db_connect();
         $base->db_query($req);
         $res=$base->db_fetch_array();
+        $base->close();
         $this->setParam($res[0][0],$res[0][1],$res[0][2],$res[0][3],$res[0][4],$res[0][5],$res[0][6],$res[0][7],$res[0][8],$res[0][9],$res[0][10],$res[0][11],$res[0][12],$res[0][13]);
         return $this;           
     }

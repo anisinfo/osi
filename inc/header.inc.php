@@ -21,6 +21,7 @@ require_once('config.inc.php');
     <!-- Bootstrap core CSS -->
     <link href="<?php echo RACINE; ?>css/bootstrap.css" rel="stylesheet">
      <link rel="stylesheet" href="<?php echo RACINE; ?>css/custom.min.css">
+     <link rel="stylesheet" type="text/css" href="<?php echo RACINE; ?>datetimepicker/jquery.datetimepicker.css"/>
 
     <!-- Custom styles for this template jquery-1.11.2.min.js-->
     
@@ -29,13 +30,10 @@ require_once('config.inc.php');
     <script src="<?php echo RACINE; ?>js/bootstrap.js"></script>
     <script src="<?php echo RACINE; ?>js/rem.min.js"></script>
     <script src="<?php echo RACINE; ?>js/rem.js"></script>
-    <script src="<?php echo RACINE; ?>js/jquery.easy-autocomplete.min.js"></script>
-    <script src="<?php echo RACINE; ?>js/angular.min.js"></script>
     <script src="<?php echo RACINE; ?>js/js.js"></script>
-    <script>
-        angular.module("eacPage", []);
-    </script>
 
+    <script src="<?php echo RACINE; ?>datetimepicker/build/jquery.datetimepicker.full.js"></script>
+    
     <script src="<?php echo RACINE; ?>js/jquery.bpopup.min.js"></script>
    
     <link rel="stylesheet" type="text/css" href="<?php echo RACINE; ?>css/easy-autocomplete.min.css" />
@@ -134,7 +132,6 @@ require_once('config.inc.php');
              <li><a href="<?= RACINE; ?>gestion_rapports/">Gestion des rapports</a></li>
             <?php  if($_SESSION['auth'][6]==1){?>
              <li><a href="<?= RACINE; ?>gestion_users/liste_users.php">Utilisateurs</a></li>
-            <li><a href="<?= RACINE; ?>gestion_users/register.php">Ajouter un utilisiteur</a></li>
             <?php  }?>
           <!--  <li  class="dropdown open">
             <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true" href="#">Gestion OSI<b class="caret"></b>                  </a>

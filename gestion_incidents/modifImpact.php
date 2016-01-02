@@ -1,5 +1,11 @@
 <?php
 session_start();
+if(!isset($_SESSION['auth'])){
+		
+			 	 $_SESSION['flash']['danger'] ="Vous devez être connecté!"; 
+			 	 header('Location:index.php');
+			 	 die();
+	}
 $IdImpact=(isset($_GET['IdImpact']))?$_GET['IdImpact']:'';
 if (!$IdImpact) {
 	$_SESSION['flash']['erreur']="Pas de numéro d'incident passé !";
@@ -29,8 +35,13 @@ if(!empty($_POST)){
 	Contrôle des champs obligatoire
 	*/
 	if(empty($_POST['Incident_Impact_datedebut'])){
-		$errors['Incident_cause']="Vous devez remplir le champ début impact!";
+		$errors['Incident_Impact_datedebut']="Vous devez remplir le champ début impact!";
 	}
+
+	if(empty($_POST['Incident_Impact_datefin'])){
+		$errors['Incident_Impact_datefin']="Vous devez remplir le champ fin impact!";
+	}
+
 
 	if (!$_POST['Incident_Impact_impactmetier']) {
 		$errors['Incident_Impact_impactmetier']="L'Impact métier n'est pas valide!";
@@ -74,19 +85,9 @@ $appli->SelectAppliById($idAppli);
 <form action="" method="POST">
 	<div class="bloc">
 	<div class="width100 input-group-addon">
-	<span class="fl-left" style=" line-height:2.5;">
-	      Edition de l'incident N° <strong> <?=$Impacte->getIncidentId(); ?></strong>
-	    </span>
-		
-		<label class="lib" style="float:left; margin-left:25px; line-height:2.5;"> Titre comm </label>
-		<input type="text" name="numincident" size="12" style="width:400px;display:inline-block; margin-left:25px; " value="<?php getVarUpdate('numincident',$incident->getTitre()); ?>"> 
-		
-	      <button class="btn btn-success" type="button">Actualiser</button>
-	    
-		
-		
-	      <button class="btn btn-success" type="button">Ajouter</button>
-	    </div>
+	<span class="fl-left" style=" line-height:2.5;">Edition de l'incident N° <strong> <?=$Impacte->getIncidentId(); ?></strong></span>
+	<span class="lib" style="float:left; margin-left:25px; line-height:2.5;">Titre comm <strong><?= $incident->getTitre(); ?> </strong> </span>
+	</div>
 	<div class="width100 bcg">
 	<fieldset>
     		<legend>Application Impactée par l'incident : <?= $incident->getIncident(); ?></legend>
@@ -100,12 +101,12 @@ $appli->SelectAppliById($idAppli);
 	    		<div class="width100">
 	    			<div class=" width50 mr_10">
 	    				<label  class="lib"  for="Incident_Impact_datedebut"> Début impact *</label> 
-		    			<input type="date" name="Incident_Impact_datedebut" id="Incident_Impact_datedebut" value="<?php getVarUpdate('Incident_Impact_datedebut',$Impacte->getDateDebut()); ?>" required>
+		    			<input type="text" name="Incident_Impact_datedebut" id="Incident_Impact_datedebut" value="<?php getVarUpdate('Incident_Impact_datedebut',$Impacte->getDateDebut()); ?>" required>
 	    			</div>
 
 	    			<div class=" width50">
-	    				<label  class="lib"  for="Incident_Impact_datefin"> Fin impact </label> 
-		    			<input type="date" name="Incident_Impact_datefin" id="Incident_Impact_datefin"  value="<?php getVar('Incident_Impact_datefin',$Impacte->getDateFin()); ?>">
+	    				<label  class="lib"  for="Incident_Impact_datefin"> Fin impact *</label> 
+		    			<input type="text" name="Incident_Impact_datefin" id="Incident_Impact_datefin"  value="<?php getVarUpdate('Incident_Impact_datefin',$Impacte->getDateFin()); ?>">
 	    			</div>	    			
 	    		</div>
 

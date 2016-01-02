@@ -15,6 +15,9 @@ if(isset($_SESSION['auth'])){
 
 	}
 	?>
+	<a class="btn btn-success"  href="register.php">Ajouter un utilisateur</a>
+	<br />
+	<br />
 	<table class="table" >
 	<thead>
 	<tr>

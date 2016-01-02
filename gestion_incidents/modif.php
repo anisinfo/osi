@@ -5,8 +5,6 @@ if(!isset($_SESSION['auth'])){
 			 	 $_SESSION['flash']['danger'] ="Vous devez être connecté!"; 
 			 	 header('Location:index.php');
 			 	 die();
-			 
-
 	}
 $userConnected=$_SESSION['auth'][2].' '.$_SESSION['auth'][1];	
 $numero=(isset($_GET['id']))?$_GET['id']:'';
@@ -18,7 +16,7 @@ require_once('../classes/incidents.php');
 require_once('../classes/Application.php');
 require_once('../classes/Calendrier.php');
 require_once('../classes/Chronogramme.php');
-require_once('../inc/header.inc.php');
+
 
 if (!$numero) {
 	$_SESSION['flash']['danger']="Le numéro de l'incident est vide!";
@@ -41,6 +39,14 @@ if(!empty($_POST)){
 	/*
 	Contrôle des champs obligatoire
 	*/
+	if(empty($_POST['debutincident'])){
+		$errors['debutincident']="Vous devez remplir le champ date début incident!";
+	}
+
+	if(empty($_POST['finincident'])){
+		$errors['finincident']="Vous devez remplir le champ date fin incident!";
+	}
+
 	if (!$_POST['Incident_statut']) {
 		$errors['Incident_statut']="Le Statut n'est pas valide!";
 	}
@@ -51,7 +57,11 @@ if(!empty($_POST)){
 	}
 
 	if(empty($_POST['Incident_Impact_datedebut'])){
-		$errors['Incident_cause']="Vous devez remplir le champ début impact!";
+		$errors['Incident_Impact_datedebut']="Vous devez remplir le champ date début impact!";
+	}
+
+	if(empty($_POST['Incident_Impact_datefin'])){
+		$errors['Incident_Impact_datefin']="Vous devez remplir le champ date fin impact!";
 	}
 
 	if (!$_POST['Incident_Impact_impactmetier']) {
@@ -65,9 +75,25 @@ if(!empty($_POST)){
 	if(empty($_POST['Incident_Impact_description'])){
 		$errors['Incident_Impact_description']="Vous devez remplir le champ Description de l'impact!";
 	}
-	if ($_POST['EstOuvert']) {
-		$errors['EstOuvert']="Cet Incident est Ouvert par ".$incident->getUser().". Il n'est accessible que en lecture!";
+	if(empty($_POST['IdAppli'])){
+		$errors['IdAppli']="Vous devez remplir le application Impactée!";
 	}
+
+	if(empty($_POST['IdIncident'])){
+		$errors['IdIncident']="Le numéro de l'incident est vide";
+	}else{
+		require_once('../classes/db.php');
+		$rq="SELECT ID,INCIDENT FROM ".SCHEMA.".INCIDENT WHERE INCIDENT='".$_POST['IdIncident']."'";	 
+			$SCHEMA= new db();
+			$SCHEMA->db_connect();
+			$SCHEMA->db_query($rq);
+			$res=$SCHEMA->total_record();
+			if($res && $_POST['IdIncident']== $res[0][1]){
+				$errors['IdIncident']="Ce Numéro est déjà utlisé";
+			}
+		}	
+
+
 
 
 	if(empty($errors))
@@ -93,10 +119,21 @@ if(!empty($_POST)){
 	}
 
 	// Chronogramme
-	
+		$chrono = new Chronogramme();
+		$chrono->DeleteAll($numero);
 
-	$_SESSION['flash']['success'] =" L'incident est bien modifié."; 
+		if (!empty($_POST['ListeId']))
+		{
+		$listeIdChrono=explode(',', $_POST['ListeId']);
+			for ($i=1; $i < count($listeIdChrono); $i++)
+			{ 
+			$chrono->setParam(NULL,$numero,$_POST['chrono_input_date_'.$listeIdChrono[$i]],$_POST['chrono_input_activite_'.$listeIdChrono[$i]]);
+			$chrono->Creer();
+			}
+		}
+		$_SESSION['flash']['success'] =" L'incident est bien modifié."; 
 		header('Location:index.php');
+		die();
 	
 	}
 }else
@@ -104,7 +141,7 @@ if(!empty($_POST)){
 
 $incident->_setUser($userConnected);
 $incident->chargerIncident($numero);
-
+//debug($incident);
 $impacte->chargerFirstIncident($numero);
 $appli->SelectAppliById($impacte->getApplicationId());
 if ($impacte->getApplicationId()) {
@@ -113,6 +150,7 @@ if ($impacte->getApplicationId()) {
 
 //debug($appli);
 }
+require_once('../inc/header.inc.php');
 if ($incident->getEstOuvert()) {?>
 <div class="alert alert-danger">
 <?="Cet Incident est Ouvert par ".$incident->getUser().". Il n'est accessible que en lecture!";?>
@@ -147,11 +185,12 @@ if(!empty($errors)){?>
 	    </span>
 	 </div> -->
 	 <a class="btn btn-success"  href="add.php">Ajouter Incident</a>
-	 <a class="btn btn-success" href="ListeImpact.php?idIncident=<?php echo $_GET['id']; ?>">Ajouter Impact</a>
+	 <a class="btn btn-success" href="ListeImpact.php?idIncident=<?php echo $_GET['id']; ?>">Liste des impactes</a>
+	  <a class="btn btn-success" href="stat.php?idIncident=<?php echo $_GET['id']; ?>">Stat</a>
 	<div class="width100 bcg">
 		<div class="width100">
 		    	<label  class="lib"  for="titreincident"> Incident *</label> 
-		    	<input type="text" name="IdIncident" id="IdIncident" value="<?php getVarUpdate('IdIncident',$incident->getIncident()); ?>"  >
+		    	<input type="text" name="IdIncident" id="IdIncident" value="<?php getVarUpdate('IdIncident',$incident->getIncident()); ?>"  required>
 	    	 
 	    	</div>
 		<div class=" width50 mr_35">
@@ -181,12 +220,12 @@ if(!empty($errors)){?>
 
   			<div class="width100">
   				<div class=" width50">
-  					<label  class="lib" for="debutincident"> Début Incident</label> 
-  					<input type="datetime" name="debutincident"  id="debutincident" value="<?php getVarUpdate('debutincident',$incident->getDateDebut()); ?>">
+  					<label  class="lib" for="debutincident"> Début Incident *</label> 
+  					<input type="text" name="debutincident"  id="debutincident" value="<?php getVarUpdate('debutincident',$incident->getDateDebut()); ?>" required>
   				</div>
   				<div class=" width50 right">
-  					<label  class="lib"  for="finincident"> Fin Incident</label> 
-  					<input type="datetime" name="finincident" id="finincident"  value="<?php getVarUpdate('finincident',$incident->getDateFin()); ?>">
+  					<label  class="lib"  for="finincident"> Fin Incident *</label> 
+  					<input type="text" name="finincident" id="finincident"  value="<?php getVarUpdate('finincident',$incident->getDateFin()); ?>" required>
   				</div>
   			</div>
 
@@ -237,8 +276,8 @@ if(!empty($errors)){?>
 	  		</div>
 
 	  		<div class=" width100">
-	  			<label  class="lib" for="incidentdatecreci"> Date du Creci</label> 
-	  			<input type="date"  name="incidentdatecreci" id="incidentdatecreci" value="<?php getVarUpdate('incidentdatecreci','"'.$incident->getDateCreci().'"'); ?>" >
+	  			<label  class="lib" for="incidentdatecreci"> Date du publication</label> 
+	  			<input type="text"  name="incidentdatecreci" id="incidentdatecreci" value="<?php getVarUpdate('incidentdatecreci',$incident->getDateCreci()); ?>" >
 	  		</div>
 
 	  		<div class=" width100">
@@ -268,7 +307,7 @@ if(!empty($errors)){?>
 		    </div>
 		
 	    	<div class="width100">
-  				<label class="lib" for="Incident_IncImpact_description">Description de l'incident*</label>
+  				<label class="lib" for="Incident_IncImpact_description">Description de l'incident *</label>
   				<textarea  rows="3" id="IncImpact_description" name="IncImpact_description" required><?php getVarUpdate('IncImpact_description',$incident->getDescripIncident()); ?></textarea>
   			</div>
 
@@ -318,8 +357,8 @@ if(!empty($errors)){?>
 	    			</div>
 
 	    			<div class=" width50">
-	    				<label  class="lib"  for="Incident_Impact_datefin"> Fin impact </label> 
-		    			<input type="text" name="Incident_Impact_datefin" id="Incident_Impact_datefin"  value="<?php getVarUpdate('Incident_Impact_datefin',$impacte->getDateFin()); ?>">
+	    				<label  class="lib"  for="Incident_Impact_datefin"> Fin impact *</label> 
+		    			<input type="text" name="Incident_Impact_datefin" id="Incident_Impact_datefin"  value="<?php getVarUpdate('Incident_Impact_datefin',$impacte->getDateFin()); ?>" required>
 	    			</div>	    			
 	    		</div>
 
@@ -499,33 +538,43 @@ if(!empty($errors)){?>
     					<label for="ativiteChrono" class="lib">Activité</label>
     					<input type="text" id="ativiteChrono" name="ativiteChrono" >
 
-    					<input type="button" value="Ajouter" onclick="ajoutChrono(<?= $numero; ?>,0)">
+    					<input type="button" value="Ajouter" onclick="CreateActivite()">
     				</div>
 
     				
 
-	    			<table class="table" >
-	    				<thead>
+	    			<table class="table"  id="table-chrono">
 						<tr>
-							<td align="center"><label class="lib"> Date</label></td>
-							<td align="center"><label class="lib"> Activité</label></td><td></td>
+							<td align="center"><label class="lib"> Date </label></td>
+							<td align="center"><label class="lib"> Activité</label></td>
+		           			<td width="70px"></td>
+		           			<td width="70px"></td>
            				</tr>
-           				</thead>
-           				<tbody id="table-chrono">
+           			<tbody id="ChronosLignes">
            			<?php
-           	$chrono= new Chronogramme();
-			$taches=$chrono->getChronogrammeByIncidentId($numero);
+				           	$chrono= new Chronogramme();
+							$taches=$chrono->getChronogrammeByIncidentId($numero);		
+							$ListeId="";		
 
-			if(count($taches)){
-			foreach ($taches as $ligne)
+			if(count($taches))
 			{
-				echo '<tr id="tr_chrono_"'.$ligne->getId().'><td id="date_'.$ligne->getId().'">'.$ligne->getActionDate().'</td><td id="activite_'.$ligne->getId().'">'.$ligne->getDescription().'</td><td><input type="button" id="button_chrono_modif'.$ligne->getId().'" value="Modifier" onclick="ModiftChrono('.$numero.','.$ligne->getId().')"></td></tr>';
-			}
-		}else echo "<tr><td colspan=\"3\" align=\"center\"><b>Pas d'activitées</b></tr>";
+				
+				foreach ($taches as $ligne)
+				{
+					$idChrono=$ligne->getId();
+					echo '<tr id="ligne_'.$idChrono.'">';
+					echo '<td><span id="chrono_date_'.$idChrono.'">'.$ligne->getActionDate().'</span><input type="text" id="chrono_input_date_'.$idChrono.'" name="chrono_input_date_'.$idChrono.'" value="'.$ligne->getActionDate().'"  style="display:none;" /></td>';
+					echo '<td><span id="chrono_activite_'.$idChrono.'">'.$ligne->getDescription().'</span><input type="text" id="chrono_input_activite_'.$idChrono.'" name="chrono_input_activite_'.$idChrono.'" value="'.$ligne->getDescription().'"  style="display:none;" /></td>';
+					echo '<td><input type="button" value="Modifier" id="chrono_modif_'.$idChrono.'" Onclick="Modifier('.$idChrono.')" /><input type="button" value="Valider" id="chrono_valid_'.$idChrono.'" Onclick="Valider('.$idChrono.')" style="display:none;"/></td>';
+					echo '<td><input type="button" value="Supprimer" id="chrono_suppri_'.$idChrono.'" Onclick="Supprimer('.$idChrono.')" /><input type="button" value="Annuler" id="chrono_annul_'.$idChrono.'" Onclick="Annuler('.$idChrono.')" style="display:none;"/></td>';
+					echo "</tr>";
+					$ListeId.=','.$idChrono;
+				}
+			}else echo '<tr><td colspan="5" align="center"><b>Pas d\'activitées</b></tr>';
 					?>
 					</tbody>
            			</table>
-
+           			<input type="hidden" id="ListeId" name="ListeId" value="<?= $ListeId;?>" />
 	    		</div>
     		</div>
     	</fieldset>

@@ -27,15 +27,15 @@
 	private $_previsible;
     private $_incident;
     private $_user;
-    private $_estOuvert;
+    private $_estOuvert=false;
 	
 
 	public function CreateIncident()
 	{
 		// Insertion du partie commun d'un incidents
 		$rq="INSERT INTO ".SCHEMA.".INCIDENT (INCIDENT,TITRE,DEPARTEMENT,STATUT,PRIORITE,AFFECTEDUSER,DATEDEBUT,DATEFIN,DUREE,DESCRIPTION,RISQUEAGGRAVATION,CAUSE,INCIDENTSCONNEXES,PROBLEME,RETABLISSEMENT,RESPONSABILITE,SERVICEACTEUR,LOCALISATION,USERACTION,DATEPUBLICATION,COMMENTAIRE,DEJAAPPARU,PREVISIBLE,CREATED,UPDATED)";
-		$rq.=" VALUES ('".$this->getIncident().rand()."','".$this->getTitre()."','".$this->getDepartement()."','".$this->getStatut()."','".$this->getPriorite()."','".$this->getUtilisImpacte()."','".$this->getDateDebut()."','".$this->getDateFin()."','".$this->getDuree()."',";
-		$rq.="'".str_replace("'","", $this->getDescripIncident())."',".$this->getRisqueAggravation().",'".addslashes($this->getCause())."','".$this->getConnexe()."','".addslashes($this->getProbleme())."','".addslashes($this->getRetablissement())."','".$this->getResponsabilite()."','".$this->getActeur()."','".addslashes($this->getLocalisation())."','".addslashes($this->getActionUtlisateur())."',TO_TIMESTAMP('".$this->getDateCreci()."','YYYY-MM-DD'),'".addslashes($this->getCommentaire())."',".$this->getDejaApparu().",".$this->getPrevisible().",sysdate,sysdate)";
+		$rq.=" VALUES ('".$this->getIncident()."','".$this->getTitre()."','".$this->getDepartement()."','".$this->getStatut()."','".$this->getPriorite()."','".$this->getUtilisImpacte()."',TO_TIMESTAMP('".$this->getDateDebut()."','DD/MM/YYYY HH24:MI'),TO_TIMESTAMP('".$this->getDateFin()."','DD/MM/YYYY HH24:MI'),'".$this->getDuree()."',";
+		$rq.="'".str_replace("'","", $this->getDescripIncident())."',".$this->getRisqueAggravation().",'".addslashes($this->getCause())."','".$this->getConnexe()."','".addslashes($this->getProbleme())."','".addslashes($this->getRetablissement())."','".$this->getResponsabilite()."','".$this->getActeur()."','".addslashes($this->getLocalisation())."','".addslashes($this->getActionUtlisateur())."',TO_TIMESTAMP('".$this->getDateCreci()."','DD/MM/YYYY'),'".addslashes($this->getCommentaire())."',".$this->getDejaApparu().",".$this->getPrevisible().",sysdate,sysdate)";
         // Insertion de l'application impactée
         //$rq.=parent::creer();
      /*   try
@@ -64,7 +64,7 @@
 	}
 	
 
-	public function setIncident($id,$incident,$titre,$departement,$statut,$priorite,$affectesuser,$datedebut,$datefin,$duree,$description,$risqueAggravation,$cause,$incidentsconnexes,$probleme,$retablissement,$responsabilite,$serviceacteur,$localisation,$useraction,$creci,$commentaire,$dejaApparu,$previsible,$user)
+	public function setIncident($id,$incident,$titre,$departement,$statut,$priorite,$affectesuser,$datedebut,$datefin,$duree,$description,$risqueAggravation,$cause,$incidentsconnexes,$probleme,$retablissement,$responsabilite,$serviceacteur,$localisation,$useraction,$creci,$commentaire,$dejaApparu,$previsible,$user,$estOuvert)
 	{
 		$this->_setNumero($id);
         $this->_setIncident($incident);
@@ -91,6 +91,7 @@
 		$this->_setDejaApparu($dejaApparu);
 		$this->_setPrevisible($previsible);
         $this->_setUser($user);
+        $this->_setEstOuvert($estOuvert);
 
 return $this;
 	}
@@ -101,7 +102,7 @@ return $this;
     */
     public function chargerIncident($id)
     {
-        $req="SELECT ID,INCIDENT,TITRE,DEPARTEMENT,STATUT,PRIORITE,AFFECTEDUSER,DATEDEBUT,DATEFIN,DUREE,DESCRIPTION,RISQUEAGGRAVATION,CAUSE,INCIDENTSCONNEXES,PROBLEME,RETABLISSEMENT,RESPONSABILITE,SERVICEACTEUR,LOCALISATION,USERACTION,DATEPUBLICATION,COMMENTAIRE,DEJAAPPARU,PREVISIBLE,USERNAME FROM ".SCHEMA.".INCIDENT ";
+        $req="SELECT ID,INCIDENT,TITRE,DEPARTEMENT,STATUT,PRIORITE,AFFECTEDUSER,TO_CHAR(DATEDEBUT,'DD/MM/YYYY HH24:MI'),TO_CHAR(DATEFIN,'DD/MM/YYYY HH24:MI'),DUREE,DESCRIPTION,RISQUEAGGRAVATION,CAUSE,INCIDENTSCONNEXES,PROBLEME,RETABLISSEMENT,RESPONSABILITE,SERVICEACTEUR,LOCALISATION,USERACTION,TO_CHAR(DATEPUBLICATION,'DD/MM/YYYY'),COMMENTAIRE,DEJAAPPARU,PREVISIBLE,USERNAME FROM ".SCHEMA.".INCIDENT ";
         $req.="LEFT JOIN ".SCHEMA.".INCIDENT_OUVERT ON INCIDENT.ID = INCIDENT_OUVERT.IDINCIDENT ";
         $req.="WHERE ID=".$id;
       
@@ -117,13 +118,8 @@ return $this;
              $userOpen=$this->getUser();
        }else $userOpen=$res[0][24];
 
-        $this->_setEstOuvert(($userOpen != $this->getUser())?true:false);
-	    $this->setIncident($res[0][0],$res[0][1],$res[0][2],$res[0][3],$res[0][4],$res[0][5],$res[0][6],$res[0][7],$res[0][8],$res[0][9],$res[0][10],$res[0][11],$res[0][12],$res[0][13],$res[0][14],$res[0][15],$res[0][16],$res[0][17],$res[0][18],$res[0][19],$res[0][20],$res[0][21],$res[0][22],$res[0][23],$userOpen);
-	
-       
-
-
- 
+        $estOuvert=(($userOpen != $this->getUser())?true:false);
+	    $this->setIncident($res[0][0],$res[0][1],$res[0][2],$res[0][3],$res[0][4],$res[0][5],$res[0][6],$res[0][7],$res[0][8],$res[0][9],$res[0][10],$res[0][11],$res[0][12],$res[0][13],$res[0][14],$res[0][15],$res[0][16],$res[0][17],$res[0][18],$res[0][19],$res[0][20],$res[0][21],$res[0][22],$res[0][23],$userOpen,$estOuvert);
          return $this; 
               
     }
@@ -138,8 +134,8 @@ return $this;
 		$rq.="STATUT='".$this->getStatut()."',";
 		$rq.="PRIORITE='".$this->getPriorite()."',";
 		$rq.="AFFECTEDUSER='".$this->getUtilisImpacte()."',";
-		$rq.="DATEDEBUT='".$this->getDateDebut()."',";
-		$rq.="DATEFIN='".$this->getDateFin()."',";
+		$rq.="DATEDEBUT=TO_TIMESTAMP('".$this->getDateDebut()."','DD/MM/YYYY HH24:MI'),";
+		$rq.="DATEFIN=TO_TIMESTAMP('".$this->getDateFin()."','DD/MM/YYYY HH24:MI'),";
 		$rq.="DUREE='".$this->getDuree()."',";
 		$rq.="DESCRIPTION='".$this->getDescripIncident()."',";
 		$rq.="RISQUEAGGRAVATION='".$this->getRisqueAggravation()."',";
@@ -151,7 +147,7 @@ return $this;
 		$rq.="SERVICEACTEUR='".$this->getActeur()."',";
 		$rq.="LOCALISATION='".$this->getLocalisation()."',";
 		$rq.="USERACTION='".$this->getActionUtlisateur()."',";
-		$rq.="CRECI='".$this->getDateCreci()."',";
+		$rq.="DATEPUBLICATION=TO_TIMESTAMP('".$this->getDateCreci()."','DD/MM/YYYY'),";
 		$rq.="COMMENTAIRE='".$this->getCommentaire()."',";
 		$rq.="DEJAAPPARU='".$this->getDejaApparu()."',";
 		$rq.="PREVISIBLE='".$this->getPrevisible()."',";

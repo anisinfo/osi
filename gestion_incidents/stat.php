@@ -1,11 +1,48 @@
 <?php
+session_start();
+if(!isset($_SESSION['auth'])){
+		
+			 	 $_SESSION['flash']['danger'] ="Vous devez être connecté!"; 
+			 	 header('Location:index.php');
+			 	 die();
+	}
+
+$IdImpact=(isset($_GET['idIncident']))?$_GET['idIncident']:'';
+
+if (!$IdImpact) {
+	$_SESSION['flash']['erreur']="Pas de numéro d'incident passé !";
+	echo $IdImpact;
+	header('Location:index.php');
+	die();
+}
+
+define('TITLE',"Modification de stat N°:' ".$IdImpact);
 require_once('../inc/header.inc.php');
+require_once('../inc/config.inc.php');
+require_once('../inc/fonctions.inc.php');
 require_once('../classes/db.php');
 require_once('../classes/Stat.php');
+require_once('../classes/incidents.php');
+
 if (!empty($_POST)) {
+	$errors=array();
+	/*
+	Contrôle des champs obligatoire
+	*/
+	if(empty($_POST['refchangement'])){
+		$errors['refchangement']="Vous devez remplir le champ reférencement changement!";
+	}
+	if (empty($errors)) {
 	$stat= new Stat();
     $stat->SetParam(NULL,$_POST['refchangement'],$_POST['stat_publicationIR'],$_POST['stat_publicationPM'],$_POST['stat_typecause'],$_POST['stat_typecause_second'],$_POST['stat_typologiegts'],$_POST['stat_kindImpact'],$_POST['stat_equipeResp'],$_POST['fournisseurResp'],$_POST['statPowerprod'],$_POST['statLegacy'],$_POST['stat_Composant'],$_POST['Composant_complement'],$_POST['stat_zonegeo']);
     $stat->Creer();
+	}
+}else
+{
+
+$incident= new incidents();
+$incident->chargerIncident($IdImpact);
+//debug($Impacte);	
 }
 
 
@@ -15,20 +52,11 @@ if (!empty($_POST)) {
 
 <form action="" method="POST">
 	<div class="bloc">
+	<div class="bloc">
 	<div class="width100 input-group-addon">
-	<span class="fl-left" style=" line-height:2.5;">
-	      Edition de l'incident N° <strong> 012345</strong>
-	    </span>
-		
-		<label class="lib" style="float:left; margin-left:25px; line-height:2.5;"> Titre comm </label>
-		<input type="number" name="titreincident" size="12" style=" display:inline-block; margin-left:25px; " value="<?php getVar('titreincident');?>"> 
-		
-	      <button class="btn btn-success" type="button">Actualiser</button>
-	    
-		
-		
-	      <button class="btn btn-success" type="button">Ajouter</button>
-	    </div>
+	<span class="fl-left" style=" line-height:2.5;">Edition de l'incident N° <strong> <?=$incident->getIncident(); ?></strong></span>
+	<span class="lib" style="float:left; margin-left:25px; line-height:2.5;">Titre comm <strong><?= $incident->getTitre(); ?> </strong> </span>
+	</div>
 	<div class="width100 bcg">
     		<div class=" width50 mr_35"> 
     			<div class="width100">
