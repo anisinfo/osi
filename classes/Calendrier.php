@@ -134,7 +134,7 @@ class Calendrier
         $db->db_connect();
         $db->db_query($req);
         $res=$db->db_fetch_array();
-        if (is_array($res)) {        
+        if (isset($res[0])) {        
             $this->modifier($res[0][0]);
         }else{
         $db->db_query($rq);   

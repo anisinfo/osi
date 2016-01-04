@@ -73,7 +73,7 @@ if(!empty($_POST)){
 		$errors['IdIncident']="Le numéro de l'incident est vide";
 	}else{
 		require_once('../classes/db.php');
-		$rq="SELECT ID FROM ".SCHEMA.".INCIDENT WHERE INCIDENT='".mysql_escape_string($_POST['IdIncident'])."'";	 
+		$rq="SELECT ID FROM ".SCHEMA.".INCIDENT WHERE INCIDENT='".urlencode($_POST['IdIncident'])."'";	 
 			$SCHEMA= new db();
 			$SCHEMA->db_connect();
 			$SCHEMA->db_query($rq);
