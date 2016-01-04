@@ -208,7 +208,27 @@ if(!empty($errors)){?>
 <div class="bloc">
 <?php 
 require_once('../inc/search.inc.php'); ?>
-	
+	<script type="text/javascript">
+		 function EnvoyerMail(id)
+      {
+        try
+        {
+          var outlookApp = new ActiveXObject("Outlook.Application");
+          var nameSpace = outlookApp.getNameSpace("MAPI");
+          mailFolder = nameSpace.getDefaultFolder(6);
+          mailItem = mailFolder.Items.add('IPM.Note.FormA');
+          mailItem.Subject="Comme a chaud pour l'incident N° :"+id;
+          mailItem.To = "";
+          mailItem.HTMLBody = $('#corp').val();;
+          mailItem.display (0); 
+        }
+        catch(e)
+        {
+          alert(e);
+        }
+      }
+   
+	</script>
 	 <a class="btn btn-success"  href="add.php">Ajouter Incident</a>
 	 <a class="btn btn-success" href="ListeImpact.php?idIncident=<?php echo $_GET['id']; ?>">Liste des impactes</a>
 	 <?php
@@ -216,7 +236,7 @@ require_once('../inc/search.inc.php'); ?>
 	 ?>
 	  <a class="btn btn-success" href="<?php echo $statLink; ?>">Stat</a>
 	<!-- <a class="btn btn-success" href="commachaud.php?idIncident=<?php echo $_GET['id']; ?>">Commachaud</a>-->
-	  <input type="button" value="Commachaud" class="btn btn-success" onclick="EnvoyerMail('<?= $incident->getIncident();?>')">Commachaud</a>
+	  <a  class="btn btn-success" href="javascript:EnvoyerMail('<?= $incident->getIncident();?>')" >Commachaud</a>
 	<div class="width100 bcg">
 		<div class="width100">
 		    	<label  class="lib"  for="titreincident"> Incident *</label> 

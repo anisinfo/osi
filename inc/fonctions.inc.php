@@ -99,7 +99,7 @@ function dateDiffImp($date1,$date2,$idAppli){
 
     $date1=strtotime($date1);
     $date2=strtotime($date2);
-    echo verifFeries($date1);
+    // verifFeries($date1)
     $diff = abs($date1 - $date2); // abs pour avoir la valeur absolute, ainsi éviter d'avoir une différence négative
     $retour = array();
  

@@ -389,26 +389,3 @@ function search()
   var id= $('#numincident').val();
   document.location.href="modif.php?NumeroIncident="+id;
 }
-
-
-
-
-      function EnvoyerMail(id)
-      {
-        try
-        {
-          var outlookApp = new ActiveXObject("Outlook.Application");
-          var nameSpace = outlookApp.getNameSpace("MAPI");
-          mailFolder = nameSpace.getDefaultFolder(6);
-          mailItem = mailFolder.Items.add('IPM.Note.FormA');
-          mailItem.Subject="Comme a chaud pour l'incident N° :";
-          mailItem.To = "";
-          mailItem.HTMLBody = $('#corp').val();;
-          mailItem.display (0); 
-        }
-        catch(e)
-        {
-          alert(e);
-        }
-      }
-   

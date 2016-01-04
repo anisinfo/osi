@@ -32,12 +32,9 @@ session_start();
     <script src="<?php echo RACINE; ?>js/js.js"></script>
 
     <script src="<?php echo RACINE; ?>datetimepicker/build/jquery.datetimepicker.full.js"></script>
-    <script src="<?php echo RACINE; ?>js/tinymce/js/tinymce/tinymce.min.js"></script>
+  <!--  <script src="<?php echo RACINE; ?>js/tinymce/js/tinymce/tinymce.min.js"></script> -->
     
     <script src="<?php echo RACINE; ?>js/jquery.bpopup.min.js"></script>
-   
-    <link rel="stylesheet" type="text/css" href="<?php echo RACINE; ?>css/easy-autocomplete.min.css" />
-    <link rel="stylesheet" type="text/css" href="<?php echo RACINE; ?>css/easy-autocomplete.themes.min.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo RACINE; ?>css/foundation.css" />
   <!-- Standard CSS with some REM values, media queries are ignored -->
   <link rel="stylesheet" type="text/css" href="<?php echo RACINE; ?>css/general.css" />

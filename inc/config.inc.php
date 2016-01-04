@@ -18,6 +18,7 @@ $INCIDENTIMPACTMETIER=array('Low','High','Medium','Non communiqué');
 $SLA=array('Non définie','Respecté','Non Respecté');
 $CRITICITE=array('Mineur','Majeur','Significatif');
 
+//Statistique 
 $STATTYPECAUSE=array('Hj');
 $STATCOMPOSANT=array('AZ');
 $STATTYPOGTS=array('test');
