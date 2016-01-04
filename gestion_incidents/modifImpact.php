@@ -6,6 +6,7 @@ if(!isset($_SESSION['auth'])){
 			 	 header('Location:index.php');
 			 	 die();
 	}
+$userConnected=$_SESSION['auth'][2].' '.$_SESSION['auth'][1];	
 $IdImpact=(isset($_GET['IdImpact']))?$_GET['IdImpact']:'';
 if (!$IdImpact) {
 	$_SESSION['flash']['erreur']="Pas de numéro d'incident passé !";
@@ -16,7 +17,8 @@ if (!$IdImpact) {
 define('TITLE',"Modification de l'impacte N°:' ".$IdImpact);
 
 require_once('../classes/db.php');
-require_once('../inc/header.inc.php');
+require_once('../inc/config.inc.php');
+require_once('../inc/fonctions.inc.php');
 require_once('../classes/Impact.php');
 require_once('../classes/Application.php');
 require_once('../classes/incidents.php');
@@ -71,6 +73,7 @@ if(!empty($_POST)){
 }else
 {
 $incident =new incidents();
+$incident->_setUser($userConnected);
 $incident->chargerIncident($Impacte->getIncidentId());
 
 $idAppli=$Impacte->getApplicationId();
@@ -78,7 +81,7 @@ $appli= new Application();
 $appli->SelectAppliById($idAppli);
 
 }
-
+require_once('../inc/header.inc.php');
 ?>
 <h1>Modification d'un impacte</h1>
 

@@ -8,8 +8,10 @@ if(!isset($_SESSION['auth'])){
 	}
 $userConnected=$_SESSION['auth'][2].' '.$_SESSION['auth'][1];	
 $numero=(isset($_GET['id']))?$_GET['id']:'';
+
 define('TITLE',"Modification de l'incident N°<".$numero.">");
 require_once('../inc/config.inc.php');
+require_once('../inc/fonctions.inc.php');
 require_once('../classes/db.php');
 require_once('../classes/Impact.php');
 require_once('../classes/incidents.php');
@@ -100,7 +102,7 @@ if(!empty($_POST)){
 	{
 	//Incident	
 	
-	$incident->setIncident($numero,$_POST['IdIncident'],$_POST['titreincident'],$_POST['Incident_departement'],$_POST['Incident_statut'],$_POST['Incident_priorite'],$_POST['incidentuserimpacte'],$_POST['debutincident'],$_POST['finincident'],$_POST['Incident_duree'],addslashes($_POST['IncImpact_description']),$_POST['Incident_risqueAggravation'],$_POST['Incident_cause'],$_POST['incidentConnex'],$_POST['incidentprobleme'],$_POST['Incident_retablissement'],$_POST['incidentresponsabilite'],$_POST['incidentserviceacteur'],$_POST['Incident_localisation'],$_POST['Incident_useraction'],$_POST['incidentdatecreci'],$_POST['Incident_commentaire'],$_POST['Incident_dejaApparu'],$_POST['Incident_previsible'],$userConnected);
+	$incident->setIncident($numero,'',$_POST['IdIncident'],$_POST['titreincident'],$_POST['Incident_departement'],$_POST['Incident_statut'],$_POST['Incident_priorite'],$_POST['incidentuserimpacte'],$_POST['debutincident'],$_POST['finincident'],$_POST['Incident_duree'],addslashes($_POST['IncImpact_description']),$_POST['Incident_risqueAggravation'],$_POST['Incident_cause'],$_POST['incidentConnex'],$_POST['incidentprobleme'],$_POST['Incident_retablissement'],$_POST['incidentresponsabilite'],$_POST['incidentserviceacteur'],$_POST['Incident_localisation'],$_POST['Incident_useraction'],$_POST['incidentdatecreci'],$_POST['Incident_commentaire'],$_POST['Incident_dejaApparu'],$_POST['Incident_previsible'],$userConnected);
 	$incident->sauvegarder();
 
 	// Impacte
@@ -112,10 +114,7 @@ if(!empty($_POST)){
 	if (!empty($_POST['IdAppli'])) {
 
 	$calendrier->setParam($_POST['IdCalend'],$_POST['IdAppli'],$_POST['Edit_OuvertLu'],$_POST['Edit_FermerLu'],$_POST['Edit_OuvertMa'],$_POST['Edit_FermerMa'],$_POST['Edit_OuvertMe'],$_POST['Edit_FermerMe'],$_POST['Edit_OuvertJe'],$_POST['Edit_FermerJe'],$_POST['Edit_OuvertVe'],$_POST['Edit_FermerVe'],$_POST['Edit_OuvertSa'],$_POST['Edit_FermerSa'],$_POST['Edit_OuvertDi'],$_POST['Edit_FermerDi'],$_POST['Edit_OuvertJf'],$_POST['Edit_FermerJf']);
-	if (empty($_POST['IdCalend'])) {
-		$calendrier->creer();
-	}else $calendrier->modifier($_POST['IdCalend']);
-	
+	$calendrier->creer();	
 	}
 
 	// Chronogramme
@@ -132,8 +131,8 @@ if(!empty($_POST)){
 			}
 		}
 		$_SESSION['flash']['success'] =" L'incident est bien modifié."; 
-		header('Location:index.php');
-		die();
+	//	header('Location:index.php');
+	//	die();
 	
 	}
 }else
@@ -145,10 +144,13 @@ $incident->chargerIncident($numero);
 $impacte->chargerFirstIncident($numero);
 $appli->SelectAppliById($impacte->getApplicationId());
 if ($impacte->getApplicationId()) {
-	$calendrier->selectById($impacte->getApplicationId());
+	$idAppli=$impacte->getApplicationId();
+	$calendrier->selectById($idAppli);
+	//debug($calendrier);
 }
 
-//debug($appli);
+
+
 }
 require_once('../inc/header.inc.php');
 if ($incident->getEstOuvert()) {?>
@@ -184,9 +186,14 @@ if(!empty($errors)){?>
 	      <a class="btn btn-success" href="ListeImpact.php?idIncident=<?= $numero;?>">Impact</a>
 	    </span>
 	 </div> -->
+	
 	 <a class="btn btn-success"  href="add.php">Ajouter Incident</a>
 	 <a class="btn btn-success" href="ListeImpact.php?idIncident=<?php echo $_GET['id']; ?>">Liste des impactes</a>
-	  <a class="btn btn-success" href="stat.php?idIncident=<?php echo $_GET['id']; ?>">Stat</a>
+	 <?php
+	 $statLink=($incident-> getIdStat())?'modifStat.php?idIncident='.$_GET['id'].'&idStat='.$incident-> getIdStat():'stat.php?idIncident='.$_GET['id'];
+	 ?>
+	  <a class="btn btn-success" href="<?php echo $statLink; ?>">Stat</a>
+	 <a class="btn btn-success" href="commachaud.php?idIncident=<?php echo $_GET['id']; ?>">Commachaud</a>
 	<div class="width100 bcg">
 		<div class="width100">
 		    	<label  class="lib"  for="titreincident"> Incident *</label> 
@@ -421,7 +428,7 @@ if(!empty($errors)){?>
     					<a class="b-close">x</a>
 					Ajout d'une application
 
-						<div id="infoAjout" class="alert alert-success" >L'application est bien ajoutée</div>
+						<div id="infoAjout" style="display:none;" class="alert alert-success" >L'application est bien ajoutée</div>
 					
     					<label for="NomSearch" class="lib">Nom de l'application</label>
     					<input type="text" id="NomSearch" name="NomSearch" >

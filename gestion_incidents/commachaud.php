@@ -1,18 +1,20 @@
 <?php
-$numero=(isset($_GET['id']))?$_GET['id']:'';
+session_start();
+if(!isset($_SESSION['auth'])){
+		
+			 	 $_SESSION['flash']['danger'] ="Vous devez être connecté!"; 
+			 	 header('Location:index.php');
+			 	 die();
+	}
+$userConnected=$_SESSION['auth'][2].' '.$_SESSION['auth'][1];	
+$numero=(isset($_GET['idIncident']))?$_GET['idIncident']:'';
 if (!$numero) {
-	$_SESSION['flash']['danger']="Le numéro de l'incident est vide!";
+	$_SESSION['flash']['erreur']="Pas de numéro d'incident passé !";
 	header('Location:index.php');
 	die();
 }
-$from="aouini.aniss@gmail.com";
- $headers = "From: " .$from. "\r\n";
-    $headers .= "MIME-Version: 1.0\r\n";
-    $headers .= "Content-Type: text/html; charset=iso-8859-1\r\n";
-    $headers .= "Content-Transfer-Encoding: 8bit\r\n";
+define('TITLE','Comme a chaud l\'incident :'.$numero);
 
-
-header($headers);    
 require_once('../inc/config.inc.php');
 require_once('../classes/db.php');
 require_once('../classes/Impact.php');
@@ -20,20 +22,68 @@ require_once('../classes/incidents.php');
 require_once('../classes/Application.php');
 require_once('../classes/Chronogramme.php');
 
+if(!empty($_POST)){
+	$errors=array();
+
+	/*
+	Contrôle des champs obligatoire
+	*/
+	if(empty($_POST['mail_dest'])){
+		$errors['mail_dest']="Vous devez remplir le champ Destination!";
+	}elseif (filter_var($_POST['mail_dest'], FILTER_VALIDATE_EMAIL)) {
+   		 $errors['mail_dest']='Cet email est correct.';
+		} 
+	
+
+	if(empty($_POST['sujet'])){
+		$errors['sujet']="Vous devez remplir le champ Objet";
+	}
+
+	if (empty($errors)) {
+		$from=$_SESSION['auth'][3];
+		$headers = "From: " .$from. "\r\n";
+    	$headers .= "MIME-Version: 1.0\r\n";
+    	$headers .= "Content-Type: text/html; charset=iso-8859-1\r\n";
+    	$headers .= "Content-Transfer-Encoding: 8bit\r\n";
+
+		if (mail($_POST['mail_dest'], $_POST['sujet'], $_POST['corp'],$headers)) {
+		 	$_SESSION['flash']['success']="Votre mail est bien envoyée!";
+		}else $_SESSION['flash']['danger']="Votre mail n'est pas envoyée!";
+
+	}
+}else
+{
+
+}
 $incident = new incidents();
 $impacte=new Impact();
+$incident->_setUser($userConnected);
 $incident->chargerIncident($numero);
 $impacte->chargerFirstIncident($numero);
+require_once('../inc/header.inc.php');
 
 ?>
+<script type="text/javascript">
+	tinymce.init({ selector:'textarea',language: 'fr_FR'});
+</script>
+<h3>Comme a Chaud de l'incident N°:<?= $incident->getIncident();?></h3>
+<br />
+<br />
+<form action="" method="POST">
+<div class="bloc">
 
-<html>
-<head>
-<title>Comm. à chaud</title>
-</head>
-<body>
-       
-<table border="1" cellspacing="0" cellpadding="0" style="border:outset #767676 3.0pt">
+<label>A :</label>
+<input type="text" name="mail_dest" name="mail_dest" value="aouini.aniss@gmail.com" />
+
+<label>CC :</label>
+<input type="text" name="mail_dest_cc" name="mail_dest_cc" />
+
+<label>Objet :</label>
+<input type="text" name="sujet" name="sujet" value="Comme a chaud pour l'incident N° :<?= $incident->getIncident();?>" />
+
+<label>Mail :</label>
+<textarea name="corp" name="corp" style="height:500px;" >
+	<table border="1" cellspacing="0" cellpadding="0" style="border:outset #767676 3.0pt" width="100%">
 <tbody>
 <tr>
 <td style="border:inset #767676 1.0pt;padding:.75pt .75pt .75pt .75pt">
@@ -257,8 +307,9 @@ $impacte->chargerFirstIncident($numero);
 <?php
 $chrono= new Chronogramme();
 $taches=$chrono->getChronogrammeByIncidentId($numero);
+//debug($taches);
 foreach ($taches as $ligne) {
-	echo $value->getActionDate().'  '.$value->getDescription().'<br>';
+	echo $ligne->getActionDate().'  '.$ligne->getDescription().'<br>';
 }
 ?>
 </p>
@@ -286,7 +337,7 @@ XXX</span> ou <span style="color:#1f497d">CCCC</span></span></p>
 <tr>
 <td style="padding:.75pt .75pt .75pt .75pt">
 <p class="MsoNormal" align="center" style="text-align:center">Numéro Incident : <span style="color:#1f497d">
-<?= $numero; ?></span></p>
+<?= $incident->getIncident();?></span></p>
 </td>
 </tr>
 </tbody>
@@ -295,6 +346,13 @@ XXX</span> ou <span style="color:#1f497d">CCCC</span></span></p>
 </tr>
 </tbody>
 </table>
-</body>
-</html>
-    
+</textarea>
+<br />
+<br />
+<br />
+<br />
+<input type="submit" name="Envoyer" value="Envoyer" />
+</div>
+<?php
+require_once('../inc/footer.inc.php');
+?>

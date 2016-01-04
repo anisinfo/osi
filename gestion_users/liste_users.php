@@ -1,7 +1,9 @@
 <?php
+session_start();
 define('TITLE', 'Liste des utilisateurs');
-require ('../inc/header.inc.php');
+
 require_once('../inc/config.inc.php');
+require ('../inc/fonctions.inc.php');
 require_once('../classes/db.php');
 require_once('../classes/Utilisateurs.php');
 
@@ -14,6 +16,7 @@ if(isset($_SESSION['auth'])){
 			 	 die();
 
 	}
+require ('../inc/header.inc.php');
 	?>
 	<a class="btn btn-success"  href="register.php">Ajouter un utilisateur</a>
 	<br />
@@ -52,7 +55,7 @@ if(isset($_SESSION['auth'])){
 	}else{
 
 		$_SESSION['flash']['danger'] ="Vous devez étre connecté!"; 
-		header('Location:index.php');
+	//	header('Location:index.php');
 		die();
 	 } 
 require ('../inc/footer.inc.php');

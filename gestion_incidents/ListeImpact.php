@@ -7,24 +7,27 @@ if(!isset($_SESSION['auth'])){
 			 	 die();
 	}
 $incident=(isset($_GET['idIncident']))?$_GET['idIncident']:'';
+$userConnected=$_SESSION['auth'][2].' '.$_SESSION['auth'][1];
 if (!$incident) {
 	$_SESSION['flash']['erreur']="Pas de numéro d'incident passé !";
 	header('Location:index.php');
 	die();
 }
 define('TITLE','Lisete des impactes pour l\'incident :'.$incident);
-require_once('../inc/header.inc.php');
+
 require_once('../inc/config.inc.php');
+require_once('../inc/fonctions.inc.php');
 require_once('../classes/db.php');
 require_once('../classes/incidents.php');
 require_once('../classes/Impact.php');
 require_once('../classes/Application.php');
 $inci= new incidents();
+$inci->_setUser($userConnected);
 $inci->chargerIncident($incident);
 $imp = new Impact();
 $resultats=$imp->chargerIncident($incident);
 $appli= new Application();
-
+require_once('../inc/header.inc.php');
 ?>
 <h3>Liste d'impactes pour l'incident N°:<?= $inci->getIncident();?></h3>
 <br />

@@ -2,10 +2,9 @@
 if(session_status() == PHP_SESSION_NONE){
 session_start();
 }
-require('fonctions.inc.php');
-require_once('config.inc.php');
+//require('fonctions.inc.php');
+//require_once('config.inc.php');
 ?>
-<!DOCTYPE html>
 <html lang="fr" >
   <head>
     <meta charset="utf-8">
@@ -33,6 +32,7 @@ require_once('config.inc.php');
     <script src="<?php echo RACINE; ?>js/js.js"></script>
 
     <script src="<?php echo RACINE; ?>datetimepicker/build/jquery.datetimepicker.full.js"></script>
+    <script src="<?php echo RACINE; ?>js/tinymce/js/tinymce/tinymce.min.js"></script>
     
     <script src="<?php echo RACINE; ?>js/jquery.bpopup.min.js"></script>
    

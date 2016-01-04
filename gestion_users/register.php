@@ -15,8 +15,9 @@ if(isset($_SESSION['auth'])){
 		header('Location:index.php');
 		die();
 	}
-require ('../inc/header.inc.php');
+
 require_once('../inc/config.inc.php');
+require ('../inc/fonctions.inc.php');
 if(!empty($_POST)){
 	$errors=array();
 
@@ -72,6 +73,7 @@ if(!empty($_POST)){
 	
 	}
 }
+require ('../inc/header.inc.php');
 ?>
 <h1>Ajouter un nouveau utlisateur</h1>
 <?php

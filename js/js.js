@@ -1,3 +1,6 @@
+
+var tabCal=[];
+
 function ChangeHeure(J,h)
 {
   $('#heure_'+J).text(h);
@@ -96,10 +99,11 @@ function myFunction(arr) {
       out +='</thead>';
       out +='<tbody>';
       
-   
     var i;
     if(arr.length){
     for(i = 0; i < arr.length; i++) {
+
+        tabCal[arr[i].ID]=arr[i].CAL;
         out += '<tr>' + '<td id="TdName_'+arr[i].ID+'">' + arr[i].NAME + '</td>' + '<td id="TdEnseigne_'+arr[i].ID+'">' + arr[i].ENSEIGNE + '</td>' + '<td id="TdIrt_'+arr[i].ID+'">' + arr[i].IRT + '</td>' + '<td id="TdTrigramme_'+arr[i].ID+'">' + arr[i].TRIGRAMME + '</td><td><a class="b-close btn-ajout"><img width="20px" height="20px" src="../img/add.png" Onclick="RemplirAppli('+arr[i].ID+')" /></a></td></tr>'
        
     }}else
@@ -108,7 +112,9 @@ function myFunction(arr) {
     }
 
     out +='</tbody>';
-    document.getElementById('TabResultats').innerHTML=out;
+    $('#TabResultats').append(out);
+
+   
   //  document.getElementById("id01").innerHTML = out;
 }
 
@@ -127,6 +133,7 @@ xmlhttp.onreadystatechange = function() {
     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
         var myArr = JSON.parse(xmlhttp.responseText);
         myFunction(myArr);
+
     }
 };
 xmlhttp.open("GET", url, true);
@@ -142,8 +149,6 @@ function RemplirAppli(id)
   var irt_search=$('#TdIrt_'+id).text();
   var trigramme_search=$('#TdTrigramme_'+id).text();
 
-//  alert(id);
-
 //dest
   $('#IdAppli').val(id);
   $('#Incident_Impact_application_libelle').val(nom_search);
@@ -153,6 +158,64 @@ function RemplirAppli(id)
   document.getElementById('CalendarNomAppli').innerHTML=nom_search;
   $('#ImgCalendar').css('visibility','visible');
   $('#infoAjout').show();
+    if(tabCal[id])
+    {
+
+      $('#Edit_O_Jf').val(tabCal[id].JFO);
+       $('#Edit_Jf').val(tabCal[id].JFO);
+
+      $('#Edit_O_Lu').val(tabCal[id].LO);
+       $('#Edit_Lu').val(tabCal[id].LF);
+
+      $('#Edit_O_Ma').val(tabCal[id].MAO);
+       $('#Edit_Ma').val(tabCal[id].MAF);
+       
+      $('#Edit_O_Me').val(tabCal[id].MEO);
+       $('#Edit_Me').val(tabCal[id].MEF);
+
+      $('#Edit_O_Je').val(tabCal[id].JO);
+       $('#Edit_Je').val(tabCal[id].JF);
+
+      $('#Edit_O_Ve').val(tabCal[id].VO);
+       $('#Edit_Ve').val(tabCal[id].VF);
+       
+      $('#Edit_O_Sa').val(tabCal[id].SO);
+       $('#Edit_Sa').val(tabCal[id].SF);
+
+      $('#Edit_O_Di').val(tabCal[id].DO);
+       $('#Edit_Di').val(tabCal[id].DF);  
+    
+    }else
+    {
+      var hD="00:00";
+      var hF="23:59";
+
+        $('#Edit_O_Jf').val(hD);
+       $('#Edit_Jf').val(hF);
+
+      $('#Edit_O_Lu').val(hD);
+       $('#Edit_Lu').val(hF);
+
+      $('#Edit_O_Ma').val(hD);
+       $('#Edit_Ma').val(hF);
+       
+      $('#Edit_O_Me').val(hD);
+       $('#Edit_Me').val(hF);
+
+      $('#Edit_O_Je').val(hD);
+       $('#Edit_Je').val(hF);
+
+      $('#Edit_O_Ve').val(hD);
+       $('#Edit_Ve').val(hF);
+       
+      $('#Edit_O_Sa').val(hD);
+       $('#Edit_Sa').val(hF);
+
+      $('#Edit_O_Di').val(hD);
+       $('#Edit_Di').val(hF);  
+
+    }
+
 }   
 
 function TestHeure()

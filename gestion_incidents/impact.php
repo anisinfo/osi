@@ -7,12 +7,16 @@ if(!isset($_SESSION['auth'])){
 			 	 die();
 	}
 $numincident=(isset($_GET['idIncident']))?$_GET['idIncident']:'';
+$userConnected=$_SESSION['auth'][2].' '.$_SESSION['auth'][1];	
+
 if (!$numincident) {
 	$_SESSION['flash']['erreur']="Pas de numéro d'incident passé !";
 	header('Location:index.php');
 	die();
 }
 define('TITLE',"Modification de l'impacte N°:' ".$numincident);
+require_once('../inc/config.inc.php');
+require_once('../inc/fonctions.inc.php');
 
 require_once('../classes/db.php');
 require_once('../classes/Impact.php');
@@ -68,6 +72,7 @@ if(!empty($_POST)){
 }else
 {
 $incident =new incidents();
+$incident->_setUser($userConnected);
 $incident->chargerIncident($numincident);
 }
 require_once('../inc/header.inc.php');

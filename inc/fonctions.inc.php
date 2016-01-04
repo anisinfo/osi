@@ -33,8 +33,8 @@ function Radio($var,$arr)
 $option='';
   for($i=0;$i<count($arr);$i++) 
     {
-    $selected=(isset($_POST[$var]) &&  ($_POST[$var]==$arr[$i]))?'selected':'';
-    $option.='<input type= "radio" name="'.$var.'" value="'.$arr[$i].'" '.$selected.'><label>'.$arr[$i].'</label>';  
+    $selected=(isset($_POST[$var]) &&  ($_POST[$var]==$i))?'checked':'';
+    $option.='<input type= "radio" name="'.$var.'" value="'.$i.'" '.$selected.'><label>'.$arr[$i].'</label>';  
     }
     echo $option;
 }
@@ -45,7 +45,7 @@ $option='';
 
 function getVarUpdate($var,$obj)
 {
-	echo (isset($_POST[$var]))?$var:$obj;
+	echo (isset($_POST[$var]))?$_POST[$var]:$obj;
 }
 
 function SelectUpdate($var,$obj,$arr)
@@ -90,3 +90,14 @@ function getVarDateUpdate($var,$obj,$d)
   else  echo (isset($_POST[$var]))?$_POST[$var]:($obj)?$obj:'23:59';
  
 }
+function RadioUpdate($var,$obj,$arr)
+{
+  $option='';
+  for($i=0;$i<count($arr);$i++) 
+    {
+    $selected=((isset($_POST[$var]) && $_POST[$var]==$i) || ($obj == $i))?'checked':'';
+    $option.='<input type= "radio" name="'.$var.'" value="'.$i.'" '.$selected.'><label>'.$arr[$i].'</label>'; 
+    }
+    echo $option;
+    
+} 

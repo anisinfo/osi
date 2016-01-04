@@ -16,6 +16,7 @@ class Stat
  private $_Composant;
  private $_ComposantComplement;
  private $_ZoneGeographique;
+ private $_IdIncident;
 
 	
 
@@ -24,9 +25,11 @@ class Stat
      *
      * @return $this
      */
-	public function SetParam($Id,$RefChangement,$DatePublicationIr,$DatePublicationPm,$TypeCause,$TypeCauseSecondaire,$TypologieGts,$KindOfImpact,$EquipeResponsable,$FournisseurResponsable,$PowerProd,$Legacy,$Composant,$ComposantComplement,$ZoneGeographique)
+	public function SetParam($Id,$IdIncident,$RefChangement,$DatePublicationIr,$DatePublicationPm,$TypeCause,$TypeCauseSecondaire,$TypologieGts,$KindOfImpact,$EquipeResponsable,$FournisseurResponsable,$PowerProd,$Legacy,$Composant,$ComposantComplement,$ZoneGeographique)
 	{
-	  	$this->_setId($Id);
+	  	
+        $this->_setId($Id);
+        $this->_setIdIncident($IdIncident);
 	  	$this->_setRefChangement($RefChangement);
 	  	$this->_setDatePublicationIr($DatePublicationIr);
 	  	$this->_setDatePublicationPm($DatePublicationPm);
@@ -41,8 +44,10 @@ class Stat
 	  	$this->_setComposant($Composant);
 	  	$this->_setComposantComplement($ComposantComplement);
 	  	$this->_setZoneGeographique($ZoneGeographique);
-
+//debug($this->getIdIncident());
+     //   debug($this);
 		return $this;  	
+
 	}
 
 
@@ -53,12 +58,13 @@ class Stat
      */
 	public function Creer()
 	{
+      //  debug($this);
 		$requette="INSERT INTO ".SCHEMA.".STATISTIQUE ";
 		$requette.="(REFCHANGEMENT,DATEPUBIR,DATEPUBPM,TYPECAUSE,TYPECAUSESECONDAIRE,TYPOLIGYGTS,KINDIMPACT,RESPONSIBLETEAM,FOURNISSEURRESPONSIBLE,POWERPROD,LEGACY,COMPOSANT,COMPOSANTCOMPLEMENT,ZONEGEOGRAPHIQUE,CREATED,UPDATED) ";
 		$requette.="VALUES(";
 		$requette.="'".$this->getRefChangement()."',";
-	  	$requette.="'".$this->getDatePublicationIr()."',";
-	  	$requette.="'".$this->getDatePublicationPm()."',";
+	  	$requette.="TO_TIMESTAMP('".$this->getDatePublicationIr()."','DD/MM/YYYY'),";
+	  	$requette.="TO_TIMESTAMP('".$this->getDatePublicationPm()."','DD/MM/YYYY'),";
 	  	$requette.="'".$this->getTypeCause()."',";
 	  	$requette.="'".$this->getTypeCauseSecondaire()."',";
 	  	$requette.="'".$this->getTypologieGts()."',";
@@ -75,6 +81,18 @@ class Stat
 		$db = new db();
 		$db->db_connect();
 		$db->db_query($requette);
+
+        $reqId="SELECT MAX(ID) FROM ".SCHEMA.".STATISTIQUE ";
+        // Recuperation de l'id de stat
+        $db->db_query($reqId);
+        $res=$db->db_fetch_array();
+
+        // Update de Id Stat
+        $req="UPDATE ".SCHEMA.".INCIDENT SET STATISTIQUE_ID=".$res[0][0];
+        $req.=" WHERE ID =".$this->getIdIncident();
+
+        $db->db_query($req);
+
 		$db->close();
 
 
@@ -91,8 +109,8 @@ class Stat
 		
 		$requette="UPDATE ".SCHEMA.".STATISTIQUE SET ";
 		$requette.="REFCHANGEMENT='".$this->getRefChangement()."',";
-	  	$requette.="DATEPUBIR='".$this->getDatePublicationIr()."',";
-	  	$requette.="DATEPUBPM='".$this->getDatePublicationPm()."',";
+	  	$requette.="DATEPUBIR=TO_TIMESTAMP('".$this->getDatePublicationIr()."','DD/MM/YYYY'),";
+	  	$requette.="DATEPUBPM=TO_TIMESTAMP('".$this->getDatePublicationPm()."','DD/MM/YYYY'),";
 	  	$requette.="TYPECAUSE='".$this->getTypeCause()."',";
 	  	$requette.="TYPECAUSESECONDAIRE='".$this->getTypeCauseSecondaire()."',";
 	  	$requette.="TYPOLIGYGTS='".$this->getTypologieGts()."',";
@@ -140,10 +158,11 @@ class Stat
      *
      * @return $none
      */
-	public function SelectStatById($id)
+	public function SelectStatById($id,$IdIncident)
 	{
-		$requette="SELECT REFCHANGEMENT,DATEPUBIR,DATEPUBPM,TYPECAUSE,TYPECAUSESECONDAIRE,TYPOLIGYGTS,KINDIMPACT,RESPONSIBLETEAM,FOURNISSEURRESPONSIBLE,POWERPROD,LEGACY,COMPOSANT,COMPOSANTCOMPLEMENT,ZONEGEOGRAPHIQUE ";
-		$requette="FROM  ".SCHEMA.".STATISTIQUE ";
+		$requette="SELECT REFCHANGEMENT,TO_CHAR(DATEPUBIR,'DD/MM/YYYY'),TO_CHAR(DATEPUBPM,'DD/MM/YYYY'),TYPECAUSE,TYPECAUSESECONDAIRE,TYPOLIGYGTS,KINDIMPACT,RESPONSIBLETEAM,FOURNISSEURRESPONSIBLE,POWERPROD,LEGACY,COMPOSANT,COMPOSANTCOMPLEMENT,ZONEGEOGRAPHIQUE ";
+		$requette.=" FROM  ".SCHEMA.".STATISTIQUE ";
+        $requette.=" WHERE ID=".$id;
 	
 		
 		$db = new db();
@@ -152,7 +171,7 @@ class Stat
 		$res=$db->db_fetch_array();
 		$db->close();
 		$valeur=$res[0];
-		$this->SetParam($id,$valeur[0],$valeur[1],$valeur[2],$valeur[3],$valeur[4],$valeur[5],$valeur[6],$valeur[7],$valeur[8],$valeur[9],$valeur[10],$valeur[11],$valeur[12],$valeur[13]);
+		$this->SetParam($id,$IdIncident,$valeur[0],$valeur[1],$valeur[2],$valeur[3],$valeur[4],$valeur[5],$valeur[6],$valeur[7],$valeur[8],$valeur[9],$valeur[10],$valeur[11],$valeur[12],$valeur[13]);
 
 		return $this;
 	}
@@ -540,6 +559,30 @@ class Stat
     private function _setZoneGeographique($ZoneGeographique)
     {
         $this->_ZoneGeographique = $ZoneGeographique;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of _IdIncident.
+     *
+     * @return mixed
+     */
+    public function getIdIncident()
+    {
+        return $this->_IdIncident;
+    }
+
+    /**
+     * Sets the value of _IdIncident.
+     *
+     * @param mixed $_IdIncident the id incident
+     *
+     * @return self
+     */
+    private function _setIdIncident($IdIncident)
+    {
+        $this->_IdIncident = $IdIncident;
 
         return $this;
     }

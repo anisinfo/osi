@@ -10,7 +10,7 @@ if(!isset($_SESSION['auth'])){
 	}
 define('TITLE','Ajouter un incident');
 require_once('../inc/config.inc.php');
-//require_once('../inc/fonctions.inc.php');
+require_once('../inc/fonctions.inc.php');
 require_once('../classes/Impact.php');
 require_once('../classes/incidents.php');
 require_once('../classes/Calendrier.php');
@@ -73,7 +73,7 @@ if(!empty($_POST)){
 		$errors['IdIncident']="Le numéro de l'incident est vide";
 	}else{
 		require_once('../classes/db.php');
-		$rq="SELECT ID FROM ".SCHEMA.".INCIDENT WHERE INCIDENT='".$_POST['IdIncident']."'";	 
+		$rq="SELECT ID FROM ".SCHEMA.".INCIDENT WHERE INCIDENT='".mysql_escape_string($_POST['IdIncident'])."'";	 
 			$SCHEMA= new db();
 			$SCHEMA->db_connect();
 			$SCHEMA->db_query($rq);
@@ -87,7 +87,7 @@ if(!empty($_POST)){
 	if(empty($errors))
 	{
 	$incident = new incidents();
-	$incident->setIncident(NULL,$_POST['IdIncident'],$_POST['titreincident'],$_POST['Incident_departement'],$_POST['Incident_statut'],$_POST['Incident_priorite'],$_POST['incidentuserimpacte'],$_POST['debutincident'],$_POST['finincident'],$_POST['Incident_duree'],$_POST['IncImpact_description'],$_POST['Incident_risqueAggravation'],$_POST['Incident_cause'],$_POST['incidentConnex'],$_POST['incidentprobleme'],$_POST['Incident_retablissement'],$_POST['incidentresponsabilite'],$_POST['incidentserviceacteur'],$_POST['Incident_localisation'],$_POST['Incident_useraction'],$_POST['incidentdatecreci'],$_POST['Incident_commentaire'],$_POST['Incident_dejaApparu'],$_POST['Incident_previsible']);
+	$incident->setIncident(NULL,'',$_POST['IdIncident'],$_POST['titreincident'],$_POST['Incident_departement'],$_POST['Incident_statut'],$_POST['Incident_priorite'],$_POST['incidentuserimpacte'],$_POST['debutincident'],$_POST['finincident'],$_POST['Incident_duree'],$_POST['IncImpact_description'],$_POST['Incident_risqueAggravation'],$_POST['Incident_cause'],$_POST['incidentConnex'],$_POST['incidentprobleme'],$_POST['Incident_retablissement'],$_POST['incidentresponsabilite'],$_POST['incidentserviceacteur'],$_POST['Incident_localisation'],$_POST['Incident_useraction'],$_POST['incidentdatecreci'],$_POST['Incident_commentaire'],$_POST['Incident_dejaApparu'],$_POST['Incident_previsible']);
 	$id_incident=$incident->sauvegarder();
 	$_SESSION['flash']['success'] =" L'incident est bien ajouté."; 
 	 // Ajoutde l'impact

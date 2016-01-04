@@ -14,6 +14,8 @@ if (isset($_SESSION['auth'])) {
 	}
 	# code...
 }
+require ('../inc/config.inc.php');
+require ('../inc/fonctions.inc.php');
 require ('../inc/header.inc.php');
 ?>
 <h1>Se connecter</h1>

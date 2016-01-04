@@ -11,7 +11,11 @@
 
         $('#dateChrono').datetimepicker({format:'d/m/Y H:i'});
 
-    //    dateChrono
+
+         $('#stat_publicationIR').datetimepicker({format:'d/m/Y',timepicker:false});
+         $('#stat_publicationPM').datetimepicker({format:'d/m/Y',timepicker:false});
+
+    //     stat_publicationPM
     </script>
 
 </body>

@@ -2,7 +2,7 @@
  class incidents 
 {
 	private $_numero;
-	
+	private $_idStat;
 	private $_titre;
 	private $_departement;
 	private $_statut;
@@ -34,7 +34,7 @@
 	{
 		// Insertion du partie commun d'un incidents
 		$rq="INSERT INTO ".SCHEMA.".INCIDENT (INCIDENT,TITRE,DEPARTEMENT,STATUT,PRIORITE,AFFECTEDUSER,DATEDEBUT,DATEFIN,DUREE,DESCRIPTION,RISQUEAGGRAVATION,CAUSE,INCIDENTSCONNEXES,PROBLEME,RETABLISSEMENT,RESPONSABILITE,SERVICEACTEUR,LOCALISATION,USERACTION,DATEPUBLICATION,COMMENTAIRE,DEJAAPPARU,PREVISIBLE,CREATED,UPDATED)";
-		$rq.=" VALUES ('".$this->getIncident()."','".$this->getTitre()."','".$this->getDepartement()."','".$this->getStatut()."','".$this->getPriorite()."','".$this->getUtilisImpacte()."',TO_TIMESTAMP('".$this->getDateDebut()."','DD/MM/YYYY HH24:MI'),TO_TIMESTAMP('".$this->getDateFin()."','DD/MM/YYYY HH24:MI'),'".$this->getDuree()."',";
+		$rq.=" VALUES ('".mysql_escape_string($this->getIncident())."','".$this->getTitre()."','".$this->getDepartement()."','".$this->getStatut()."','".$this->getPriorite()."','".$this->getUtilisImpacte()."',TO_TIMESTAMP('".$this->getDateDebut()."','DD/MM/YYYY HH24:MI'),TO_TIMESTAMP('".$this->getDateFin()."','DD/MM/YYYY HH24:MI'),'".$this->getDuree()."',";
 		$rq.="'".str_replace("'","", $this->getDescripIncident())."',".$this->getRisqueAggravation().",'".addslashes($this->getCause())."','".$this->getConnexe()."','".addslashes($this->getProbleme())."','".addslashes($this->getRetablissement())."','".$this->getResponsabilite()."','".$this->getActeur()."','".addslashes($this->getLocalisation())."','".addslashes($this->getActionUtlisateur())."',TO_TIMESTAMP('".$this->getDateCreci()."','DD/MM/YYYY'),'".addslashes($this->getCommentaire())."',".$this->getDejaApparu().",".$this->getPrevisible().",sysdate,sysdate)";
         // Insertion de l'application impactée
         //$rq.=parent::creer();
@@ -64,9 +64,10 @@
 	}
 	
 
-	public function setIncident($id,$incident,$titre,$departement,$statut,$priorite,$affectesuser,$datedebut,$datefin,$duree,$description,$risqueAggravation,$cause,$incidentsconnexes,$probleme,$retablissement,$responsabilite,$serviceacteur,$localisation,$useraction,$creci,$commentaire,$dejaApparu,$previsible,$user,$estOuvert)
+	public function setIncident($id,$idStat,$incident,$titre,$departement,$statut,$priorite,$affectesuser,$datedebut,$datefin,$duree,$description,$risqueAggravation,$cause,$incidentsconnexes,$probleme,$retablissement,$responsabilite,$serviceacteur,$localisation,$useraction,$creci,$commentaire,$dejaApparu,$previsible,$user,$estOuvert)
 	{
 		$this->_setNumero($id);
+        $this->_setIdStat($idStat);
         $this->_setIncident($incident);
 		$this->_setTitre($titre);
 		$this->_setDepartement($departement);
@@ -102,7 +103,7 @@ return $this;
     */
     public function chargerIncident($id)
     {
-        $req="SELECT ID,INCIDENT,TITRE,DEPARTEMENT,STATUT,PRIORITE,AFFECTEDUSER,TO_CHAR(DATEDEBUT,'DD/MM/YYYY HH24:MI'),TO_CHAR(DATEFIN,'DD/MM/YYYY HH24:MI'),DUREE,DESCRIPTION,RISQUEAGGRAVATION,CAUSE,INCIDENTSCONNEXES,PROBLEME,RETABLISSEMENT,RESPONSABILITE,SERVICEACTEUR,LOCALISATION,USERACTION,TO_CHAR(DATEPUBLICATION,'DD/MM/YYYY'),COMMENTAIRE,DEJAAPPARU,PREVISIBLE,USERNAME FROM ".SCHEMA.".INCIDENT ";
+        $req="SELECT ID,STATISTIQUE_ID,INCIDENT,TITRE,DEPARTEMENT,STATUT,PRIORITE,AFFECTEDUSER,TO_CHAR(DATEDEBUT,'DD/MM/YYYY HH24:MI'),TO_CHAR(DATEFIN,'DD/MM/YYYY HH24:MI'),DUREE,DESCRIPTION,RISQUEAGGRAVATION,CAUSE,INCIDENTSCONNEXES,PROBLEME,RETABLISSEMENT,RESPONSABILITE,SERVICEACTEUR,LOCALISATION,USERACTION,TO_CHAR(DATEPUBLICATION,'DD/MM/YYYY'),COMMENTAIRE,DEJAAPPARU,PREVISIBLE,USERNAME FROM ".SCHEMA.".INCIDENT ";
         $req.="LEFT JOIN ".SCHEMA.".INCIDENT_OUVERT ON INCIDENT.ID = INCIDENT_OUVERT.IDINCIDENT ";
         $req.="WHERE ID=".$id;
       
@@ -119,8 +120,9 @@ return $this;
        }else $userOpen=$res[0][24];
 
         $estOuvert=(($userOpen != $this->getUser())?true:false);
-	    $this->setIncident($res[0][0],$res[0][1],$res[0][2],$res[0][3],$res[0][4],$res[0][5],$res[0][6],$res[0][7],$res[0][8],$res[0][9],$res[0][10],$res[0][11],$res[0][12],$res[0][13],$res[0][14],$res[0][15],$res[0][16],$res[0][17],$res[0][18],$res[0][19],$res[0][20],$res[0][21],$res[0][22],$res[0][23],$userOpen,$estOuvert);
-         return $this; 
+	    $this->setIncident($res[0][0],$res[0][1],$res[0][2],$res[0][3],$res[0][4],$res[0][5],$res[0][6],$res[0][7],$res[0][8],$res[0][9],$res[0][10],$res[0][11],$res[0][12],$res[0][13],$res[0][14],$res[0][15],$res[0][16],$res[0][17],$res[0][18],$res[0][19],$res[0][20],$res[0][21],$res[0][22],$res[0][23],$res[0][24],$userOpen,$estOuvert);
+        $db->close();
+        return $this; 
               
     }
 
@@ -804,6 +806,30 @@ return $this;
     private function _setEstOuvert($estOuvert)
     {
         $this->_estOuvert = $estOuvert;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of _idStat.
+     *
+     * @return mixed
+     */
+    public function getIdStat()
+    {
+        return $this->_idStat;
+    }
+
+    /**
+     * Sets the value of _idStat.
+     *
+     * @param mixed $_idStat the id stat
+     *
+     * @return self
+     */
+    private function _setIdStat($idStat)
+    {
+        $this->_idStat = $idStat;
 
         return $this;
     }

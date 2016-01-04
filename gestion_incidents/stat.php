@@ -7,17 +7,15 @@ if(!isset($_SESSION['auth'])){
 			 	 die();
 	}
 
-$IdImpact=(isset($_GET['idIncident']))?$_GET['idIncident']:'';
+$idIncident=(isset($_GET['idIncident']))?$_GET['idIncident']:'';
+$userConnected=$_SESSION['auth'][2].' '.$_SESSION['auth'][1];	
 
-if (!$IdImpact) {
+if ($idIncident=='') {
 	$_SESSION['flash']['erreur']="Pas de numéro d'incident passé !";
-	echo $IdImpact;
-	header('Location:index.php');
-	die();
 }
 
-define('TITLE',"Modification de stat N°:' ".$IdImpact);
-require_once('../inc/header.inc.php');
+define('TITLE',"Modification de stat N°:' ".$idIncident);
+
 require_once('../inc/config.inc.php');
 require_once('../inc/fonctions.inc.php');
 require_once('../classes/db.php');
@@ -33,19 +31,22 @@ if (!empty($_POST)) {
 		$errors['refchangement']="Vous devez remplir le champ reférencement changement!";
 	}
 	if (empty($errors)) {
+	//	debug($idIncident);
 	$stat= new Stat();
-    $stat->SetParam(NULL,$_POST['refchangement'],$_POST['stat_publicationIR'],$_POST['stat_publicationPM'],$_POST['stat_typecause'],$_POST['stat_typecause_second'],$_POST['stat_typologiegts'],$_POST['stat_kindImpact'],$_POST['stat_equipeResp'],$_POST['fournisseurResp'],$_POST['statPowerprod'],$_POST['statLegacy'],$_POST['stat_Composant'],$_POST['Composant_complement'],$_POST['stat_zonegeo']);
+    $stat->SetParam(NULL,$idIncident,$_POST['refchangement'],$_POST['stat_publicationIR'],$_POST['stat_publicationPM'],$_POST['stat_typecause'],$_POST['stat_typecause_second'],$_POST['stat_typologiegts'],$_POST['stat_kindImpact'],$_POST['stat_equipeResp'],$_POST['fournisseurResp'],$_POST['statPowerprod'],$_POST['statLegacy'],$_POST['stat_Composant'],$_POST['Composant_complement'],$_POST['stat_zonegeo']);
     $stat->Creer();
 	}
 }else
 {
 
 $incident= new incidents();
-$incident->chargerIncident($IdImpact);
+$incident->_setUser($userConnected);
+$incident->chargerIncident($idIncident);
+
 //debug($Impacte);	
 }
 
-
+require_once('../inc/header.inc.php');
 ?>
 <h1>Statistique</h1>
 
