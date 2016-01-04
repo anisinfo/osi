@@ -62,6 +62,8 @@ if(!empty($_POST)){
 
 	// Impacte
 	$impacte=new Impact();
+	$dureeImp= dateDiff($_POST['Incident_Impact_datedebut'],$_POST['Incident_Impact_datefin']);
+	$_POST['Incident_Impact_dureereelle']=$dureeImp;
 	$impacte->setParam(NULL,$numincident,$_POST['IdAppli'],$_POST['Incident_Impact_datedebut'],$_POST['Incident_Impact_datefin'],$_POST['Incident_Impact_dureereelle'],$_POST['Incident_Impact_jourhommeperdu'],$_POST['Incident_Impact_impactmetier'],$_POST['Incident_Impact_impact'],$_POST['Incident_Impact_sla'],$_POST['Incident_Impact_criticite'],$_POST['Incident_Impact_description']);
 	$impacte->creer();
 
@@ -81,6 +83,8 @@ require_once('../inc/header.inc.php');
 
 <form action="" method="POST">
 	<div class="bloc">
+	<?php
+	require_once('../inc/search.inc.php'); ?>
 	<div class="width100 input-group-addon">
 	<span class="fl-left" style=" line-height:2.5;">
 	      Ajout pour l'incident N°:<strong><?= $incident->getIncident() ?></strong>

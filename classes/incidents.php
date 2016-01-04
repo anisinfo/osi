@@ -126,6 +126,46 @@ return $this;
               
     }
 
+    public function getIdSearch()
+    {
+        $tSearch= array('Prec'=>'','Next'=>'','Last'=>'');
+        $db = new db();
+        $db->db_connect();
+
+        //Prec
+        if ($this->getNumero()) {
+                $rq="SELECT ID FROM ".SCHEMA.".INCIDENT ";
+                $rq.="WHERE ID < ".$this->getNumero();
+                $rq.=" ORDER BY ID DESC";
+                $db->db_query($rq);
+            $res = $db->db_fetch_array();
+            if (isset($res[0][0])) 
+            {
+              $tSearch['Prec']=$res[0][0];
+            }
+        
+    //Next
+        $rq="SELECT ID FROM ".SCHEMA.".INCIDENT ";
+        $rq.="WHERE ID > ".$this->getNumero();
+        $rq.=" ORDER BY ID ASC";
+        $db->db_query($rq);
+        $res = $db->db_fetch_array();
+        if (isset($res[0][0])) {
+          $tSearch['Next']=$res[0][0];
+        }
+        }
+        
+        //Max
+        $rq="SELECT MAX(ID) FROM ".SCHEMA.".INCIDENT ";
+        $db->db_query($rq);
+        $res = $db->db_fetch_array();
+        if (isset($res[0][0])) {
+          $tSearch['Last']=$res[0][0];
+        }
+        
+        $db->close();
+       return $tSearch; 
+    }
 
 	public function Modifier()
 	{
@@ -157,7 +197,7 @@ return $this;
 
 		$rq.=" WHERE ID=".$this->getNumero();
 
-
+     //   debug($rq);
 		$base= new db();
 		$base->db_connect();
 		$base->db_query($rq);

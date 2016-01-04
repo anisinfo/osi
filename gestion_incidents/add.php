@@ -87,11 +87,15 @@ if(!empty($_POST)){
 	if(empty($errors))
 	{
 	$incident = new incidents();
+	$duree= dateDiff($_POST['debutincident'],$_POST['finincident']);
+	$_POST['Incident_duree']=$duree;
 	$incident->setIncident(NULL,'',$_POST['IdIncident'],$_POST['titreincident'],$_POST['Incident_departement'],$_POST['Incident_statut'],$_POST['Incident_priorite'],$_POST['incidentuserimpacte'],$_POST['debutincident'],$_POST['finincident'],$_POST['Incident_duree'],$_POST['IncImpact_description'],$_POST['Incident_risqueAggravation'],$_POST['Incident_cause'],$_POST['incidentConnex'],$_POST['incidentprobleme'],$_POST['Incident_retablissement'],$_POST['incidentresponsabilite'],$_POST['incidentserviceacteur'],$_POST['Incident_localisation'],$_POST['Incident_useraction'],$_POST['incidentdatecreci'],$_POST['Incident_commentaire'],$_POST['Incident_dejaApparu'],$_POST['Incident_previsible']);
 	$id_incident=$incident->sauvegarder();
 	$_SESSION['flash']['success'] =" L'incident est bien ajouté."; 
 	 // Ajoutde l'impact
 	$imp = new Impact();
+	$dureeImp= dateDiff($_POST['Incident_Impact_datedebut'],$_POST['Incident_Impact_datefin']);
+	$_POST['Incident_Impact_dureereelle']=$dureeImp;
 	$imp->setParam(NULL,$id_incident,$_POST['IdAppli'],$_POST['Incident_Impact_datedebut'],$_POST['Incident_Impact_datefin'],$_POST['Incident_Impact_dureereelle'],$_POST['Incident_Impact_jourhommeperdu'],$_POST['Incident_Impact_impactmetier'],$_POST['Incident_Impact_impact'],$_POST['Incident_Impact_sla'],$_POST['Incident_Impact_criticite'],$_POST['Incident_Impact_description']);
 	$imp->creer();
 
@@ -138,15 +142,10 @@ if(!empty($errors)){?>
 ?>
 <form action="" method="POST">
 <div class="bloc">
-<!--	<div class="width100 input-group-addon">
-		<label class="lib width50"> N°Incident </label> <input type="number" name="numincident" size="12" > <input type="button" value="?" onclick="info()">
-		<input type="button" value="<" onclick="prec()"> 
-		<input type="button" value=">" onclick="suiv()">
-		<input type="button" value=">>" onclick="lastone()">
-		<span class="fl-left">
-	      <button class="btn btn-success" type="button">Ajouter</button>
-	    </span>
-	    </div> -->
+<?php
+$incident= new incidents();
+require_once('../inc/search.inc.php');
+?>
 
 	<div class="width100 bcg">
 		<div class=" width50 mr_35">

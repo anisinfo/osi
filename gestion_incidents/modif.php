@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 if(!isset($_SESSION['auth'])){
 		
 			 	 $_SESSION['flash']['danger'] ="Vous devez être connecté!"; 
@@ -8,6 +9,7 @@ if(!isset($_SESSION['auth'])){
 	}
 $userConnected=$_SESSION['auth'][2].' '.$_SESSION['auth'][1];	
 $numero=(isset($_GET['id']))?$_GET['id']:'';
+
 
 define('TITLE',"Modification de l'incident N°<".$numero.">");
 require_once('../inc/config.inc.php');
@@ -18,8 +20,23 @@ require_once('../classes/incidents.php');
 require_once('../classes/Application.php');
 require_once('../classes/Calendrier.php');
 require_once('../classes/Chronogramme.php');
-
-
+// dateDiffImp('03/01/2016','01/01/2016','');
+if (isset($_GET['NumeroIncident'])) {
+	$rq="SELECT ID FROM ".SCHEMA.".INCIDENT WHERE INCIDENT='".urlencode($_GET['NumeroIncident'])."'";	 
+			$SCHEMA= new db();
+			$SCHEMA->db_connect();
+			$SCHEMA->db_query($rq);
+			$res=$SCHEMA->total_record();
+			if(isset($res[0])){
+				header('Location:modif.php?id='.$res[0][0]);
+				die();
+			}else
+			{
+				$_SESSION['flash']['danger']="Le numéro de l'incident n'est pas valide!";
+				header('Location:index.php');
+				die();
+			}
+}
 if (!$numero) {
 	$_SESSION['flash']['danger']="Le numéro de l'incident est vide!";
 	header('Location:index.php');
@@ -101,21 +118,27 @@ if(!empty($_POST)){
 	if(empty($errors))
 	{
 	//Incident	
-	
-	$incident->setIncident($numero,'',$_POST['IdIncident'],$_POST['titreincident'],$_POST['Incident_departement'],$_POST['Incident_statut'],$_POST['Incident_priorite'],$_POST['incidentuserimpacte'],$_POST['debutincident'],$_POST['finincident'],$_POST['Incident_duree'],addslashes($_POST['IncImpact_description']),$_POST['Incident_risqueAggravation'],$_POST['Incident_cause'],$_POST['incidentConnex'],$_POST['incidentprobleme'],$_POST['Incident_retablissement'],$_POST['incidentresponsabilite'],$_POST['incidentserviceacteur'],$_POST['Incident_localisation'],$_POST['Incident_useraction'],$_POST['incidentdatecreci'],$_POST['Incident_commentaire'],$_POST['Incident_dejaApparu'],$_POST['Incident_previsible'],$userConnected,false);
+	$duree= dateDiff($_POST['debutincident'],$_POST['finincident']);
+	$_POST['Incident_duree']=$duree;	
+	$incident->setIncident($numero,'',$_POST['IdIncident'],$_POST['titreincident'],$_POST['Incident_departement'],$_POST['Incident_statut'],$_POST['Incident_priorite'],$_POST['incidentuserimpacte'],$_POST['debutincident'],$_POST['finincident'],$_POST['Incident_duree'],$_POST['IncImpact_description'],$_POST['Incident_risqueAggravation'],$_POST['Incident_cause'],$_POST['incidentConnex'],$_POST['incidentprobleme'],$_POST['Incident_retablissement'],$_POST['incidentresponsabilite'],$_POST['incidentserviceacteur'],$_POST['Incident_localisation'],$_POST['Incident_useraction'],$_POST['incidentdatecreci'],$_POST['Incident_commentaire'],$_POST['Incident_dejaApparu'],$_POST['Incident_previsible'],$userConnected,false);
 	$incident->sauvegarder();
-
-	// Impacte
-	
-	$impacte->setParam($_POST['IdImpacte'],$numero,$_POST['IdAppli'],$_POST['Incident_Impact_datedebut'],$_POST['Incident_Impact_datefin'],$_POST['Incident_Impact_dureereelle'],$_POST['Incident_Impact_jourhommeperdu'],$_POST['Incident_Impact_impactmetier'],$_POST['Incident_Impact_impact'],$_POST['Incident_Impact_sla'],$_POST['Incident_Impact_criticite'],$_POST['Incident_Impact_description']);
-	$impacte->modifier();
 
 	//AJout de calendrier
 	if (!empty($_POST['IdAppli'])) {
 
 	$calendrier->setParam($_POST['IdCalend'],$_POST['IdAppli'],$_POST['Edit_OuvertLu'],$_POST['Edit_FermerLu'],$_POST['Edit_OuvertMa'],$_POST['Edit_FermerMa'],$_POST['Edit_OuvertMe'],$_POST['Edit_FermerMe'],$_POST['Edit_OuvertJe'],$_POST['Edit_FermerJe'],$_POST['Edit_OuvertVe'],$_POST['Edit_FermerVe'],$_POST['Edit_OuvertSa'],$_POST['Edit_FermerSa'],$_POST['Edit_OuvertDi'],$_POST['Edit_FermerDi'],$_POST['Edit_OuvertJf'],$_POST['Edit_FermerJf']);
-	$calendrier->creer();	
-	}
+	$calendrier->creer();
+	$dureeImp= dateDiffImp($_POST['Incident_Impact_datedebut'],$_POST['Incident_Impact_datefin'],$calendrier);	
+	}else
+	$dureeImp= dateDiff($_POST['Incident_Impact_datedebut'],$_POST['Incident_Impact_datefin']);
+	// Impacte
+
+	
+	$_POST['Incident_Impact_dureereelle']=$dureeImp;
+	$impacte->setParam($_POST['IdImpacte'],$numero,$_POST['IdAppli'],$_POST['Incident_Impact_datedebut'],$_POST['Incident_Impact_datefin'],$_POST['Incident_Impact_dureereelle'],$_POST['Incident_Impact_jourhommeperdu'],$_POST['Incident_Impact_impactmetier'],$_POST['Incident_Impact_impact'],$_POST['Incident_Impact_sla'],$_POST['Incident_Impact_criticite'],$_POST['Incident_Impact_description']);
+	$impacte->modifier();
+
+	
 
 	// Chronogramme
 		$chrono = new Chronogramme();
@@ -140,6 +163,10 @@ if(!empty($_POST)){
 
 $incident->_setUser($userConnected);
 $incident->chargerIncident($numero);
+if (empty($incident->getNumero())) {
+	$_SESSION['flash']['success'] =" Ce Numéro d'incident n'existe pas!"; 
+	header('Location:index.php');
+}
 //debug($incident);
 $impacte->chargerFirstIncident($numero);
 $appli->SelectAppliById($impacte->getApplicationId());
@@ -152,6 +179,7 @@ if ($impacte->getApplicationId()) {
 
 
 }
+
 require_once('../inc/header.inc.php');
 if ($incident->getEstOuvert()) {?>
 <div class="alert alert-danger">
@@ -175,25 +203,20 @@ if(!empty($errors)){?>
 
 <?php }
 ?>
+
 <form action="" method="POST">
 <div class="bloc">
-	<!--<div class="width100 input-group-addon">
-		<label class="lib width50"> N°Incident </label> <input type="number" name="numincident" size="12" > <input type="button" value="?" onclick="info()">
-		<input type="button" value="<" onclick="prec()"> 
-		<input type="button" value=">" onclick="suiv()">
-		<input type="button" value=">>" onclick="lastone()">
-		<span class="fl-left">
-	      <a class="btn btn-success" href="ListeImpact.php?idIncident=<?= $numero;?>">Impact</a>
-	    </span>
-	 </div> -->
+<?php 
+require_once('../inc/search.inc.php'); ?>
 	
 	 <a class="btn btn-success"  href="add.php">Ajouter Incident</a>
 	 <a class="btn btn-success" href="ListeImpact.php?idIncident=<?php echo $_GET['id']; ?>">Liste des impactes</a>
 	 <?php
-	 $statLink=($incident-> getIdStat())?'modifStat.php?idIncident='.$_GET['id'].'&idStat='.$incident-> getIdStat():'stat.php?idIncident='.$_GET['id'];
+	 $statLink=($incident-> getIdStat())?'modifStat.php?idIncident='.$_GET['id'].'&idStat='.$incident->getIdStat():'stat.php?idIncident='.$_GET['id'];
 	 ?>
 	  <a class="btn btn-success" href="<?php echo $statLink; ?>">Stat</a>
-	 <a class="btn btn-success" href="commachaud.php?idIncident=<?php echo $_GET['id']; ?>">Commachaud</a>
+	<!-- <a class="btn btn-success" href="commachaud.php?idIncident=<?php echo $_GET['id']; ?>">Commachaud</a>-->
+	  <input type="button" value="Commachaud" class="btn btn-success" onclick="EnvoyerMail('<?= $incident->getIncident();?>')">Commachaud</a>
 	<div class="width100 bcg">
 		<div class="width100">
 		    	<label  class="lib"  for="titreincident"> Incident *</label> 
@@ -592,6 +615,271 @@ if(!empty($errors)){?>
 </div>
 
 </form>
+<textarea name="corp" id="corp" style="display:none;" >
+	<table border="1" cellspacing="0" cellpadding="0" style="border:outset #767676 3.0pt" width="100%">
+<tbody>
+<tr>
+<td style="border:inset #767676 1.0pt;padding:.75pt .75pt .75pt .75pt">
+<div align="center">
+<table border="0" cellpadding="0" width="100%" style="width:100.0%">
+<tbody>
+<tr>
+<td rowspan="2" style="padding:.75pt .75pt .75pt .75pt">
+
+</td>
+<td style="background:#767676;padding:.75pt .75pt .75pt .75pt">
+<p class="MsoNormal" align="center" style="text-align:center; color:white;">
+<b><span style="font-size:18.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;">INCIDENT : <?= $STATUT[$incident->getStatut()-1]; ?>
+</span></b></p>
+</td>
+</tr>
+<tr>
+<td style="padding:.75pt .75pt .75pt .75pt">
+<p class="MsoNormal" align="center" style="text-align:center"><b>
+<span style="font-size:18.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:black">
+<?= $incident->getTitre(); ?>
+</span></b></p>
+<p>&nbsp</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<table border="0" cellpadding="0" width="100%" style="width:100.0%">
+<tbody>
+<tr>
+<td width="50%" style="width:50.0%;background:#dedfde;padding:.75pt .75pt .75pt .75pt">
+<p class="MsoNormal"><b><span style="font-size:8.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;">Date de début :
+</span></b><span style="font-size:8.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;"><?= $incident->getDateDebut();?></span></p>
+<p>&nbsp</p>
+</td>
+<td width="50%" style="width:50.0%;background:#dedfde;padding:.75pt .75pt .75pt .75pt">
+<p class="MsoNormal"><b><span style="font-size:8.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;">Date de fin estimée :
+</span></b><span style="font-size:8.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;"><?= $incident->getDateFin();?></span></p>
+<p>&nbsp</p>
+</td>
+</tr>
+<tr>
+<td colspan="2" style="background:#dedfde;padding:.75pt .75pt .75pt .75pt">
+<p class="MsoNormal"><b><span style="font-size:8.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;">Durée de l'indisponibilité :
+</span></b></p>
+<p><?= $incident->getDuree();?></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="MsoNormal"><span style="font-size:7.5pt">&nbsp;</span></p>
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td width="2%" style="width:2.0%;background:#a5a6a5;padding:.75pt .75pt .75pt .75pt">
+
+</td>
+<td style="background:#a5a6a5;padding:.75pt .75pt .75pt .75pt">
+<p class="MsoNormal"><b><span style="font-size:11.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:black">&nbsp;Priorité</span></b></p>
+<p>&nbsp</p>
+</td>
+<td width="30%" style="width:30.0%;background:#dedfde;padding:.75pt .75pt .75pt .75pt">
+<p class="MsoNormal" align="center" style="text-align:center"><span style="font-size:11.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:crimson"><?= $PRIORITE[$incident->getPriorite()-1];?></span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td width="2%" style="width:2.0%;background:#a5a6a5;padding:.75pt .75pt .75pt .75pt">
+
+</td>
+<td style="background:#a5a6a5;padding:.75pt .75pt .75pt .75pt">
+<p class="MsoNormal"><b><span style="font-size:11.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:black">&nbsp;Localisation</span></b></p>
+<p>&nbsp</p>
+</td>
+</tr>
+<tr>
+<td colspan="2" style="background:#dedfde;padding:.75pt .75pt .75pt .75pt">
+<p class="MsoNormal"><span style="font-size:10.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;"><?= $incident->getLocalisation();?>
+</span></p>
+<p>&nbsp</p>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td width="2%" style="width:2.0%;background:#a5a6a5;padding:.75pt .75pt .75pt .75pt">
+
+</td>
+<td style="background:#a5a6a5;padding:.75pt .75pt .75pt .75pt">
+<p class="MsoNormal"><b><span style="font-size:11.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:black">&nbsp;Impact</span></b></p>
+<p>&nbsp</p>
+</td>
+</tr>
+<tr>
+<td colspan="2" style="background:#dedfde;padding:.75pt .75pt .75pt .75pt"></td>
+</tr>
+</tbody>
+</table>
+<p class="MsoNormal"><span style="color:#1f497d">Description impact</span></p>
+<p><?= $impacte->getDescription();?></p>
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td width="2%" style="width:2.0%;background:#a5a6a5;padding:.75pt .75pt .75pt .75pt">
+
+</td>
+<td style="background:#a5a6a5;padding:.75pt .75pt .75pt .75pt">
+<p class="MsoNormal"><b><span style="font-size:11.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:black">&nbsp;Actions à réaliser par les utilisateurs</span></b></p>
+<p>&nbsp</p>
+</td>
+</tr>
+<tr>
+<td colspan="2" style="background:#dedfde;padding:.75pt .75pt .75pt .75pt"></td>
+</tr>
+</tbody>
+</table>
+<p class="MsoNormal"><span style="color:#1f497d"><?= $incident->getActionUtlisateur();?></span></p>
+<p>&nbsp</p>
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td width="2%" style="width:2.0%;background:#a5a6a5;padding:.75pt .75pt .75pt .75pt">
+
+</td>
+<td style="background:#a5a6a5;padding:.75pt .75pt .75pt .75pt">
+<p class="MsoNormal"><b><span style="font-size:11.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:black">
+&nbsp;Source</span></b></p>
+<p>&nbsp</p>
+</td>
+</tr>
+<tr>
+<td colspan="2" style="background:#dedfde;padding:.75pt .75pt .75pt .75pt">
+<p class="MsoNormal"><span style="font-size:10.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;"><?= $incident->getCause();?>
+<span style="color:#1f497d">(cause)</span></span></p>
+<p>&nbsp</p>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td width="2%" style="width:2.0%;background:#a5a6a5;padding:.75pt .75pt .75pt .75pt">
+
+</td>
+<td style="background:#a5a6a5;padding:.75pt .75pt .75pt .75pt">
+<p class="MsoNormal"><b>
+<span style="font-size:11.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:black">&nbsp;Y a-t-il un risque d'aggravation ?</span></b></p>
+
+<p>&nbsp</p></td>
+</tr>
+<tr>
+<td colspan="2" style="background:#dedfde;padding:.75pt .75pt .75pt .75pt">
+<p class="MsoNormal"><span style="font-size:10.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;"><?= ($incident->getRisqueAggravation())?'Oui':'Non';?></span></p>
+<p>&nbsp</p>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td width="2%" style="width:2.0%;background:#a5a6a5;padding:.75pt .75pt .75pt .75pt">
+
+</td>
+<td style="background:#a5a6a5;padding:.75pt .75pt .75pt .75pt">
+<p class="MsoNormal"><b><span style="font-size:11.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:black">&nbsp;Description</span></b></p>
+<p>&nbsp</p>
+</td>
+</tr>
+<tr>
+<td colspan="2" style="background:#dedfde;padding:.75pt .75pt .75pt .75pt">
+<p class="MsoNormal"><span style="font-size:10.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;"><?= $incident->getDescripIncident();?></span></p>
+<p>&nbsp</p>
+</td>
+</tr>
+</tbody>
+</table>
+
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td width="2%" style="width:2.0%;background:#a5a6a5;padding:.75pt .75pt .75pt .75pt">
+
+</td>
+<td style="background:#a5a6a5;padding:.75pt .75pt .75pt .75pt">
+<p class="MsoNormal"><b>
+<span style="font-size:11.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:black">&nbsp;Département / utilisateurs affectés</span></b></p>
+
+<p><?= $incident->getDepartement().' / '.$incident->getUtilisImpacte(); ?></p></td>
+</tr>
+<tr>
+<td colspan="2" style="background:#dedfde;padding:.75pt .75pt .75pt .75pt"> </td>
+</tr>
+</tbody>
+</table>
+
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td width="2%" style="width:2.0%;background:#a5a6a5;padding:.75pt .75pt .75pt .75pt">
+
+</td>
+<td style="background:#a5a6a5;padding:.75pt .75pt .75pt .75pt">
+<p class="MsoNormal"><b><span style="font-size:11.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:black">
+&nbsp;Actions en cours
+</span></b></p>
+<p>&nbsp</p>
+</td>
+</tr>
+<tr>
+<td colspan="2" style="background:#dedfde;padding:.75pt .75pt .75pt .75pt">
+<p class="MsoNormal">
+<span style="font-size:10.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;">
+<?php
+$chrono= new Chronogramme();
+$taches=$chrono->getChronogrammeByIncidentId($numero);
+//debug($taches);
+foreach ($taches as $ligne) {
+	echo $ligne->getActionDate().'  '.$ligne->getDescription().'<br>';
+}
+?>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="0" cellpadding="0" width="100%" style="width:100.0%">
+<tbody>
+<tr>
+<td style="padding:.75pt .75pt .75pt .75pt">
+<p align="center" style="text-align:center"><b><span style="font-size:10.0pt;font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;">Incident Manager</span></b><br>
+<span style="font-size:10.0pt;font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;">&nbsp; RESG/GTS/RET<br>
+Email : <a href="mailto:for-retail.quality-of-service-gts@socgen.com" target="_blank">for-retail.quality-of-service-<wbr>gts@socgen.com</a></span><br>
+<span style="font-family:Webdings">Å</span>
+<span style="font-size:10.0pt;font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"> : Tel : 01 64 85 <span style="color:#1f497d">
+XXX</span> ou <span style="color:#1f497d">CCCC</span></span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="MsoNormal">&nbsp;</p>
+<table border="0" cellpadding="0" width="100%" style="width:100.0%">
+<tbody>
+<tr>
+<td style="padding:.75pt .75pt .75pt .75pt">
+<p class="MsoNormal" align="center" style="text-align:center">Numéro Incident : <span style="color:#1f497d">
+<?= $incident->getIncident();?></span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</textarea>
 
 <?php 
 require_once('../inc/footer.inc.php');
