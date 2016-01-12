@@ -44,8 +44,6 @@ class Stat
 	  	$this->_setComposant($Composant);
 	  	$this->_setComposantComplement($ComposantComplement);
 	  	$this->_setZoneGeographique($ZoneGeographique);
-//debug($this->getIdIncident());
-     //   debug($this);
 		return $this;  	
 
 	}
@@ -81,7 +79,6 @@ class Stat
 		$db = new db();
 		$db->db_connect();
 		$db->db_query($requette);
-
         $reqId="SELECT MAX(ID) FROM ".SCHEMA.".STATISTIQUE ";
         // Recuperation de l'id de stat
         $db->db_query($reqId);
@@ -92,7 +89,7 @@ class Stat
         $req.=" WHERE ID =".$this->getIdIncident();
 
         $db->db_query($req);
-
+        return $res[0][0];
 		$db->close();
 
 
@@ -220,7 +217,7 @@ class Stat
      *
      * @return self
      */
-    private function _setId($Id)
+    public function _setId($Id)
     {
         $this->_Id = $Id;
 

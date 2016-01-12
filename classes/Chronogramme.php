@@ -56,7 +56,7 @@ class Chronogramme
 	public function Creer()
 	{
 		$rq="INSERT INTO ".SCHEMA.".CHRONOGRAMME (INCIDENT_ID,ACTIONDATE,DESCRIPTION,CREATED,UPDATED) VALUES ";
-		$rq.="(".$this->getIncidentId().",TO_TIMESTAMP('".$this->getActionDate()."','DD/MM/YYYY HH24:MI'),'".$this->getDescription()."',sysdate,sysdate)";
+		$rq.="(".$this->getIncidentId().",TO_TIMESTAMP('".$this->getActionDate()."','DD/MM/YYYY HH24:MI'),'".htmlentities($this->getDescription(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',sysdate,sysdate)";
         $req="SELECT max(ID) FROM ".SCHEMA.".CHRONOGRAMME";
 		$db = new db();
         $db->db_connect();
@@ -73,7 +73,7 @@ class Chronogramme
 	{
 		$rq="UPDATE ".SCHEMA.".CHRONOGRAMME SET ";
 		$rq.="ACTIONDATE=TO_TIMESTAMP('".$this->getActionDate()."','YYYY-MM-DD HH24:MI'),";
-		$rq.="DESCRIPTION='".$this->getDescription()."',";
+		$rq.="DESCRIPTION='".htmlentities($this->getDescription(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
 		$rq.="UPDATED=sysdate ";
 		$rq.="WHERE ID=".$id;
 
@@ -86,7 +86,7 @@ class Chronogramme
 
 	public function Supprimer($id)
 	{
-		$rq="DELETE FROM ".SCHEMA.".CHRONOGRAMME    ";
+		$rq="DELETE FROM ".SCHEMA.".CHRONOGRAMME  ";
 		$rq.="WHERE ID=".$id;
 
 		$db = new db();

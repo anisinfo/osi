@@ -3,7 +3,7 @@ session_start();
 if(!isset($_SESSION['auth'])){
 		
 			 	 $_SESSION['flash']['danger'] ="Vous devez être connecté!"; 
-			 	 header('Location:index.php');
+			 	 header('Location:../index.php');
 			 	 die();
 			 
 
@@ -30,7 +30,11 @@ if(!empty($_POST)){
 	Contrôle des champs obligatoire
 	*/
 	if(empty($_POST['debutincident'])){
-		$errors['debutincident']="Vous devez remplir le champ date début incident!";
+		$errors['debutincident']="Vous devez remplir le champ date début incident!".$_POST['debutincident'];
+	}
+
+	if(!isInteger($_POST['Incident_Impact_jourhommeperdu']) && !empty($_POST['Incident_Impact_jourhommeperdu'])){
+		$errors['Incident_Impact_jourhommeperdu']="Le champ jours homme perdu doit etre numérique  !";
 	}
 
 	if(empty($_POST['finincident'])){
@@ -44,6 +48,9 @@ if(!empty($_POST)){
 
 	if(empty($_POST['Incident_cause'])){
 		$errors['Incident_cause']="Vous devez remplir le champ cause!";
+	}
+	if(empty($_POST['Incident_retablissement'])){
+		$errors['Incident_retablissement']="Vous devez sélectionner une valeur de champ Retablissement!";
 	}
 
 	if(empty($_POST['Incident_Impact_datedebut'])){
@@ -87,15 +94,11 @@ if(!empty($_POST)){
 	if(empty($errors))
 	{
 	$incident = new incidents();
-	$duree= dateDiff($_POST['debutincident'],$_POST['finincident']);
-	$_POST['Incident_duree']=$duree;
 	$incident->setIncident(NULL,'',$_POST['IdIncident'],$_POST['titreincident'],$_POST['Incident_departement'],$_POST['Incident_statut'],$_POST['Incident_priorite'],$_POST['incidentuserimpacte'],$_POST['debutincident'],$_POST['finincident'],$_POST['Incident_duree'],$_POST['IncImpact_description'],$_POST['Incident_risqueAggravation'],$_POST['Incident_cause'],$_POST['incidentConnex'],$_POST['incidentprobleme'],$_POST['Incident_retablissement'],$_POST['incidentresponsabilite'],$_POST['incidentserviceacteur'],$_POST['Incident_localisation'],$_POST['Incident_useraction'],$_POST['incidentdatecreci'],$_POST['Incident_commentaire'],$_POST['Incident_dejaApparu'],$_POST['Incident_previsible']);
 	$id_incident=$incident->sauvegarder();
 	$_SESSION['flash']['success'] =" L'incident est bien ajouté."; 
 	 // Ajoutde l'impact
 	$imp = new Impact();
-	$dureeImp= dateDiff($_POST['Incident_Impact_datedebut'],$_POST['Incident_Impact_datefin']);
-	$_POST['Incident_Impact_dureereelle']=$dureeImp;
 	$imp->setParam(NULL,$id_incident,$_POST['IdAppli'],$_POST['Incident_Impact_datedebut'],$_POST['Incident_Impact_datefin'],$_POST['Incident_Impact_dureereelle'],$_POST['Incident_Impact_jourhommeperdu'],$_POST['Incident_Impact_impactmetier'],$_POST['Incident_Impact_impact'],$_POST['Incident_Impact_sla'],$_POST['Incident_Impact_criticite'],$_POST['Incident_Impact_description']);
 	$imp->creer();
 
@@ -115,7 +118,7 @@ if(!empty($_POST)){
 			$chrono->Creer();
 		}
 	}
-	$_SESSION['flash']['success'] =" L'impacte de l'incident est bien ajouté."; 
+	$_SESSION['flash']['success'] =" L'incident est bien ajouté."; 
 
 	header('Location:index.php');
 	die();
@@ -128,8 +131,9 @@ require_once('../inc/header.inc.php');
 <?php
 if(!empty($errors)){?>
 	<div class="alert alert-danger">
+	<h5>Vous avez des erreurs dans le remplissage de votre formulaire</h5>
 	<ul>
-	<p>Vous avez des erreurs dans le remplissage de votre formulaire</p>
+	
 		<?php
 		foreach ($errors as $error) {
 			echo '<li>'.$error.'</li>';
@@ -278,8 +282,10 @@ require_once('../inc/search.inc.php');
   			</div>
 
   			<div class="width100">
-  				<label class="lib" for="Incident_retablissement">Retablissement</label>
-  				<textarea  rows="3" id="Incident_retablissement" name="Incident_retablissement"><?php getVar('Incident_retablissement'); ?></textarea>
+  				<label class="lib" for="Incident_retablissement">Retablissement *</label>
+  				<select id="Incident_retablissement" name="Incident_retablissement" required>
+				<?php Select('Incident_retablissement',$RETABLISSEMENT); ?>
+				</select>
   			</div>
 
   			<div class="width100">
@@ -300,189 +306,8 @@ require_once('../inc/search.inc.php');
   			</div>
   		</div>
 
-  		<fieldset>
-    		<legend>Application Impactée</legend>
-    		<div class=" width50 mr_35"> 
-    			<div class="width100">
-		    		<label  class="lib"  for="Incident_Impact_application_libelle"> Application</label> 
-		    		<input type="text" disabled name="Incident_Impact_application_libelle" id="Incident_Impact_application_libelle"  value="<?php getVar('Incident_Impact_application_libelle'); ?>" >
-	    		<input id="IdAppli" name="IdAppli" type="hidden" value="<?php getVar('IdAppli'); ?>" />
-	    		</div>
-
-	    		<div class="width100">
-	    			<div class=" width50 mr_10">
-	    				<label  class="lib"  for="Incident_Impact_datedebut"> Début impact *</label> 
-		    			<input type="text" name="Incident_Impact_datedebut" id="Incident_Impact_datedebut" value="<?php getVar('Incident_Impact_datedebut'); ?>" required>
-	    			</div>
-
-	    			<div class=" width50">
-	    				<label  class="lib"  for="Incident_Impact_datefin"> Fin impact  *</label> 
-		    			<input type="text" name="Incident_Impact_datefin" id="Incident_Impact_datefin"  value="<?php getVar('Incident_Impact_datefin'); ?>"  required>
-	    			</div>	    			
-	    		</div>
-
-	    		<div class="width100">
-	    			<div class=" width50 mr_10">
-	    				<label  class="lib"  for="Incident_Impact_impactmetier"> Impact métier *</label> 
-		    			<select id="Incident_Impact_impactmetier" name="Incident_Impact_impactmetier" required>
-		    			<?php
-		    			Select('Incident_Impact_impactmetier',$IMPACTMETIER);
-		    			?>
-		    			</select>
-	    			</div>
-
-	    			<div class=" width50">
-	    				<label  class="lib"  for="Incident_Impact_impact"> Impact</label> 
-		    			<select id="Incident_Impact_impact" name="Incident_Impact_impact">
-		    			<?php
-		    			Select('Incident_Impact_impact',$INCIDENTIMPACTMETIER);
-		    			?>
-		    			</select>
-	    			</div>	    			
-	    		</div>
-    		</div>
-
-    		<div class=" width50">
-
-    			<div class="width100">
-
-    				<div class="width20 mr_7">
-    					<label for="Incident_Impact_application_enseigne" class="lib">Enseigne</label>
-    					<input disabled="" type="text" id="Incident_Impact_application_enseigne" name="Incident_Impact_application_enseigne" value="<?php getVar('Incident_Impact_application_enseigne'); ?>">
-    				</div>
-
-    				<div class="width20 mr_7">
-    					<label for="Incident_Impact_application_irt" class="lib">Code IRT</label>
-    					<input disabled="" type="text" id="Incident_Impact_application_irt" name="Incident_Impact_application_irt" value="<?php getVar('Incident_Impact_application_irt'); ?>">
-    				</div>
-
-    				<div class="width20 mr_7">
-    					<label for="Incident_Impact_application_trigramme" class="lib">Trigramme</label>
-    					<input disabled="" type="text" id="Incident_Impact_application_trigramme" name="Incident_Impact_application_trigramme" value="<?php getVar('Incident_Impact_application_trigramme'); ?>">
-    				</div>
-
-    				<div class="width12 mr_7" id="ImgCalendar" style="visibility: hidden">
-    					<a class="btn_calendrier" id="btn_calendrier" href="#" title="calendrier">
-                        	<img width="50px" height="50px" alt="calendrier" src="../img/calendar.png">
-                    	</a>
-                    </div>
-
-                    <div class="width12" >
-	                    <a class="btn_info" id="my-button" href="#" title="informations">
-	                        <img  width="50px" height="50px" alt="Informations sur l'application" src="../img/search.png">
-	                    </a>
-	                </div>
-
-
-    			</div>
-    			
-    				<div id="element_to_pop_up">
-    					<a class="b-close">x</a>
-					<h2>Ajout d'une application</h2>
-
-						<div id="infoAjout" class="alert alert-success" style="display:none;">L'application est bien ajoutée</div>
-					
-    					<label for="NomSearch" class="lib">Nom de l'application</label>
-    					<input type="text" id="NomSearch" name="NomSearch" >
-    				
-
-    				
-    					<label for="EnseigneSearch" class="lib">Enseigne</label>
-    					<input type="text" id="EnseigneSearch" name="EnseigneSearch" >
-    			
-    					<label for="IrtSearch" class="lib">Code IRT</label>
-    					<input type="text" id="IrtSearch" name="IrtSearch" >
-    				
-    					<label for="TrigrammeSearch" class="lib">Trigramme</label>
-    					<input  type="text" id="TrigrammeSearch" name="TrigrammeSearch" >
-    				
-	                     <button class="btn btn-success" type="button" onclick="ChercherAppli();">Rechercher</button>
-	                     <br />
-
-	                     <br />
-	                     <br />	<table class="table"  id="TabResultats">
-	                     		
-	                     	</table>
-    				</div>
-
-    				<div id="element_to_pop_up2">
-    					<a class="b-close">x</a>
-							Calendrier pour l'application <span id="CalendarNomAppli"></span>
-							<table class="table"  id="calendar-sogessur">
-							<tr>
-								<td align="center"><label class="lib"> JF </label></td>
-								<td align="center"><label class="lib"> L<br/></label></td>
-			           			<td align="center"><label class="lib"> M<br/></label></td>
-			           			<td align="center"><label class="lib"> M<br/></label></td>
-			           			<td align="center"><label class="lib"> J<br/></label></td>
-			           			<td align="center"><label class="lib"> V<br/></label></td>
-			           			<td align="center"><label class="lib"> S<br/></label></td>
-			           			<td align="center"><label class="lib"> D<br/></label></td>
-							</tr>
-	                     	<tr>
-								<td align="center"><input type="text" id="Edit_O_Jf" name="Edit_OuvertJf" value="<?php getVarDate('Edit_OuvertJf',1);?>" style="width:53px;" placeholder="HH:MM" /></td>
-								<td align="center"><input type="text" id="Edit_O_Lu" name="Edit_OuvertLu" value="<?php getVarDate('Edit_OuvertLu',1);?>" style="width:53px;" placeholder="HH:MM" /></td>
-								<td align="center"><input type="text" id="Edit_O_Ma" name="Edit_OuvertMa" value="<?php getVarDate('Edit_OuvertMa',1);?>" style="width:53px;" placeholder="HH:MM" /></td>
-								<td align="center"><input type="text" id="Edit_O_Me" name="Edit_OuvertMe" value="<?php getVarDate('Edit_OuvertMe',1);?>" style="width:53px;" placeholder="HH:MM" /></td>
-								<td align="center"><input type="text" id="Edit_O_Je" name="Edit_OuvertJe" value="<?php getVarDate('Edit_OuvertJe',1);?>" style="width:53px;" placeholder="HH:MM" /></td>
-								<td align="center"><input type="text" id="Edit_O_Ve" name="Edit_OuvertVe" value="<?php getVarDate('Edit_OuvertVe',1);?>" style="width:53px;" placeholder="HH:MM" /></td>
-								<td align="center"><input type="text" id="Edit_O_Sa" name="Edit_OuvertSa" value="<?php getVarDate('Edit_OuvertSa',1);?>" style="width:53px;" placeholder="HH:MM" /></td>
-								<td align="center"><input type="text" id="Edit_O_Di" name="Edit_OuvertDi" value="<?php getVarDate('Edit_OuvertDi',1);?>" style="width:53px;" placeholder="HH:MM" /></td>
-							</tr>
-							<tr>
-								<td align="center"><input type="text" id="Edit_Jf" name="Edit_FermerJf" value="<?php getVarDate('Edit_FermerJf','');?>" style="width:53px;" placeholder="HH:MM" /></td>
-								<td align="center"><input type="text" id="Edit_Lu" name="Edit_FermerLu" value="<?php getVarDate('Edit_FermerLu','');?>" style="width:53px;" placeholder="HH:MM" /></td>
-								<td align="center"><input type="text" id="Edit_Ma" name="Edit_FermerMa" value="<?php getVarDate('Edit_FermerMa','');?>" style="width:53px;" placeholder="HH:MM" /></td>
-								<td align="center"><input type="text" id="Edit_Me" name="Edit_FermerMe" value="<?php getVarDate('Edit_FermerMe','');?>" style="width:53px;" placeholder="HH:MM" /></td>
-								<td align="center"><input type="text" id="Edit_Je" name="Edit_FermerJe" value="<?php getVarDate('Edit_FermerJe','');?>" style="width:53px;" placeholder="HH:MM" /></td>
-								<td align="center"><input type="text" id="Edit_Ve" name="Edit_FermerVe" value="<?php getVarDate('Edit_FermerVe','');?>" style="width:53px;" placeholder="HH:MM" /></td>
-								<td align="center"><input type="text" id="Edit_Sa" name="Edit_FermerSa" value="<?php getVarDate('Edit_FermerSa','');?>" style="width:53px;" placeholder="HH:MM" /></td>
-								<td align="center"><input type="text" id="Edit_Di" name="Edit_FermerDi" value="<?php getVarDate('Edit_FermerDi','');?>" style="width:53px;" placeholder="HH:MM" /></td>
-							</tr>	
-	                     	</table>
-    				</div>
-    			
-
-    			<div class="width100">
-	    			<div class=" width50 mr_10">
-	    				<label  class="lib"  for="Incident_Impact_dureereelle"> Durée réelle </label> 
-		    			<input type="text" name="Incident_Impact_dureereelle" id="Incident_Impact_dureereelle" value="<?php getVar('Incident_Impact_dureereelle'); ?>" >
-	    			</div>
-
-	    			<div class=" width50">
-	    				<label  class="lib"  for="Incident_Impact_jourhommeperdu"> Jour homme perdu</label> 
-		    			<input type="text" name="Incident_Impact_jourhommeperdu" id="Incident_Impact_jourhommeperdu" value="<?php getVar('Incident_Impact_jourhommeperdu'); ?>" >
-	    			</div>	    			
-	    		</div>
-
-	    		<div class="width100">
-	    			<div class=" width50 mr_10">
-	    				<label  class="lib"  for="Incident_Impact_sla"> SLA *</label> 
-		    			<select id="Incident_Impact_sla" name="Incident_Impact_sla" required>
-		    			<?php
-		    			Select('Incident_Impact_sla',$SLA);
-		    			?>
-		    			</select>
-	    			</div>
-
-	    			<div class=" width50">
-	    				<label  class="lib"  for="Incident_Impact_criticite"> Criticité</label> 
-		    			<select id="Incident_Impact_criticite" name="Incident_Impact_criticite">
-		    			<?php
-		    			Select('Incident_Impact_criticite',$CRITICITE);
-		    			?>
-		    			</select>
-	    			</div>	    			
-	    		</div>
-
-    		</div>
-
-    		<div class="width100">
-	    		<div class=" width50 mr_35">
-	                <label class="lib" for="Incident_Impact_description">Description de l'impact *</label>
-	                <textarea id="Incident_Impact_description" name="Incident_Impact_description" required maxlength="4000"><?php getVar('Incident_Impact_description'); ?></textarea>
-	    		</div>
-	    		<div class=" width50">
+		<?php require_once('../inc/impact.inc.php'); ?>
+		<div class=" width50">
 	    		<label class="lib" style="float:left;">Chronogramme</label> 
 	    		<input type="button" value="+" class="btn-plus" id="btn_chrono">
 
@@ -519,9 +344,9 @@ require_once('../inc/search.inc.php');
 
 	    		</div>
     		</div>
-    	</fieldset>
-
+    	</fieldset>  		
 		<input type="submit" value="Sauvegarder" name="submit" />
+
 	</div>
 
 </div>

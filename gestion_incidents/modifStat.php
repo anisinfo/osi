@@ -3,7 +3,7 @@ session_start();
 if(!isset($_SESSION['auth'])){
 		
 			 	 $_SESSION['flash']['danger'] ="Vous devez être connecté!"; 
-			 	 header('Location:index.php');
+			 	 header('Location:../index.php');
 			 	 die();
 	}
 
@@ -39,9 +39,18 @@ if (!empty($_POST)) {
 		$errors['refchangement']="Vous devez remplir le champ reférencement changement!";
 	}
 	if (empty($errors)) {
-	//	debug($idIncident);
+	$listeCheck='';
+	for($i=0;$i< count($STATGEOL);$i++)
+	{
+		
+		if(isset($_POST['stat_zonegeo_'.$i]))
+		{
+			$listeCheck.=$i.',';
+		}
+
+	}
 	$stat= new Stat();
-    $stat->SetParam($idStat,$idIncident,$_POST['refchangement'],$_POST['stat_publicationIR'],$_POST['stat_publicationPM'],$_POST['stat_typecause'],$_POST['stat_typecause_second'],$_POST['stat_typologiegts'],$_POST['stat_kindImpact'],$_POST['stat_equipeResp'],$_POST['fournisseurResp'],$_POST['statPowerprod'],$_POST['statLegacy'],$_POST['stat_Composant'],$_POST['Composant_complement'],$_POST['stat_zonegeo']);
+    $stat->SetParam($idStat,$idIncident,$_POST['refchangement'],$_POST['stat_publicationIR'],$_POST['stat_publicationPM'],$_POST['stat_typecause'],$_POST['stat_typecause_second'],$_POST['stat_typologiegts'],$_POST['stat_kindImpact'],$_POST['stat_equipeResp'],$_POST['fournisseurResp'],$_POST['statPowerprod'],$_POST['statLegacy'],$_POST['stat_Composant'],$_POST['Composant_complement'],$listeCheck);
     $stat->Modifier();
     $_SESSION['flash']['success']="Le Stat est bien modifié!";
 	}
@@ -60,7 +69,7 @@ require_once('../inc/header.inc.php');
 
 
 <form action="" method="POST">
-	<div class="bloc">
+	
 	<div class="bloc">
 	<div class="width100 input-group-addon">
 	<span class="fl-left" style=" line-height:2.5;">Edition de l'incident N° <strong> <?=$incident->getIncident(); ?></strong></span>
@@ -182,7 +191,9 @@ require_once('../inc/header.inc.php');
 	    		</div>
 	    		<div class="width100">
                 <label class="lib" for="stat_zonegeo">Zone géographique</label>
-                <textarea id="stat_zonegeo" name="stat_zonegeo"  maxlength="4000"><?php getVarUpdate('stat_zonegeo',$stat->getZoneGeographique()); ?></textarea>
+               <?php
+               getCheckListeUpdate('stat_zonegeo',$stat->getZoneGeographique(),$STATGEOL); 
+               ?>
     		</div>
 
     		</div>
@@ -190,8 +201,9 @@ require_once('../inc/header.inc.php');
     		
 
     	<input type="submit" value="Soumettre la requête" name="submit" />
+    	<input type="button" value="Annuler" onclick="javascript:document.location.href='modif.php?id=<?= $_GET['idIncident'];?>'" />
 	</div>
-	</div>
+
 
 </form>
 	<?php 

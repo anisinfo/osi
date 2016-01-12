@@ -34,23 +34,8 @@
 	{
 		// Insertion du partie commun d'un incidents
 		$rq="INSERT INTO ".SCHEMA.".INCIDENT (INCIDENT,TITRE,DEPARTEMENT,STATUT,PRIORITE,AFFECTEDUSER,DATEDEBUT,DATEFIN,DUREE,DESCRIPTION,RISQUEAGGRAVATION,CAUSE,INCIDENTSCONNEXES,PROBLEME,RETABLISSEMENT,RESPONSABILITE,SERVICEACTEUR,LOCALISATION,USERACTION,DATEPUBLICATION,COMMENTAIRE,DEJAAPPARU,PREVISIBLE,CREATED,UPDATED)";
-		$rq.=" VALUES ('".urlencode($this->getIncident())."','".urlencode($this->getTitre())."','".urlencode($this->getDepartement())."','".$this->getStatut()."','".$this->getPriorite()."','".urlencode($this->getUtilisImpacte())."',TO_TIMESTAMP('".$this->getDateDebut()."','DD/MM/YYYY HH24:MI'),TO_TIMESTAMP('".$this->getDateFin()."','DD/MM/YYYY HH24:MI'),'".$this->getDuree()."',";
-		$rq.="'".urlencode($this->getDescripIncident())."',".$this->getRisqueAggravation().",'".urlencode($this->getCause())."','".$this->getConnexe()."','".urlencode($this->getProbleme())."','".urlencode($this->getRetablissement())."','".$this->getResponsabilite()."','".$this->getActeur()."','".urlencode($this->getLocalisation())."','".urlencode($this->getActionUtlisateur())."',TO_TIMESTAMP('".$this->getDateCreci()."','DD/MM/YYYY'),'".urlencode($this->getCommentaire())."',".$this->getDejaApparu().",".$this->getPrevisible().",sysdate,sysdate)";
-        // Insertion de l'application impactée
-        //$rq.=parent::creer();
-     /*   try
-            {
-                // connexion à la base Oracle et création de l'objet
-                $connexion = new PDO(LIEN_BASE, SCHEMA_LOGIN, SCHEMA_PASS);
-            }
-            catch (PDOException $erreur)
-            {
-                echo $erreur->getMessage();
-            }*/
-
-       //     $voiture = $connexion->query($rq);
-         //   debug($voiture);
-		
+		$rq.=" VALUES ('".htmlentities($this->getIncident(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".htmlentities($this->getTitre(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".htmlentities($this->getDepartement(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".$this->getStatut()."','".$this->getPriorite()."','".htmlentities($this->getUtilisImpacte(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',TO_TIMESTAMP('".$this->getDateDebut()."','DD/MM/YYYY HH24:MI'),TO_TIMESTAMP('".$this->getDateFin()."','DD/MM/YYYY HH24:MI'),'".$this->getDuree()."',";
+		$rq.="'".htmlentities($this->getDescripIncident(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',".$this->getRisqueAggravation().",'".htmlentities($this->getCause(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".$this->getConnexe()."','".htmlentities($this->getProbleme(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".htmlentities($this->getRetablissement(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".$this->getResponsabilite()."','".$this->getActeur()."','".htmlentities($this->getLocalisation(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".htmlentities($this->getActionUtlisateur(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',TO_TIMESTAMP('".$this->getDateCreci()."','DD/MM/YYYY'),'".htmlentities($this->getCommentaire(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',".$this->getDejaApparu().",".$this->getPrevisible().",sysdate,sysdate)";
 		$db = new db();
 		$db->db_connect();
 		$db->db_query($rq);
@@ -64,7 +49,7 @@
 	}
 	
 
-	public function setIncident($id,$idStat,$incident,$titre,$departement,$statut,$priorite,$affectesuser,$datedebut,$datefin,$duree,$description,$risqueAggravation,$cause,$incidentsconnexes,$probleme,$retablissement,$responsabilite,$serviceacteur,$localisation,$useraction,$creci,$commentaire,$dejaApparu,$previsible,$user,$estOuvert)
+	public function setIncident($id,$idStat,$incident,$titre,$departement,$statut,$priorite,$affectesuser,$datedebut,$datefin,$duree,$description,$risqueAggravation,$cause,$incidentsconnexes,$probleme,$retablissement,$responsabilite,$serviceacteur,$localisation,$useraction,$creci,$commentaire,$dejaApparu,$previsible)
 	{
 		$this->_setNumero($id);
         $this->_setIdStat($idStat);
@@ -91,8 +76,6 @@
 		$this->_setCommentaire($commentaire);
 		$this->_setDejaApparu($dejaApparu);
 		$this->_setPrevisible($previsible);
-        $this->_setUser($user);
-        $this->_setEstOuvert($estOuvert);
 
 return $this;
 	}
@@ -103,28 +86,20 @@ return $this;
     */
     public function chargerIncident($id)
     {
-        $req="SELECT ID,STATISTIQUE_ID,INCIDENT,TITRE,DEPARTEMENT,STATUT,PRIORITE,AFFECTEDUSER,TO_CHAR(DATEDEBUT,'DD/MM/YYYY HH24:MI'),TO_CHAR(DATEFIN,'DD/MM/YYYY HH24:MI'),DUREE,DESCRIPTION,RISQUEAGGRAVATION,CAUSE,INCIDENTSCONNEXES,PROBLEME,RETABLISSEMENT,RESPONSABILITE,SERVICEACTEUR,LOCALISATION,USERACTION,TO_CHAR(DATEPUBLICATION,'DD/MM/YYYY'),COMMENTAIRE,DEJAAPPARU,PREVISIBLE,USERNAME FROM ".SCHEMA.".INCIDENT ";
-        $req.="LEFT JOIN ".SCHEMA.".INCIDENT_OUVERT ON INCIDENT.ID = INCIDENT_OUVERT.IDINCIDENT ";
+        $req="SELECT ID,STATISTIQUE_ID,INCIDENT,TITRE,DEPARTEMENT,STATUT,PRIORITE,AFFECTEDUSER,TO_CHAR(DATEDEBUT,'DD/MM/YYYY HH24:MI'),TO_CHAR(DATEFIN,'DD/MM/YYYY HH24:MI'),DUREE,DESCRIPTION,RISQUEAGGRAVATION,CAUSE,INCIDENTSCONNEXES,PROBLEME,RETABLISSEMENT,RESPONSABILITE,SERVICEACTEUR,LOCALISATION,USERACTION,TO_CHAR(DATEPUBLICATION,'DD/MM/YYYY'),COMMENTAIRE,DEJAAPPARU,PREVISIBLE FROM ".SCHEMA.".INCIDENT ";
         $req.="WHERE ID=".$id;
       
        $db= new db();
 	   $db->db_connect();
 	   $db->db_query($req);
 	   $res=$db->db_fetch_array();
-
-       if (empty($res[0][24])) {
-            $rq="INSERT INTO ".SCHEMA.".INCIDENT_OUVERT (IDINCIDENT,USERNAME,CREATED) ";
-            $rq.="VALUES (".$id.",'".$this->getUser()."',sysdate) ";
-             $db->db_query($rq);
-             $userOpen=$this->getUser();
-       }else $userOpen=$res[0][24];
-
-        $estOuvert=(($userOpen != $this->getUser())?true:false);
-	    $this->setIncident($res[0][0],$res[0][1],urldecode($res[0][2]),urldecode($res[0][3]),urldecode($res[0][4]),$res[0][5],$res[0][6],urldecode($res[0][7]),$res[0][8],$res[0][9],$res[0][10],urldecode($res[0][11]),$res[0][12],urldecode($res[0][13]),urldecode($res[0][14]),urldecode($res[0][15]),urldecode($res[0][16]),$res[0][17],urldecode($res[0][18]),urldecode($res[0][19]),$res[0][20],urldecode($res[0][21]),$res[0][22],$res[0][23],$res[0][24],$userOpen,$estOuvert);
+	   $this->setIncident($res[0][0],$res[0][1],$res[0][2],$res[0][3],$res[0][4],$res[0][5],$res[0][6],$res[0][7],$res[0][8],$res[0][9],$res[0][10],$res[0][11],$res[0][12],$res[0][13],$res[0][14],$res[0][15],$res[0][16],$res[0][17],$res[0][18],$res[0][19],$res[0][20],$res[0][21],$res[0][22],$res[0][23],$res[0][24]);
         $db->close();
         return $this; 
               
     }
+
+
 
     public function getIdSearch()
     {
@@ -171,26 +146,26 @@ return $this;
 	{
 		$rq="UPDATE ".SCHEMA.".INCIDENT SET ";
 		$rq.="TITRE='".$this->getTitre()."',";
-        $rq.="INCIDENT='".urlencode($this->getIncident())."',";
-		$rq.="DEPARTEMENT='".urlencode($this->getDepartement())."',";
+        $rq.="INCIDENT='".htmlentities($this->getIncident(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
+		$rq.="DEPARTEMENT='".htmlentities($this->getDepartement(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
 		$rq.="STATUT='".$this->getStatut()."',";
 		$rq.="PRIORITE='".$this->getPriorite()."',";
 		$rq.="AFFECTEDUSER='".$this->getUtilisImpacte()."',";
 		$rq.="DATEDEBUT=TO_TIMESTAMP('".$this->getDateDebut()."','DD/MM/YYYY HH24:MI'),";
 		$rq.="DATEFIN=TO_TIMESTAMP('".$this->getDateFin()."','DD/MM/YYYY HH24:MI'),";
 		$rq.="DUREE='".$this->getDuree()."',";
-		$rq.="DESCRIPTION='".urlencode($this->getDescripIncident())."',";
+		$rq.="DESCRIPTION='".htmlentities($this->getDescripIncident(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
 		$rq.="RISQUEAGGRAVATION='".$this->getRisqueAggravation()."',";
-		$rq.="CAUSE='".urlencode($this->getCause())."',";
-		$rq.="INCIDENTSCONNEXES='".urlencode($this->getConnexe())."',";
-		$rq.="PROBLEME='".urlencode($this->getProbleme())."',";
-		$rq.="RETABLISSEMENT='".urlencode($this->getRetablissement())."',";
+		$rq.="CAUSE='".htmlentities($this->getCause(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
+		$rq.="INCIDENTSCONNEXES='".htmlentities($this->getConnexe(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
+		$rq.="PROBLEME='".htmlentities($this->getProbleme(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
+		$rq.="RETABLISSEMENT='".htmlentities($this->getRetablissement(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
 		$rq.="RESPONSABILITE='".$this->getResponsabilite()."',";
 		$rq.="SERVICEACTEUR='".$this->getActeur()."',";
-		$rq.="LOCALISATION='".urlencode($this->getLocalisation())."',";
-		$rq.="USERACTION='".urlencode($this->getActionUtlisateur())."',";
+		$rq.="LOCALISATION='".htmlentities($this->getLocalisation(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
+		$rq.="USERACTION='".htmlentities($this->getActionUtlisateur(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
 		$rq.="DATEPUBLICATION=TO_TIMESTAMP('".$this->getDateCreci()."','DD/MM/YYYY'),";
-		$rq.="COMMENTAIRE='".urlencode($this->getCommentaire())."',";
+		$rq.="COMMENTAIRE='".htmlentities($this->getCommentaire(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
 		$rq.="DEJAAPPARU='".$this->getDejaApparu()."',";
 		$rq.="PREVISIBLE='".$this->getPrevisible()."',";
 		$rq.="UPDATED=sysdate";
@@ -201,10 +176,6 @@ return $this;
 		$base= new db();
 		$base->db_connect();
 		$base->db_query($rq);
-
-        $rq="DELETE FROM ".SCHEMA.".INCIDENT_OUVERT";
-        $rq.=" WHERE IDINCIDENT=".$this->getNumero();
-        $base->db_query($rq);
         $base->close();
 	}
 	public function sauvegarder()
@@ -215,17 +186,15 @@ return $this;
 			return $this->Modifier();			
 	}
 
-
-    public function Liberer()
+     public function Supprimer()
     {
-        $rq="DELETE FROM ".SCHEMA.".INCIDENT_OUVERT";
-        $rq.=" WHERE IDINCIDENT=".$this->getNumero();
+        $rq="DELETE FROM ".SCHEMA.".INCIDENT";
+        $rq.=" WHERE ID=".$this->getNumero();
         $base= new db();
         $base->db_connect();
         $base->db_query($rq);
         $base->close();
     }
-
     /**
      * Gets the value of _numero.
      *

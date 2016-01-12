@@ -12,27 +12,6 @@ function supprimer(adresse){
 		window.location=adresse;
 	}
 }
-
-//var options = {
-
- // url: "../inc/applications.json.php?name=appli",
-
-//  getValue: "NAME",
-
-//  list: {	
-//    match: {
-//      enabled: true
-//    }
-//  },
-
-//  theme: "square"
-//};
-
-//$("#Incident_Impact_application_libelle").easyAutocomplete(options);
-
-// Semicolon (;) to ensure closing of earlier scripting
-    // Encapsulation
-    // $ is assigned to jQuery
     ;(function($) {
         $(function() {
             $('#my-button').bind('click', function(e) {
@@ -113,9 +92,6 @@ function myFunction(arr) {
 
     out +='</tbody>';
     $('#TabResultats').append(out);
-
-   
-  //  document.getElementById("id01").innerHTML = out;
 }
 
 function ChercherAppli()
@@ -140,6 +116,45 @@ xmlhttp.open("GET", url, true);
 xmlhttp.send();
 } 
 
+
+function CalculeDuree()
+{
+  var dateDeb=$('#Incident_Impact_datedebut').val();
+  var dateFin=$('#Incident_Impact_datefin').val();
+  var idAppli=$('#idAppli').val();
+  
+  var xmlhttp = new XMLHttpRequest();
+  var url = "../inc/duree.inc.php?td1="+dateDeb+"&td2="+dateFin+"&idappli="+idAppli;
+
+xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        var myArr = JSON.parse(xmlhttp.responseText);
+        $('#Incident_Impact_dureereelle').val(myArr);
+
+    }
+};
+xmlhttp.open("GET", url, true);
+xmlhttp.send();
+} 
+
+function CalculeDureeIncident()
+{
+  var dateDeb=$('#debutincident').val();
+  var dateFin=$('#finincident').val();
+  
+  var xmlhttp = new XMLHttpRequest();
+  var url = "../inc/duree.inc.php?td1="+dateDeb+"&td2="+dateFin;
+
+xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        var myArr = JSON.parse(xmlhttp.responseText);
+        $('#Incident_duree').val(myArr);
+
+    }
+};
+xmlhttp.open("GET", url, true);
+xmlhttp.send();
+} 
 
 function RemplirAppli(id)
 {
@@ -389,3 +404,29 @@ function search()
   var id= $('#numincident').val();
   document.location.href="modif.php?NumeroIncident="+id;
 }
+
+function EnvoyerMail(id)
+      {
+          if(window.navigator.userAgent.indexOf('MSI') != -1)
+      {
+        try
+              {
+                var outlookApp = new ActiveXObject("Outlook.Application");
+                var nameSpace = outlookApp.getNameSpace("MAPI");
+                mailFolder = nameSpace.getDefaultFolder(6);
+                mailItem = mailFolder.Items.add('IPM.Note.FormA');
+                mailItem.Subject="Comme a chaud pour l'incident N° :"+id;
+                mailItem.To = "";
+                mailItem.HTMLBody = $('#corp').val();
+                mailItem.display (0); 
+              }
+            catch(e)
+            {
+              alert(e); 
+            }
+      }
+      else
+      {
+        document.location.href ="commachaud.php?idIncident="+id;
+      }
+      }

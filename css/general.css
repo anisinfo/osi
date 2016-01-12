@@ -24,3 +24,57 @@ p {font-size: 5rem;}
     }
     .test {background-color: green;}
 }
+
+#element_to_pop_up, #element_to_pop_up2, #element_to_pop_up3 { 
+    background-color:#fff;
+    border-radius:15px;
+    color:#000;
+    display:none; 
+    padding:20px;
+    min-width:700px;
+    min-height: 180px;
+}
+.b-close{
+    cursor:pointer;
+    position:absolute;
+    right:10px;
+    top:5px;
+}
+.b-close2{ position:relative; right: auto; top: auto;}
+.btn-ajout{
+
+  position: relative;
+
+}
+
+      .bloc{ width:94%; margin:0 auto; overflow:hidden;}
+      .bloc label.lib{text-align: left; float: none; font-weight: bold;}
+      .fl-left{ float: left;}
+       .fl-left .btn{   padding: 4px 12px;}
+      .width100{width:100%; float: left;    margin: 5px 0; padding: 5px;}
+      .bcg{ background: whitesmoke;border: 1px solid #ccc;
+    border-radius: 4px;}
+      .width50{width:48%; float:left;}
+      .width12{width:12%; float:left; overflow: hidden;height: 50px;}
+      .width20{width:23%; float:left;}
+      .bloc>.width50{width:46%; float:left; margin:0 2%;}
+      .bloc input[type="text"], .bloc input[type="password"],
+      .bloc input[type="date"], .bloc input[type="datetime"], 
+      .bloc input[type="datetime-local"], .bloc input[type="month"], 
+      .bloc input[type="week"], .bloc input[type="email"],
+       .bloc input[type="number"], .bloc input[type="search"], .bloc input[type="button"],
+       .bloc input[type="submit"], .bloc input[type="tel"], .bloc input[type="time"], 
+       .bloc input[type="url"], textarea, .bloc select { float:left; margin-right: 5px;  height: 30px; margin-bottom: 0;}
+       .bloc input[type="number"]{ width:48%; margin-right: 35px;}
+       .mr_35{margin-right: 30px;}
+       .mr_10{margin-right: 14px;}
+       .mr_7{margin-right: 5px;}
+       .bloc input[type="number"],.bloc select{ padding:0;}
+       .bloc fieldset{ padding: 5px 0;    width: 98%; margin-left: 10px; background: #e7e7e7;}
+       .bloc .fl-right{ float: right; margin-right: 25px;}
+       .bloc .fl-right span{ margin-right: 20px;}
+       .right{ float: right;}
+       .bloc fieldset span{ font-size: 11px}
+       input[type="button"].btn-plus{    float: left;    height: 20px;    margin-left: 25px;}
+       .bloc fieldset legend{ font-size: 14px; border: 1px solid #d3d3d3;; background: #eee; text-align: center;border-bottom: none;padding: 10px;}
+  
