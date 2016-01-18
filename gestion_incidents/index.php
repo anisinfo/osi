@@ -5,30 +5,20 @@ require_once('../inc/config.inc.php');
 require_once('../inc/fonctions.inc.php');
 require_once('../classes/db.php');
 require_once('../classes/incidents.php');
-require_once('../classes/Impact.php');
-require_once('../classes/Stat.php');
 
 if(isset($_GET['supprimer']))
 {
 	$incidents = new incidents();
-	$userConnected=$_SESSION['auth'][2].' '.$_SESSION['auth'][1];	
-	$incidents->_setUser($userConnected);
 	$incidents->chargerIncident($_GET['id']);
-	if($incidents->getIdStat())
-	{
-		$stat= new Stat();
-		$stat->_setId($incidents->getIdStat());
-		$stat->Supprimer();
-	}
-
-	$impact = new Impact();
-	$impact->_setIncidentId($_GET['id']);
-	$impact->supprimerTout();
-
 	$incidents->Supprimer();
-	$_SESSION['flash']['success']="L'incident est supprimé!";
 
+	$contenu_fichier_json=file_get_contents('../inc/TraceFiche.json');
+	$tr = json_decode($contenu_fichier_json, true);
+	unset($tr[$_GET['id']]);
+	$json=json_encode($tr);
+	file_put_contents('../inc/TraceFiche.json', $json);
 	
+	$_SESSION['flash']['success']="L'incident est bien supprimé!";	
 }
 $req="SELECT ID,INCIDENT FROM ".SCHEMA.".INCIDENT";
 $req.=" ORDER BY ID DESC";

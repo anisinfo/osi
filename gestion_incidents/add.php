@@ -49,8 +49,8 @@ if(!empty($_POST)){
 	if(empty($_POST['Incident_cause'])){
 		$errors['Incident_cause']="Vous devez remplir le champ cause!";
 	}
-	if(empty($_POST['Incident_retablissement'])){
-		$errors['Incident_retablissement']="Vous devez sélectionner une valeur de champ Retablissement!";
+	if(empty($_POST['Incident_suivi'])){
+		$errors['Incident_suivi']="Vous devez sélectionner une valeur de champ Suivi!";
 	}
 
 	if(empty($_POST['Incident_Impact_datedebut'])){
@@ -94,7 +94,7 @@ if(!empty($_POST)){
 	if(empty($errors))
 	{
 	$incident = new incidents();
-	$incident->setIncident(NULL,'',$_POST['IdIncident'],$_POST['titreincident'],$_POST['Incident_departement'],$_POST['Incident_statut'],$_POST['Incident_priorite'],$_POST['incidentuserimpacte'],$_POST['debutincident'],$_POST['finincident'],$_POST['Incident_duree'],$_POST['IncImpact_description'],$_POST['Incident_risqueAggravation'],$_POST['Incident_cause'],$_POST['incidentConnex'],$_POST['incidentprobleme'],$_POST['Incident_retablissement'],$_POST['incidentresponsabilite'],$_POST['incidentserviceacteur'],$_POST['Incident_localisation'],$_POST['Incident_useraction'],$_POST['incidentdatecreci'],$_POST['Incident_commentaire'],$_POST['Incident_dejaApparu'],$_POST['Incident_previsible']);
+	$incident->setIncident(NULL,'',$_POST['IdIncident'],$_POST['titreincident'],$_POST['Incident_departement'],$_POST['Incident_statut'],$_POST['Incident_priorite'],$_POST['incidentuserimpacte'],$_POST['debutincident'],$_POST['finincident'],$_POST['Incident_duree'],$_POST['IncImpact_description'],$_POST['Incident_risqueAggravation'],$_POST['Incident_cause'],$_POST['incidentConnex'],$_POST['incidentprobleme'],$_POST['Incident_retablissement'],$_POST['incidentresponsabilite'],$_POST['incidentserviceacteur'],$_POST['Incident_localisation'],$_POST['Incident_useraction'],$_POST['incidentdatecreci'],$_POST['Incident_commentaire'],$_POST['Incident_dejaApparu'],$_POST['Incident_previsible'],$_POST['Incident_suivi'],$_POST['incidentdatedecision']);
 	$id_incident=$incident->sauvegarder();
 	$_SESSION['flash']['success'] =" L'incident est bien ajouté."; 
 	 // Ajoutde l'impact
@@ -142,15 +142,24 @@ if(!empty($errors)){?>
 		</ul>
 	</div>
 
-<?php }
-?>
+<?php } ?>
 <form action="" method="POST">
 <div class="bloc">
-<?php
+<?php 
 $incident= new incidents();
+$incident->chargerIncident($_GET['IdIncident']);
 require_once('../inc/search.inc.php');
 ?>
-
+ 	 <a class="btn btn-success disabled"  align="left" href="add.php?IdIncident=<?= $_GET['IdIncident'];?>">Ajouter Incident</a>	
+	 <a class="btn btn-success" href="ListeImpact.php?idIncident=<?php echo $_GET['IdIncident']; ?>">Impacts</a>
+	 <?php
+	 $statLink=($incident-> getIdStat())?'modifStat.php?idIncident='.$_GET['IdIncident'].'&idStat='.$incident->getIdStat():'stat.php?idIncident='.$_GET['IdIncident'];
+	 ?> 
+	  <a class="btn btn-success" href="<?php echo $statLink; ?>">Stat</a>
+	  <a  class="btn btn-success" href="javascript:EnvoyerMail('<?= $_GET['IdIncident'];?>')" >Comm à chaud</a>
+	  <a class="btn btn-danger" href="javascript:supprimer('index.php?id=<?= $_GET['IdIncident'];?>&supprimer')" >Supprimer</a>
+	  <a class="btn btn-success"  href="impact.php?idIncident=<?= $_GET['IdIncident'];?>">Ajouter un impact</a>
+	  <a class="btn btn-success "  href="modif.php?id=<?= $_GET['IdIncident']; ?>">Retour à l'incident</a>
 	<div class="width100 bcg">
 		<div class=" width50 mr_35">
 			<div class="width100">
@@ -241,8 +250,13 @@ require_once('../inc/search.inc.php');
 	  		</div>
 
 	  		<div class=" width100">
-	  			<label  class="lib" for="incidentdatecreci"> Date du Creci</label> 
+	  			<label  class="lib" for="incidentdatecreci"> Date du publication</label> 
 	  			<input type="text"  name="incidentdatecreci" id="incidentdatecreci" value="<?php getVar('incidentdatecreci'); ?>" >
+	  		</div>
+
+	  		<div class=" width100">
+	  			<label  class="lib" for="incidentdatedecision"> Date du prise de décision</label> 
+	  			<input type="text"  name="incidentdatedecision" id="incidentdatedecision" value="<?php getVar('incidentdatedecision'); ?>" >
 	  		</div>
 
 	  		<div class=" width100">
@@ -282,9 +296,14 @@ require_once('../inc/search.inc.php');
   			</div>
 
   			<div class="width100">
-  				<label class="lib" for="Incident_retablissement">Retablissement *</label>
-  				<select id="Incident_retablissement" name="Incident_retablissement" required>
-				<?php Select('Incident_retablissement',$RETABLISSEMENT); ?>
+  				<label class="lib" for="Incident_retablissement">Retablissement</label>
+  				<textarea id="Incident_retablissement" name="Incident_retablissement"><?php getVar('Incident_retablissement'); ?></textarea>
+  			</div>
+
+  			<div class="width100">
+  				<label class="lib" for="Incident_suivi">Suivi *</label>
+  				<select id="Incident_suivi" name="Incident_suivi" required>
+				<?php Select('Incident_suivi',$SUIVI); ?>
 				</select>
   			</div>
 

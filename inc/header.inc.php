@@ -28,7 +28,11 @@ session_start();
      <link rel="stylesheet" type="text/css" href="<?php echo RACINE; ?>datetimepicker/jquery.datetimepicker.css"/>
 
     <!-- Custom styles for this template jquery-1.11.2.min.js-->
-    
+    <script type="text/javascript">
+    var Destinataire="<?= DESTINATAIRE;?>";
+    var DestinataireCc="<?= DESTINATAIRECC;?>";
+    var DestinataireBcc="<?= DESTINATAIREBCC;?>";
+    </script>
     <script src="<?php echo RACINE; ?>js/jquery-1.11.3.min.js"></script>
     
     <script src="<?php echo RACINE; ?>js/bootstrap.js"></script>

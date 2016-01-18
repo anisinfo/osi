@@ -34,9 +34,9 @@ Set objOL = CreateObject("Outlook.Application")
     content = ""
 	content = content & "<table border='1' cellspacing='0' cellpadding='0' style='border:outset #767676 3.0pt' width='100%'>"
 	content = content & "<tbody><tr>"
-	content = content & "<td style='background: <?= $STATUTCOLOR[$incident->getStatut()-1];?>;padding:.75pt .75pt .75pt .75pt' colspan='2' align='center'>"			
+	content = content & "<td style='background: <?= $STATUTCOLOR[$incident->getStatut()];?>;padding:.75pt .75pt .75pt .75pt' colspan='2' align='center'>"			
 	content = content & "<b><span style='font-size:18.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;'>"
-	content = content & "INCIDENT : <?= $STATUT[$incident->getStatut()-1]; ?></span></b></td></tr><tr>"
+	content = content & "INCIDENT : <?= $STATUT[$incident->getStatut()]; ?></span></b></td></tr><tr>"
 	content = content & "<td style='padding:.75pt .75pt .75pt .75pt' colspan='2'  align='center'>"
 	content = content & "<span style='font-size:18.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:black'>"
 	content = content & "<?= htmlentities($incident->getTitre()); ?>"
@@ -59,7 +59,7 @@ Set objOL = CreateObject("Outlook.Application")
 	content = content & "<b><span style='font-size:11.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:black'>&nbsp;Priorit&eacute;</span></b>"
 	content = content & "</td>"
 	content = content & "<td width='30%' style='width:30.0%;background:#dedfde;padding:.75pt .75pt .75pt .75pt'>"
-	content = content & "<span style='font-size:11.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:crimson'><?= $PRIORITE[$incident->getPriorite()-1];?></span>"
+	content = content & "<span style='font-size:11.0pt;font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;color:crimson'><?php if($incident->getPriorite()) echo $PRIORITE[$incident->getPriorite()];?></span>"
 	content = content & "</td>"
 	content = content & "</tr><tr>"
 	content = content & "<td style='background:#a5a6a5;padding:.75pt .75pt .75pt .75pt' colspan='2'>"
@@ -111,11 +111,11 @@ Set objOL = CreateObject("Outlook.Application")
 	content = content & "<p class='MsoNormal' align='center' style='text-align:center'>Num&eacute;ro Incident : <span style='color:#1f497d'><?= $incident->getIncident();?></span></p>"
 	content = content & "</td></tr></tbody></table>"
 With objMail
-		.SentOnBehalfOfName = "QUALITY OF SERVICE GTS For-Retail ResgGtsRetOpmTig"
-		.Subject = ""
-		.To = "QUALITE SIOP"
-		.Cc = ""
-		.BCC = ""
+		.SentOnBehalfOfName = ""
+		.Subject = "Comme a chaud pour l'incident N° <?= $incident->getNumero();?>"
+		.To = "<?= DESTINATAIRE; ?>"
+		.Cc = "<?= DESTINATAIRECC; ?>"
+		.BCC = "<?= DESTINATAIREBCC; ?>"
 		.HTMLBody = content
 		.Display
 	End With		

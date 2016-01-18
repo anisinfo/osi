@@ -22,6 +22,7 @@ require_once('../classes/db.php');
 require_once('../classes/Impact.php');
 require_once('../classes/Application.php');
 require_once('../classes/incidents.php');
+require_once('../classes/Chronogramme.php');
 
 $Impacte= new Impact();
 
@@ -87,6 +88,17 @@ require_once('../inc/header.inc.php');
 	<div class="bloc">
 	<?php
 	require_once('../inc/search.inc.php'); ?>
+	<?php
+	 $statLink=($incident-> getIdStat())?'modifStat.php?idIncident='.$numincident.'&idStat='.$incident->getIdStat():'stat.php?idIncident='.$numincident;
+	?>
+	<a class="btn btn-success"  align="left" href="add.php?IdIncident=<?= $numincident; ?>">Ajouter Incident</a>
+	<a class="btn btn-success" href="ListeImpact.php?idIncident=<?php echo $numincident; ?>">Impacts</a>
+	<a class="btn btn-success" href="<?php echo $statLink; ?>">Stat</a>
+	<a  class="btn btn-success" href="javascript:EnvoyerMail('<?= $numincident;?>')" >Comm à chaud</a>
+	<a class="btn btn-danger" href="javascript:supprimer('index.php?id=<?= $numincident;?>&supprimer')" >Supprimer l'incident</a>
+	<a class="btn btn-success disabled"  href="">Ajouter un impact</a>
+	<a class="btn btn-success"  href="modif.php?id=<?= $numincident;?>">Retour à l'incident</a>
+
 	<div class="width100 input-group-addon">
 	<span class="fl-left" style=" line-height:2.5;">
 	      Ajout pour l'incident N°:<strong><?= $incident->getIncident() ?></strong>
@@ -110,6 +122,10 @@ require_once('../inc/header.inc.php');
 
 </form>
 	<?php 
+$impacte= new Impact();
+$impacte->chargerFirstIncident($numincident);	
+$idIncident=$numincident;	
+require_once('../inc/commachaud.inc.php');	
 require_once('../inc/footer.inc.php');
 ?>
 

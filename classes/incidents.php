@@ -28,14 +28,16 @@
     private $_incident;
     private $_user;
     private $_estOuvert=false;
+    private $_suivi;
+    private $_dateDecision;
 	
 
 	public function CreateIncident()
 	{
 		// Insertion du partie commun d'un incidents
-		$rq="INSERT INTO ".SCHEMA.".INCIDENT (INCIDENT,TITRE,DEPARTEMENT,STATUT,PRIORITE,AFFECTEDUSER,DATEDEBUT,DATEFIN,DUREE,DESCRIPTION,RISQUEAGGRAVATION,CAUSE,INCIDENTSCONNEXES,PROBLEME,RETABLISSEMENT,RESPONSABILITE,SERVICEACTEUR,LOCALISATION,USERACTION,DATEPUBLICATION,COMMENTAIRE,DEJAAPPARU,PREVISIBLE,CREATED,UPDATED)";
+		$rq="INSERT INTO ".SCHEMA.".INCIDENT (INCIDENT,TITRE,DEPARTEMENT,STATUT,PRIORITE,AFFECTEDUSER,DATEDEBUT,DATEFIN,DUREE,DESCRIPTION,RISQUEAGGRAVATION,CAUSE,INCIDENTSCONNEXES,PROBLEME,RETABLISSEMENT,RESPONSABILITE,SERVICEACTEUR,LOCALISATION,USERACTION,DATEPUBLICATION,COMMENTAIRE,DEJAAPPARU,PREVISIBLE,CREATED,UPDATED,SUIVI,DATE_DECISION)";
 		$rq.=" VALUES ('".htmlentities($this->getIncident(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".htmlentities($this->getTitre(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".htmlentities($this->getDepartement(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".$this->getStatut()."','".$this->getPriorite()."','".htmlentities($this->getUtilisImpacte(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',TO_TIMESTAMP('".$this->getDateDebut()."','DD/MM/YYYY HH24:MI'),TO_TIMESTAMP('".$this->getDateFin()."','DD/MM/YYYY HH24:MI'),'".$this->getDuree()."',";
-		$rq.="'".htmlentities($this->getDescripIncident(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',".$this->getRisqueAggravation().",'".htmlentities($this->getCause(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".$this->getConnexe()."','".htmlentities($this->getProbleme(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".htmlentities($this->getRetablissement(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".$this->getResponsabilite()."','".$this->getActeur()."','".htmlentities($this->getLocalisation(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".htmlentities($this->getActionUtlisateur(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',TO_TIMESTAMP('".$this->getDateCreci()."','DD/MM/YYYY'),'".htmlentities($this->getCommentaire(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',".$this->getDejaApparu().",".$this->getPrevisible().",sysdate,sysdate)";
+		$rq.="'".htmlentities($this->getDescripIncident(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',".$this->getRisqueAggravation().",'".htmlentities($this->getCause(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".$this->getConnexe()."','".htmlentities($this->getProbleme(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".htmlentities($this->getRetablissement(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".$this->getResponsabilite()."','".$this->getActeur()."','".htmlentities($this->getLocalisation(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".htmlentities($this->getActionUtlisateur(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',TO_TIMESTAMP('".$this->getDateCreci()."','DD/MM/YYYY'),'".htmlentities($this->getCommentaire(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',".$this->getDejaApparu().",".$this->getPrevisible().",sysdate,sysdate,".$this->getSuivi().",TO_TIMESTAMP('".$this->getDateDecision()."','DD/MM/YYYY HH24:MI'))";
 		$db = new db();
 		$db->db_connect();
 		$db->db_query($rq);
@@ -49,7 +51,7 @@
 	}
 	
 
-	public function setIncident($id,$idStat,$incident,$titre,$departement,$statut,$priorite,$affectesuser,$datedebut,$datefin,$duree,$description,$risqueAggravation,$cause,$incidentsconnexes,$probleme,$retablissement,$responsabilite,$serviceacteur,$localisation,$useraction,$creci,$commentaire,$dejaApparu,$previsible)
+	public function setIncident($id,$idStat,$incident,$titre,$departement,$statut,$priorite,$affectesuser,$datedebut,$datefin,$duree,$description,$risqueAggravation,$cause,$incidentsconnexes,$probleme,$retablissement,$responsabilite,$serviceacteur,$localisation,$useraction,$creci,$commentaire,$dejaApparu,$previsible,$suivi,$dateDecision)
 	{
 		$this->_setNumero($id);
         $this->_setIdStat($idStat);
@@ -76,6 +78,8 @@
 		$this->_setCommentaire($commentaire);
 		$this->_setDejaApparu($dejaApparu);
 		$this->_setPrevisible($previsible);
+        $this->_setSuivi($suivi);
+        $this->_setDateDecision($dateDecision);
 
 return $this;
 	}
@@ -86,14 +90,14 @@ return $this;
     */
     public function chargerIncident($id)
     {
-        $req="SELECT ID,STATISTIQUE_ID,INCIDENT,TITRE,DEPARTEMENT,STATUT,PRIORITE,AFFECTEDUSER,TO_CHAR(DATEDEBUT,'DD/MM/YYYY HH24:MI'),TO_CHAR(DATEFIN,'DD/MM/YYYY HH24:MI'),DUREE,DESCRIPTION,RISQUEAGGRAVATION,CAUSE,INCIDENTSCONNEXES,PROBLEME,RETABLISSEMENT,RESPONSABILITE,SERVICEACTEUR,LOCALISATION,USERACTION,TO_CHAR(DATEPUBLICATION,'DD/MM/YYYY'),COMMENTAIRE,DEJAAPPARU,PREVISIBLE FROM ".SCHEMA.".INCIDENT ";
+        $req="SELECT ID,STATISTIQUE_ID,INCIDENT,TITRE,DEPARTEMENT,STATUT,PRIORITE,AFFECTEDUSER,TO_CHAR(DATEDEBUT,'DD/MM/YYYY HH24:MI'),TO_CHAR(DATEFIN,'DD/MM/YYYY HH24:MI'),DUREE,DESCRIPTION,RISQUEAGGRAVATION,CAUSE,INCIDENTSCONNEXES,PROBLEME,RETABLISSEMENT,RESPONSABILITE,SERVICEACTEUR,LOCALISATION,USERACTION,TO_CHAR(DATEPUBLICATION,'DD/MM/YYYY'),COMMENTAIRE,DEJAAPPARU,PREVISIBLE,SUIVI,TO_CHAR(DATE_DECISION,'DD/MM/YYYY HH24:MI') FROM ".SCHEMA.".INCIDENT ";
         $req.="WHERE ID=".$id;
       
        $db= new db();
 	   $db->db_connect();
 	   $db->db_query($req);
 	   $res=$db->db_fetch_array();
-	   $this->setIncident($res[0][0],$res[0][1],$res[0][2],$res[0][3],$res[0][4],$res[0][5],$res[0][6],$res[0][7],$res[0][8],$res[0][9],$res[0][10],$res[0][11],$res[0][12],$res[0][13],$res[0][14],$res[0][15],$res[0][16],$res[0][17],$res[0][18],$res[0][19],$res[0][20],$res[0][21],$res[0][22],$res[0][23],$res[0][24]);
+	   $this->setIncident($res[0][0],$res[0][1],$res[0][2],$res[0][3],$res[0][4],$res[0][5],$res[0][6],$res[0][7],$res[0][8],$res[0][9],$res[0][10],$res[0][11],$res[0][12],$res[0][13],$res[0][14],$res[0][15],$res[0][16],$res[0][17],$res[0][18],$res[0][19],$res[0][20],$res[0][21],$res[0][22],$res[0][23],$res[0][24],$res[0][25],$res[0][26]);
         $db->close();
         return $this; 
               
@@ -168,6 +172,8 @@ return $this;
 		$rq.="COMMENTAIRE='".htmlentities($this->getCommentaire(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
 		$rq.="DEJAAPPARU='".$this->getDejaApparu()."',";
 		$rq.="PREVISIBLE='".$this->getPrevisible()."',";
+        $rq.="SUIVI=".$this->getSuivi().",";
+        $rq.="DATE_DECISION=TO_TIMESTAMP('".$this->getDateDecision()."','DD/MM/YYYY HH24:MI'),";
 		$rq.="UPDATED=sysdate";
 
 		$rq.=" WHERE ID=".$this->getNumero();
@@ -188,11 +194,31 @@ return $this;
 
      public function Supprimer()
     {
-        $rq="DELETE FROM ".SCHEMA.".INCIDENT";
-        $rq.=" WHERE ID=".$this->getNumero();
         $base= new db();
         $base->db_connect();
+
+        //Suppression de Stat
+        if ($this->getIdStat()) {
+        $rq="DELETE FROM ".SCHEMA.".STATISTIQUE ";       
+        $rq.="WHERE ID=".$this->getIdStat();
         $base->db_query($rq);
+        }
+
+        //Suppression d'impact
+        $rq="DELETE  FROM ".SCHEMA.".IMPACT ";
+        $rq.="WHERE INCIDENT_ID=".$this->getNumero();
+        $base->db_query($rq);
+
+        //Suppression de Chrnogramme
+        $rq="DELETE FROM ".SCHEMA.".CHRONOGRAMME ";
+        $rq.="WHERE INCIDENT_ID=".$this->getNumero();
+        $base->db_query($rq);
+
+        // SUppression de l'incident
+        $rq="DELETE FROM ".SCHEMA.".INCIDENT ";
+        $rq.="WHERE ID=".$this->getNumero();
+        $base->db_query($rq);
+
         $base->close();
     }
     /**
@@ -812,7 +838,7 @@ return $this;
      *
      * @return self
      */
-    private function _setEstOuvert($estOuvert)
+    public function _setEstOuvert($estOuvert)
     {
         $this->_estOuvert = $estOuvert;
 
@@ -839,6 +865,54 @@ return $this;
     private function _setIdStat($idStat)
     {
         $this->_idStat = $idStat;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of _suivi.
+     *
+     * @return mixed
+     */
+    public function getSuivi()
+    {
+        return $this->_suivi;
+    }
+
+    /**
+     * Sets the value of _suivi.
+     *
+     * @param mixed $_suivi the suivi
+     *
+     * @return self
+     */
+    private function _setSuivi($suivi)
+    {
+        $this->_suivi = $suivi;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of _dateDecision.
+     *
+     * @return mixed
+     */
+    public function getDateDecision()
+    {
+        return $this->_dateDecision;
+    }
+
+    /**
+     * Sets the value of _dateDecision.
+     *
+     * @param mixed $_dateDecision the date decision
+     *
+     * @return self
+     */
+    private function _setDateDecision($dateDecision)
+    {
+        $this->_dateDecision = $dateDecision;
 
         return $this;
     }

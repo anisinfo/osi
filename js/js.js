@@ -91,6 +91,7 @@ function myFunction(arr) {
     }
 
     out +='</tbody>';
+    $('#TabResultats').html('');
     $('#TabResultats').append(out);
 }
 
@@ -114,6 +115,7 @@ xmlhttp.onreadystatechange = function() {
 };
 xmlhttp.open("GET", url, true);
 xmlhttp.send();
+$('#infoAjout').hide();
 } 
 
 
@@ -236,15 +238,44 @@ function RemplirAppli(id)
 function TestHeure()
 {
   reg = new RegExp("^[0-2]?[0-3]:[0-5][0-9]$","g");
-  $( "input[id^='Edit_']" ).each(function( index ) {
-     if (!reg.test( $(this).val())) {
-    $(this).css('border-color','red');
-    
-  }
- // console.log( index + ": " + $( this ).text() );
-});
-
+  var TabIdResultat= [];
+  if (reg.test($('#Edit_O_Jf').val())) {$('#Edit_O_Jf').css('border-color','#cccccc');}else{$('#Edit_O_Jf').css('border-color','red');}
+  if (reg.test($('#Edit_O_Lu').val())) {$('#Edit_O_Lu').css('border-color','#cccccc');}else{$('#Edit_O_Lu').css('border-color','red');}
+  if (reg.test($('#Edit_O_Ma').val())) {$('#Edit_O_Ma').css('border-color','#cccccc');}else{$('#Edit_O_Ma').css('border-color','red');}
  
+  if (reg.test($('#Edit_O_Me').val())) {$('#Edit_O_Me').css('border-color','#cccccc');}else{$('#Edit_O_Me').css('border-color','red');}
+  if (reg.test($('#Edit_O_Je').val())) {$('#Edit_O_Je').css('border-color','#cccccc');}else{$('#Edit_O_Je').css('border-color','red');}
+  if (reg.test($('#Edit_O_Ve').val())) {$('#Edit_O_Ve').css('border-color','#cccccc');}else{$('#Edit_O_Ve').css('border-color','red');}
+
+  if (reg.test($('#Edit_O_Sa').val())) {$('#Edit_O_Sa').css('border-color','#cccccc');}else{$('#Edit_O_Sa').css('border-color','red');}
+  if (reg.test($('#Edit_O_Di').val())) {$('#Edit_O_Di').css('border-color','#cccccc');}else{$('#Edit_O_Di').css('border-color','red');}
+  if (reg.test($('#Edit_Jf').val())) {$('#Edit_Jf').css('border-color','#cccccc');}else{$('#Edit_Jf').css('border-color','red');}
+
+  if (reg.test($('#Edit_Lu').val())) {$('#Edit_Lu').css('border-color','#cccccc');}else{$('#Edit_Lu').css('border-color','red');}
+  if (reg.test($('#Edit_Ma').val())) {$('#Edit_Ma').css('border-color','#cccccc');}else{$('#Edit_Ma').css('border-color','red');}
+  if (reg.test($('#Edit_Me').val())) {$('#Edit_Me').css('border-color','#cccccc');}else{$('#Edit_Me').css('border-color','red');}
+
+  if (reg.test($('#Edit_Je').val())) {$('#Edit_Je').css('border-color','#cccccc');}else{$('#Edit_Je').css('border-color','red');}
+  if (reg.test($('#Edit_Ve').val())) {$('#Edit_Ve').css('border-color','#cccccc');}else{$('#Edit_Ve').css('border-color','red');}
+  if (reg.test($('#Edit_Sa').val())) {$('#Edit_Sa').css('border-color','#cccccc');}else{$('#Edit_Sa').css('border-color','red');}
+  if (reg.test($('#Edit_Di').val())) {$('#Edit_Di').css('border-color','#cccccc');}else{$('#Edit_Di').css('border-color','red');}
+  /*for (var i =0;i< TabIdDate.length; i++)
+  {
+     valeur=$('#'+TabIdDate[i]).val();
+    
+    // console.log(valeur+'/'+reg.test(valeur));
+       if (reg.test(valeur) === false)
+        {
+          $('#'+TabIdDate[i]).css('border-color','#cccccc'); 
+        }
+        else
+        {
+           TabIdResultat.push(TabIdDate[i]);
+          $('#'+TabIdDate[i]).css('border-color','red');
+        }
+    
+  } */
+ // console.log(TabIdResultat);
 }
 function EditCalendrier(val)
 {
@@ -322,6 +353,8 @@ function CreateActivite()
 
      ListeId=$('#ListeId').val();
      $('#ListeId').val(ListeId+','+id);
+     $('#chrono_input_date_'+id).datetimepicker({format:'d/m/Y H:i'});
+
 
 }
 
@@ -347,7 +380,7 @@ $("#chrono_input_date_"+id).css('display','inline');
 $("#chrono_input_activite_"+id).css('display','inline');
 $("#chrono_valid_"+id).css('display','inline');
 $("#chrono_annul_"+id).css('display','inline');
-
+$('#chrono_input_date_'+id).datetimepicker({format:'d/m/Y H:i'});
 }
 
 function Annuler(id)
@@ -407,7 +440,8 @@ function search()
 
 function EnvoyerMail(id)
       {
-          if(window.navigator.userAgent.indexOf('MSI') != -1)
+          var userAgent= window.navigator.userAgent;       
+          if((userAgent.indexOf('MSI') != -1) || (userAgent.indexOf('Edge') != -1) || (userAgent.indexOf('Trident') != -1))
       {
         try
               {
@@ -416,7 +450,9 @@ function EnvoyerMail(id)
                 mailFolder = nameSpace.getDefaultFolder(6);
                 mailItem = mailFolder.Items.add('IPM.Note.FormA');
                 mailItem.Subject="Comme a chaud pour l'incident N° :"+id;
-                mailItem.To = "";
+                mailItem.To = Destinataire;
+                mailItem.Cc = DestinataireCc;
+                mailItem.BCC = DestinataireBcc;
                 mailItem.HTMLBody = $('#corp').val();
                 mailItem.display (0); 
               }

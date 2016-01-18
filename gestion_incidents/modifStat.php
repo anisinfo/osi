@@ -29,6 +29,8 @@ require_once('../inc/fonctions.inc.php');
 require_once('../classes/db.php');
 require_once('../classes/Stat.php');
 require_once('../classes/incidents.php');
+require_once('../classes/Impact.php');
+require_once('../classes/Chronogramme.php');
 
 if (!empty($_POST)) {
 	$errors=array();
@@ -59,10 +61,13 @@ if (!empty($_POST)) {
 $incident= new incidents();
 $incident->_setUser($userConnected);
 $incident->chargerIncident($idIncident);
+$impacte= new Impact();
+$impacte->chargerFirstIncident($idIncident);
+
 $stat = new Stat();
 $stat->SelectStatById($idStat,$idIncident);	
 require_once('../inc/header.inc.php');
-//debug($stat);
+
 
 ?>
 <h1>Statistique</h1>
@@ -71,6 +76,16 @@ require_once('../inc/header.inc.php');
 <form action="" method="POST">
 	
 	<div class="bloc">
+	<?php
+	require_once('../inc/search.inc.php');
+	?>
+		<a class="btn btn-success"  align="left" href="add.php?IdIncident=<?=  $incident->getNumero();?>">Ajouter Incident</a>
+		<a class="btn btn-success" href="ListeImpact.php?idIncident=<?php echo $incident->getNumero(); ?>">Impacts</a>
+		<a class="btn btn-success disabled" >Stat</a>
+	 	<a  class="btn btn-success" href="javascript:EnvoyerMail('<?= $incident->getNumero();?>')" >Comm à chaud</a>
+	  	<a class="btn btn-danger" href="javascript:supprimer('index.php?id=<?= $incident->getNumero();?>&supprimer')" >Supprimer l'incident</a>
+	 	<a class="btn btn-success"  href="impact.php?idIncident=<?= $incident->getNumero();?>">Ajouter un impact</a>
+		<a class="btn btn-success"  href="modif.php?id=<?= $incident->getNumero();?>">Retour à l'incident</a>
 	<div class="width100 input-group-addon">
 	<span class="fl-left" style=" line-height:2.5;">Edition de l'incident N° <strong> <?=$incident->getIncident(); ?></strong></span>
 	<span class="lib" style="float:left; margin-left:25px; line-height:2.5;">Titre comm <strong><?= $incident->getTitre(); ?> </strong> </span>
@@ -116,7 +131,7 @@ require_once('../inc/header.inc.php');
 	    				<label  class="lib"  for="Incident_Impact_stat_Composant"> Composant</label> 
 		    			<select id="stat_Composant" name="stat_Composant">
 		    			<?php
-		    			Select('stat_Composant',$stat->getComposant(),$STATCOMPOSANT);
+		    			SelectUpdate('stat_Composant',$stat->getComposant(),$STATCOMPOSANT);
 		    			?>
 		    			</select>
 	    			</div>	
@@ -201,11 +216,11 @@ require_once('../inc/header.inc.php');
     		
 
     	<input type="submit" value="Soumettre la requête" name="submit" />
-    	<input type="button" value="Annuler" onclick="javascript:document.location.href='modif.php?id=<?= $_GET['idIncident'];?>'" />
 	</div>
-
-
 </form>
+<?php
+require_once('../inc/commachaud.inc.php');
+?>
 	<?php 
 require_once('../inc/footer.inc.php');
 ?>

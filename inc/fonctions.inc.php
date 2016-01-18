@@ -13,29 +13,27 @@ function getVar($var){
 function Select($var,$arr)
 {
 	$option='<option value="">--</option>';
-	for($i=0;$i<count($arr);$i++)	
-  	{
-  	$selected=(isset($_POST[$var]) &&  ($_POST[$var]==($i+1)))?'selected':'';
-  	$option.='<option value="'.($i+1).'" '.$selected.'>'.$arr[$i].'</option>';	
-  	}
+	foreach ($arr as $key => $value) {
+    $selected=(isset($_POST[$var]) &&  ($_POST[$var]==$key))?'selected':'';
+    $option.='<option value="'.$key.'" '.$selected.'>'.$value.'</option>';
+  }
   	echo $option;
   	
 }	
 
 function Check($var)
 {
-	echo (isset($_POST[$var]))?'selected':'';
+	echo (isset($_POST[$var]))?'checked':'';
 }
 
 function getCheckListe($var,$arr)
 {
 
   $option='';
-  for($i=0;$i<count($arr);$i++) 
-    {
-    $selected=(isset($_POST[$var]) &&  ($_POST[$var]==$i))?'selected':'';
-    $option.='<input type= "checkbox" name="'.$var.'_'.$i.'" value="'.$i.'" '.$selected.'><label>'.$arr[$i].'</label>  ';  
-    }
+  foreach ($arr as $key => $value) {
+    $selected=(isset($_POST[$var]) &&  ($_POST[$var]==$key))?'selected':'';
+    $option.='<input type= "checkbox" name="'.$var.'_'.$key.'" value="'.$key.'" '.$selected.'><label>'.$value.'</label>  ';
+  }
     echo $option;
 
 }
@@ -44,11 +42,10 @@ function Radio($var,$arr)
 {
 
 $option='';
-  for($i=0;$i<count($arr);$i++) 
-    {
-    $selected=(isset($_POST[$var]) &&  ($_POST[$var]==$i))?'checked':'';
-    $option.='<input type= "radio" name="'.$var.'" value="'.$i.'" '.$selected.'><label>'.$arr[$i].'</label>';  
-    }
+  foreach ($arr as $key => $value) {
+    $selected=(isset($_POST[$var]) &&  ($_POST[$var]==$key))?'checked':'';
+    $option.='<input type= "radio" name="'.$var.'" value="'.$key.'" '.$selected.'><label>'.$value.'</label>';
+  }
     echo $option;
 }
 function dateDiff($date1,$date2){
@@ -106,11 +103,10 @@ function getVarUpdate($var,$obj)
 function SelectUpdate($var,$obj,$arr)
 {
 	$option='<option value="">--</option>';
-	for($i=0;$i<count($arr);$i++)	
-  	{
-  	$selected=((isset($_POST[$var]) && $_POST[$var]==($i+1)) || ($obj== ($i+1)))?'selected':'';
-  	$option.='<option value="'.($i+1).'" '.$selected.'>'.$arr[$i].'</option>';	
-  	}
+  foreach ($arr as $key => $value) {
+  $selected=((isset($_POST[$var]) && $_POST[$var]==$key) || ($obj== $key))?'selected':'';
+  $option.='<option value="'.$key.'" '.$selected.'>'.$value.'</option>';
+  }
   	echo $option;
   	
 }
@@ -118,19 +114,18 @@ function getCheckListeUpdate($var,$obj,$arr)
 {
 
   $option='';
-  for($i=0;$i<count($arr);$i++) 
-    {
+  foreach ($arr as $key => $value) {
     $lobj=explode(',',$obj);
-    $selected=(isset($_POST[$var.'_'.$i]) || in_array($i,$lobj))?'checked':'';
-    $option.='<input type= "checkbox" name="'.$var.'_'.$i.'" value="'.$i.'" '.$selected.'><label>'.$arr[$i].'</label>  ';  
-    }
-    echo $option;
+    $selected=(isset($_POST[$var.'_'.$key]) || in_array($key,$lobj))?'checked':'';
+    $option.='<input type= "checkbox" name="'.$var.'_'.$key.'" value="'.$key.'" '.$selected.'><label>'.$value.'</label>  ';  
+  }
+  echo $option;
 
 }	
 
 function CheckUpdate($var,$obj)
 {
-	echo (isset($_POST[$var]))?'selected':($obj)?'selected':'';
+	echo (isset($_POST[$var]))?'checked':($obj)?'checked':'';
 }
 function dmYdatetoYmd($date)
 {
@@ -161,11 +156,10 @@ function getVarDateUpdate($var,$obj,$d)
 function RadioUpdate($var,$obj,$arr)
 {
   $option='';
-  for($i=0;$i<count($arr);$i++) 
-    {
-    $selected=((isset($_POST[$var]) && $_POST[$var]==$i) || ($obj == $i))?'checked':'';
-    $option.='<input type= "radio" name="'.$var.'" value="'.$i.'" '.$selected.'><label>'.$arr[$i].'</label>'; 
-    }
+  foreach ($arr as $key => $value) {
+     $selected=((isset($_POST[$var]) && $_POST[$var]==$key) || ($obj == $key))?'checked':'';
+    $option.='<input type= "radio" name="'.$var.'" value="'.$key.'" '.$selected.'><label>'.$value.'</label>'; 
+  }
     echo $option;
     
 }
