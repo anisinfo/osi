@@ -41,7 +41,7 @@ class Impact
 	public function creer()
 	{
 		$rq="INSERT INTO ".SCHEMA.".IMPACT (INCIDENT_ID,APPLICATION_ID,DATESTART,DATEEND,DUREEREELLE,JOURHOMME,IMPACTMETIER,IMPACT,SLA,SEVERITE,DESCRIPTION,CREATED,UPDATED)";
-		$rq.=" VALUES (".$this->getIncidentId().",".$this->getApplicationId().",TO_TIMESTAMP('".$this->getDateDebut()."','DD/MM/YYYY HH24:MI'),TO_TIMESTAMP('".$this->getDateFin()."','DD/MM/YYYY HH24:MI'),'".urlencode($this->getDureeReelle())."','".urlencode($this->getJourHomme())."','".$this->getImpactMetier()."','".$this->getImpact()."','".$this->getSla()."','".$this->getSeverite()."','".urlencode($this->getDescription())."',sysdate,sysdate)";
+		$rq.=" VALUES (".$this->getIncidentId().",".$this->getApplicationId().",TO_TIMESTAMP('".$this->getDateDebut()."','DD/MM/YYYY HH24:MI'),TO_TIMESTAMP('".$this->getDateFin()."','DD/MM/YYYY HH24:MI'),'".htmlentities($this->getDureeReelle(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".htmlentities($this->getJourHomme(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".$this->getImpactMetier()."','".$this->getImpact()."','".$this->getSla()."','".$this->getSeverite()."','".htmlentities($this->getDescription(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',sysdate,sysdate)";
 	   echo $rq;
 		$db = new db();
 		$db->db_connect();
@@ -53,17 +53,16 @@ class Impact
 	public function modifier()
 	{
 		$rq="UPDATE ".SCHEMA.".IMPACT SET ";
-		$rq.="INCIDENT_ID='".$this->getIncidentId()."',";
 		$rq.="APPLICATION_ID='".$this->getApplicationId()."',";
 		$rq.="DATESTART=TO_TIMESTAMP('".$this->getDateDebut()."','DD/MM/YYYY HH24:MI'),";
 		$rq.="DATEEND=TO_TIMESTAMP('".$this->getDateFin()."','DD/MM/YYYY HH24:MI'),";
-		$rq.="DUREEREELLE='".urlencode($this->getDureeReelle())."',";
-		$rq.="JOURHOMME='".urlencode($this->getJourHomme())."',";
+		$rq.="DUREEREELLE='".htmlentities($this->getDureeReelle(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
+		$rq.="JOURHOMME='".htmlentities($this->getJourHomme(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
 		$rq.="IMPACTMETIER='".$this->getImpactMetier()."',";
 		$rq.="IMPACT='".$this->getImpact()."',";
 		$rq.="SLA='".$this->getSla()."',";
 		$rq.="SEVERITE='".$this->getSeverite()."',";
-		$rq.="DESCRIPTION='".urlencode($this->getDescription())."',";
+		$rq.="DESCRIPTION='".htmlentities($this->getDescription(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
 		$rq.="UPDATED=sysdate";
 
 		$rq.=" WHERE ID=".$this->getId();
@@ -74,16 +73,26 @@ class Impact
 
 	}
 
-	public function supprimer()
+	public function supprimer($id)
 	{
 		$rq="DELETE  FROM ".SCHEMA.".IMPACT  ";
-		$rq.="WHERE ID=".$this->getId();
+		$rq.="WHERE ID=".$id;
 
 		$db = new db();
 		$db->db_connect();
 		$db->db_query($rq);
         $db->close();
 	}
+        public function supprimerTout()
+    {
+        $rq="DELETE  FROM ".SCHEMA.".IMPACT  ";
+        $rq.="WHERE INCIDENT_ID=".$this->getIncidentId();
+
+        $db = new db();
+        $db->db_connect();
+        $db->db_query($rq);
+        $db->close();
+    }
 
 	  public function chargerFirstIncident($id)
     {
@@ -96,7 +105,7 @@ class Impact
         $base->db_query($req);
         $res=$base->db_fetch_array();
         $base->close();
-        $this->setParam($res[0][0],$res[0][1],$res[0][2],$res[0][3],$res[0][4],urldecode($res[0][5]),urldecode($res[0][6]),$res[0][7],$res[0][8],$res[0][9],$res[0][10],urldecode($res[0][11]),$res[0][12],$res[0][13]);
+        $this->setParam($res[0][0],$res[0][1],$res[0][2],$res[0][3],$res[0][4],$res[0][5],$res[0][6],$res[0][7],$res[0][8],$res[0][9],$res[0][10],$res[0][11],$res[0][12],$res[0][13]);
         
         return $this;           
     }
@@ -128,7 +137,7 @@ class Impact
         $base->db_query($req);
         $res=$base->db_fetch_array();
         $base->close();
-        $this->setParam($res[0][0],$res[0][1],$res[0][2],$res[0][3],$res[0][4],urldecode($res[0][5]),urldecode($res[0][6]),$res[0][7],$res[0][8],$res[0][9],$res[0][10],urldecode($res[0][11]),$res[0][12],$res[0][13]);
+        $this->setParam($res[0][0],$res[0][1],$res[0][2],$res[0][3],$res[0][4],$res[0][5],$res[0][6],$res[0][7],$res[0][8],$res[0][9],$res[0][10],$res[0][11],$res[0][12],$res[0][13]);
         return $this;           
     }
 
@@ -174,7 +183,7 @@ class Impact
      *
      * @return self
      */
-    private function _setIncidentId($incidentId)
+    public function _setIncidentId($incidentId)
     {
         $this->_incidentId = $incidentId;
 

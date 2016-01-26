@@ -7,22 +7,31 @@ define("SCHEMA_PASS","admin");
 define("SERVICE", "XE");
 define("RACINE","http://127.0.0.1/Hosifosi_data/");
 define("LIEN_BASE","oci:dbname=(DESCRIPTION =(ADDRESS_LIST =(ADDRESS =(PROTOCOL = TCP)(Host = ".HOST .")(Port = ".PORT.")))(CONNECT_DATA = (SERVICE_NAME = ".SERVICE.")))");
+define("DUREE", 60*60);// En Secondes
 
-
-$STATUT =array('Nouveau','En Cours','Résolu');
-$PRIORITE =array('P1','P2','P3');
-$RESPONSABILITE=array('GTS','CLIENT','AUTRE');
-$SERVICEACTEUR=array('RET','TFO','EUS','ENSEIGNE','PARTENAIRE','AUTRE');
-$IMPACTMETIER=array('Indisponibilité','Fraîcheur Infos','Dégradation Perf');
-$INCIDENTIMPACTMETIER=array('Low','High','Medium','Non communiqué');
-$SLA=array('Non définie','Respecté','Non Respecté');
-$CRITICITE=array('Mineur','Majeur','Significatif');
+$STATUT =array(''=>'--',1=>'Nouveau',2=>'En Cours',3=>'Résolu');
+$STATUTCOMMACHAUD=array(''=>'--',1=>'Nouveau / New',2=>'En Cours / In Progress',3=>'Résolu / Resolved');
+$STATUTCOLOR =array(1=>'#FB0000',2=>'#FBF300',3=>'#24B500');
+$PRIORITE =array(''=>'--',1=>'P1',2=>'P2',3=>'P3');
+$RESPONSABILITE=array(''=>'--',1=>'GTS',2=>'CLIENT',3=>'AUTRE');
+$SERVICEACTEUR=array(''=>'--',1=>'RET',2=>'TFO',3=>'EUS',4=>'ENSEIGNE',5=>'PARTENAIRE',6=>'AUTRE');
+$IMPACTMETIER=array(''=>'--',1=>'Indisponibilité',2=>'Fraîcheur Infos',3=>'Dégradation Perf');
+$INCIDENTIMPACTMETIER=array(''=>'--',1=>'Low',2=>'High',3=>'Medium',4=>'Non communiqué');
+$SLA=array(1=>'Non définie',2=>'Respecté',3=>'Non Respecté');
+$CRITICITE=array(''=>'--',1=>'Mineur',2=>'Majeur',3=>'Significatif');
+$SUIVI=array(''=>'--',1=>'Lead',2=>'Suivi',3=>'Informé',4=>'Pas suivi/Pas informé');
 
 //Statistique 
-$STATTYPECAUSE=array('Hj');
-$STATCOMPOSANT=array('AZ');
-$STATTYPOGTS=array('test');
-$STATKINDIMPACT=array('test');
-$STATPOWERPROD=array('test');
-$STATLEGACY= array('None','Oui','Non');
+$STATTYPECAUSE=array(''=>'--',1=>'Application',2=>'Hardware');
+$STATCOMPOSANT=array(''=>'--',1=>'saturation FS',2=>'transfert',3=>'base de données',4=>'middleware',5=>'mainframe');
+$STATTYPOGTS=array(''=>'--',1=>'Technical Issue',2=>'Other');
+$STATKINDIMPACT=array(''=>'--',1=>'Unavailability',2=>'Service degradation',3=>'Data delayed');
+$STATPOWERPROD=array(''=>'--',1=>'Yes',2=>'No');
+$STATLEGACY= array(1=>'None',2=>'Oui',3=>'Non');
+$STATGEOL= array(1=>'FRANCE',2=>'AMER',3=>'ASIA',4=>'WE');
+
+//Comm a chaud
+define("DESTINATAIRE","test@test.fr");
+define("DESTINATAIRECC","test2@test.fr");
+define("DESTINATAIREBCC","test3@test.fr");
 ?>

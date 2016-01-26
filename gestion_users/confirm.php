@@ -13,7 +13,6 @@ if (isset($login) && $login && isset($pass) && $pass){
 			$SCHEMA->db_connect();
 			$SCHEMA->db_query($rq);
 			$res=$SCHEMA->db_fetch_array();
-			debug($res);
 			$total=$SCHEMA->total_record();
 
 			
@@ -23,7 +22,20 @@ if (isset($login) && $login && isset($pass) && $pass){
 					$_SESSION['auth']=$res[0];
 					unset($_SESSION['flash']);
 					$_SESSION['flash']['success']="Vous êtes connecté.";
-					
+					$contenu_fichier_json=file_get_contents('../inc/TraceFiche.json');
+					$tr = json_decode($contenu_fichier_json, true);
+					if (is_array($tr))
+					{
+						foreach ($tr as $key => $value)
+						{
+							if ($value['user']==$userConnected)
+							{
+							unset($tr[$key]);
+							}
+						}
+					}
+					$json=json_encode($tr);
+					file_put_contents('../inc/TraceFiche.json', $json);
 					header('Location:../gestion_incidents/');
 				}else{
 					$_SESSION['flash']['danger']="Mot de passe incorrecte";
@@ -32,7 +44,7 @@ if (isset($login) && $login && isset($pass) && $pass){
 				
 				
 			}else {
-				$_SESSION['flash']['danger']= "Le pseudo utlisé n'est pas dans notre SCHEMA";
+				$_SESSION['flash']['danger']= "Le pseudo utlisé n'est pas dans notre base";
 				header('Location:index.php');
 			}
 

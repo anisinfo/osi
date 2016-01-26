@@ -3,7 +3,7 @@ session_start();
 if(!isset($_SESSION['auth'])){
 		
 			 	 $_SESSION['flash']['danger'] ="Vous devez être connecté!"; 
-			 	 header('Location:index.php');
+			 	 header('Location:../index.php');
 			 	 die();
 	}
 
@@ -22,26 +22,39 @@ if (!$idStat) {
 	die();
 }
 
-define('TITLE',"Modification de stat N°:' ".$idIncident);
+define('TITLE',"Modification de stat N°:".$idIncident);
 
 require_once('../inc/config.inc.php');
 require_once('../inc/fonctions.inc.php');
 require_once('../classes/db.php');
 require_once('../classes/Stat.php');
 require_once('../classes/incidents.php');
+require_once('../classes/Impact.php');
+require_once('../classes/Application.php');
 
 if (!empty($_POST)) {
 	$errors=array();
 	/*
 	Contrôle des champs obligatoire
-	*/
+	
 	if(empty($_POST['refchangement'])){
 		$errors['refchangement']="Vous devez remplir le champ reférencement changement!";
 	}
+	*/
 	if (empty($errors)) {
-	//	debug($idIncident);
+	$listeCheck='';
+	for($i=0;$i< count($STATGEOL);$i++)
+	{
+		
+		if(isset($_POST['stat_zonegeo_'.$i]))
+		{
+			$listeCheck.=$i.',';
+		}
+
+	}
 	$stat= new Stat();
-    $stat->SetParam($idStat,$idIncident,$_POST['refchangement'],$_POST['stat_publicationIR'],$_POST['stat_publicationPM'],$_POST['stat_typecause'],$_POST['stat_typecause_second'],$_POST['stat_typologiegts'],$_POST['stat_kindImpact'],$_POST['stat_equipeResp'],$_POST['fournisseurResp'],$_POST['statPowerprod'],$_POST['statLegacy'],$_POST['stat_Composant'],$_POST['Composant_complement'],$_POST['stat_zonegeo']);
+	$statLegacy=(isset($_POST['statLegacy']))?$_POST['statLegacy']:'';
+    $stat->SetParam($idStat,$idIncident,$_POST['refchangement'],$_POST['stat_publicationIR'],$_POST['stat_publicationPM'],$_POST['stat_typecause'],$_POST['stat_typecause_second'],$_POST['stat_typologiegts'],$_POST['stat_kindImpact'],$_POST['stat_equipeResp'],$_POST['fournisseurResp'],$_POST['statPowerprod'],$statLegacy,$_POST['stat_Composant'],$_POST['Composant_complement'],$listeCheck);
     $stat->Modifier();
     $_SESSION['flash']['success']="Le Stat est bien modifié!";
 	}
@@ -50,18 +63,25 @@ if (!empty($_POST)) {
 $incident= new incidents();
 $incident->_setUser($userConnected);
 $incident->chargerIncident($idIncident);
+$impacte= new Impact();
+$impacte->chargerFirstIncident($idIncident);
+$application= new Application();
+$application->SelectAppliById($impacte->getApplicationId());
 $stat = new Stat();
 $stat->SelectStatById($idStat,$idIncident);	
-require_once('../inc/header.inc.php');
-//debug($stat);
 
+require_once('../inc/header.inc.php');
 ?>
 <h1>Statistique</h1>
 
 
 <form action="" method="POST">
+	
 	<div class="bloc">
-	<div class="bloc">
+	<?php
+	$link="Stat";
+	require_once('../inc/search.inc.php');
+	?>
 	<div class="width100 input-group-addon">
 	<span class="fl-left" style=" line-height:2.5;">Edition de l'incident N° <strong> <?=$incident->getIncident(); ?></strong></span>
 	<span class="lib" style="float:left; margin-left:25px; line-height:2.5;">Titre comm <strong><?= $incident->getTitre(); ?> </strong> </span>
@@ -107,7 +127,7 @@ require_once('../inc/header.inc.php');
 	    				<label  class="lib"  for="Incident_Impact_stat_Composant"> Composant</label> 
 		    			<select id="stat_Composant" name="stat_Composant">
 		    			<?php
-		    			Select('stat_Composant',$stat->getComposant(),$STATCOMPOSANT);
+		    			SelectUpdate('stat_Composant',$stat->getComposant(),$STATCOMPOSANT);
 		    			?>
 		    			</select>
 	    			</div>	
@@ -182,7 +202,9 @@ require_once('../inc/header.inc.php');
 	    		</div>
 	    		<div class="width100">
                 <label class="lib" for="stat_zonegeo">Zone géographique</label>
-                <textarea id="stat_zonegeo" name="stat_zonegeo"  maxlength="4000"><?php getVarUpdate('stat_zonegeo',$stat->getZoneGeographique()); ?></textarea>
+               <?php
+               getCheckListeUpdate('stat_zonegeo',$stat->getZoneGeographique(),$STATGEOL); 
+               ?>
     		</div>
 
     		</div>
@@ -191,9 +213,8 @@ require_once('../inc/header.inc.php');
 
     	<input type="submit" value="Soumettre la requête" name="submit" />
 	</div>
-	</div>
-
 </form>
-	<?php 
+<?php
+require_once('../inc/commachaud.inc.php');
 require_once('../inc/footer.inc.php');
 ?>

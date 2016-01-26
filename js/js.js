@@ -1,5 +1,5 @@
 
-var tabCal=[];
+var tabCal={};
 
 function ChangeHeure(J,h)
 {
@@ -7,32 +7,15 @@ function ChangeHeure(J,h)
 
 }
 
-function supprimer(adresse){
+function supprimerIncident(adresse){
 	if(confirm('Vous êtes sûr de vouloir supprimer?')){
 		window.location=adresse;
 	}
 }
-
-//var options = {
-
- // url: "../inc/applications.json.php?name=appli",
-
-//  getValue: "NAME",
-
-//  list: {	
-//    match: {
-//      enabled: true
-//    }
-//  },
-
-//  theme: "square"
-//};
-
-//$("#Incident_Impact_application_libelle").easyAutocomplete(options);
-
-// Semicolon (;) to ensure closing of earlier scripting
-    // Encapsulation
-    // $ is assigned to jQuery
+function AjouterIncident(adresse)
+{
+ window.location=adresse; 
+}
     ;(function($) {
         $(function() {
             $('#my-button').bind('click', function(e) {
@@ -91,7 +74,7 @@ function supprimer(adresse){
 
 function myFunction(arr) {
   var out ='<thead>';
-      out +='<th>Nom</th>';
+      out +='<th>Libellé court</th>';
       out +='<th>Enseigne</th>';
       out +='<th>IRT</th>';
       out +='<th>TRIGRAMME</th>';
@@ -100,22 +83,22 @@ function myFunction(arr) {
       out +='<tbody>';
       
     var i;
-    if(arr.length){
-    for(i = 0; i < arr.length; i++) {
-
+    if(arr.length)
+    {
+    for(i = 0; i < arr.length; i++)
+      {
         tabCal[arr[i].ID]=arr[i].CAL;
-        out += '<tr>' + '<td id="TdName_'+arr[i].ID+'">' + arr[i].NAME + '</td>' + '<td id="TdEnseigne_'+arr[i].ID+'">' + arr[i].ENSEIGNE + '</td>' + '<td id="TdIrt_'+arr[i].ID+'">' + arr[i].IRT + '</td>' + '<td id="TdTrigramme_'+arr[i].ID+'">' + arr[i].TRIGRAMME + '</td><td><a class="b-close btn-ajout"><img width="20px" height="20px" src="../img/add.png" Onclick="RemplirAppli('+arr[i].ID+')" /></a></td></tr>'
-       
-    }}else
+      //  alert(arr[i].CAL);
+        out += '<tr>' + '<td id="TdName_'+arr[i].ID+'">' + arr[i].NAME + '</td>' + '<td id="TdEnseigne_'+arr[i].ID+'">' + arr[i].ENSEIGNE + '</td>' + '<td id="TdIrt_'+arr[i].ID+'">' + arr[i].IRT + '</td>' + '<td id="TdTrigramme_'+arr[i].ID+'">' + arr[i].TRIGRAMME + '</td><td><a class="b-close btn-ajout"><img width="20px" height="20px" src="../img/add.png" Onclick="RemplirAppli('+arr[i].ID+')" /></a></td></tr>';   
+      }
+    }else
     {
       out='<tr><td colspan="3">Pas de résultats</td></tr>';
     }
 
     out +='</tbody>';
+    $('#TabResultats').html('');
     $('#TabResultats').append(out);
-
-   
-  //  document.getElementById("id01").innerHTML = out;
 }
 
 function ChercherAppli()
@@ -138,8 +121,89 @@ xmlhttp.onreadystatechange = function() {
 };
 xmlhttp.open("GET", url, true);
 xmlhttp.send();
+$('#infoAjout').hide();
 } 
 
+
+function CalculeDuree()
+{
+  var dateDeb=$('#Incident_Impact_datedebut').val();
+  var dateFin=$('#Incident_Impact_datefin').val();
+  var idAppli=$('#IdAppli').val();
+  var xmlhttp = new XMLHttpRequest();
+  var url = "../inc/duree.inc.php?td1="+dateDeb+"&td2="+dateFin+"&idappli="+idAppli;
+  var duree=dateTime(dateFin)-dateTime(dateDeb);
+/*  if (dateFin =='' && dateDeb !='')
+    {
+       $('#Incident_Impact_datefin').datetimepicker({format:'d/m/Y H:i',minDate:dateDeb.substring(0,10),defaultTime:dateDeb.substring(11,16)});
+    }
+    else if (dateFin =='') 
+    {
+    $('#Incident_Impact_datefin').datetimepicker({format:'d/m/Y H:i',minDate:dateDeb.substring(0,10),defaultTime:dateDeb.substring(11,16)});
+    }
+    else */
+  if (dateDeb!="" && dateFin!="" && idAppli!="")
+  {
+    if (duree < 0) {
+      alert('Veuillez choisir une date aprés la date de début');
+      $('#Incident_Impact_datefin').val('');
+      $('#Incident_Impact_datefin').datetimepicker({format:'d/m/Y H:i'});
+    }
+xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        var myArr = JSON.parse(xmlhttp.responseText);
+        $('#Incident_Impact_dureereelle').val(myArr);
+    }
+};
+  xmlhttp.open("GET", url, true);
+  xmlhttp.send();
+ }
+} 
+
+function dateTime(dat)
+{
+  var d1J= dat.substring(0,2);
+  var d1M= dat.substring(3,5);
+  var d1A= dat.substring(6,10);
+  var d1H= dat.substring(11,13);
+  var d1M= dat.substring(14,16);
+
+  d1 = new Date(d1A,d1M,d1J,d1H,d1M);
+  return d1.getTime();
+}
+
+function CalculeDureeIncident()
+{
+  var dateDeb=$('#debutincident').val();
+  var dateFin=$('#finincident').val();
+  var xmlhttp = new XMLHttpRequest();
+  var url = "../inc/duree.inc.php?td1="+dateDeb+"&td2="+dateFin;
+  var reg="^(3[01]|[2][0-9]|0)/(1[0-2]|0[1-9])/{4} [0-2]?[0-3]:[0-5][0-9]$";
+  var duree=dateTime(dateFin)-dateTime(dateDeb);
+
+/*  if (dateFin =="" && dateDeb !="")
+    {
+       console.log(dateDeb.substring(0,10))
+       $('#finincident').datetimepicker({format:'d/m/Y H:i',minDate:'10/01/2016',minTime:dateDeb.substring(11,16)});           
+    }
+    else */
+  if (dateDeb!="" && dateFin!="")
+  {
+    if (duree < 0) {
+      alert('Veuillez choisir une date aprés la date de début');
+      $('#finincident').val('');
+      $('#finincident').datetimepicker({format:'d/m/Y H:i'});
+    }
+    xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        var myArr = JSON.parse(xmlhttp.responseText);
+        $('#Incident_duree').val(myArr);
+      }
+    };
+  xmlhttp.open("GET", url, true);
+  xmlhttp.send();
+  }
+} 
 
 function RemplirAppli(id)
 {
@@ -148,16 +212,22 @@ function RemplirAppli(id)
   var enseigne_search=$('#TdEnseigne_'+id).text();
   var irt_search=$('#TdIrt_'+id).text();
   var trigramme_search=$('#TdTrigramme_'+id).text();
-
 //dest
   $('#IdAppli').val(id);
   $('#Incident_Impact_application_libelle').val(nom_search);
   $('#Incident_Impact_application_enseigne').val(enseigne_search);
   $('#Incident_Impact_application_irt').val(irt_search);
   $('#Incident_Impact_application_trigramme').val(trigramme_search);
+
+  $('#Incident_Impact_application_libelleb').val(nom_search);
+  $('#Incident_Impact_application_enseigneb').val(enseigne_search);
+  $('#Incident_Impact_application_irtb').val(irt_search);
+  $('#Incident_Impact_application_trigrammeb').val(trigramme_search);
+
   document.getElementById('CalendarNomAppli').innerHTML=nom_search;
   $('#ImgCalendar').css('visibility','visible');
   $('#infoAjout').show();
+
     if(tabCal[id])
     {
 
@@ -188,7 +258,7 @@ function RemplirAppli(id)
     }else
     {
       var hD="00:00";
-      var hF="23:59";
+      var hF="24:59";
 
         $('#Edit_O_Jf').val(hD);
        $('#Edit_Jf').val(hF);
@@ -215,149 +285,55 @@ function RemplirAppli(id)
        $('#Edit_Di').val(hF);  
 
     }
-
 }   
 
 function TestHeure()
 {
   reg = new RegExp("^[0-2]?[0-3]:[0-5][0-9]$","g");
-  $( "input[id^='Edit_']" ).each(function( index ) {
-     if (!reg.test( $(this).val())) {
-    $(this).css('border-color','red');
-    
-  }
- // console.log( index + ": " + $( this ).text() );
-});
-
+  var TabIdResultat= [];
+  if (reg.test($('#Edit_O_Jf').val())) {$('#Edit_O_Jf').css('border-color','#cccccc');}else{$('#Edit_O_Jf').css('border-color','red');}
+  if (reg.test($('#Edit_O_Lu').val())) {$('#Edit_O_Lu').css('border-color','#cccccc');}else{$('#Edit_O_Lu').css('border-color','red');}
+  if (reg.test($('#Edit_O_Ma').val())) {$('#Edit_O_Ma').css('border-color','#cccccc');}else{$('#Edit_O_Ma').css('border-color','red');}
  
+  if (reg.test($('#Edit_O_Me').val())) {$('#Edit_O_Me').css('border-color','#cccccc');}else{$('#Edit_O_Me').css('border-color','red');}
+  if (reg.test($('#Edit_O_Je').val())) {$('#Edit_O_Je').css('border-color','#cccccc');}else{$('#Edit_O_Je').css('border-color','red');}
+  if (reg.test($('#Edit_O_Ve').val())) {$('#Edit_O_Ve').css('border-color','#cccccc');}else{$('#Edit_O_Ve').css('border-color','red');}
+
+  if (reg.test($('#Edit_O_Sa').val())) {$('#Edit_O_Sa').css('border-color','#cccccc');}else{$('#Edit_O_Sa').css('border-color','red');}
+  if (reg.test($('#Edit_O_Di').val())) {$('#Edit_O_Di').css('border-color','#cccccc');}else{$('#Edit_O_Di').css('border-color','red');}
+  if (reg.test($('#Edit_Jf').val())) {$('#Edit_Jf').css('border-color','#cccccc');}else{$('#Edit_Jf').css('border-color','red');}
+
+  if (reg.test($('#Edit_Lu').val())) {$('#Edit_Lu').css('border-color','#cccccc');}else{$('#Edit_Lu').css('border-color','red');}
+  if (reg.test($('#Edit_Ma').val())) {$('#Edit_Ma').css('border-color','#cccccc');}else{$('#Edit_Ma').css('border-color','red');}
+  if (reg.test($('#Edit_Me').val())) {$('#Edit_Me').css('border-color','#cccccc');}else{$('#Edit_Me').css('border-color','red');}
+
+  if (reg.test($('#Edit_Je').val())) {$('#Edit_Je').css('border-color','#cccccc');}else{$('#Edit_Je').css('border-color','red');}
+  if (reg.test($('#Edit_Ve').val())) {$('#Edit_Ve').css('border-color','#cccccc');}else{$('#Edit_Ve').css('border-color','red');}
+  if (reg.test($('#Edit_Sa').val())) {$('#Edit_Sa').css('border-color','#cccccc');}else{$('#Edit_Sa').css('border-color','red');}
+  if (reg.test($('#Edit_Di').val())) {$('#Edit_Di').css('border-color','#cccccc');}else{$('#Edit_Di').css('border-color','red');}
+  /*for (var i =0;i< TabIdDate.length; i++)
+  {
+     valeur=$('#'+TabIdDate[i]).val();
+    
+    // console.log(valeur+'/'+reg.test(valeur));
+       if (reg.test(valeur) === false)
+        {
+          $('#'+TabIdDate[i]).css('border-color','#cccccc'); 
+        }
+        else
+        {
+           TabIdResultat.push(TabIdDate[i]);
+          $('#'+TabIdDate[i]).css('border-color','red');
+        }
+    
+  } */
+ // console.log(TabIdResultat);
 }
 function EditCalendrier(val)
 {
   $('#heure_'+val).hide();
   $('#Edit_'+val).show();
 }
-
-function ajoutChrono(idIncident,id)
-{
-  var date=$('#dateChrono').val();
-  var activite=$('#ativiteChrono').val();
- 
-  var xmlhttp = new XMLHttpRequest();
-  var url = "../gestion_incidents/chronoaction.php?date="+date+"&activite="+activite+"&id_incident="+idIncident+"&id="+id;
-
-xmlhttp.onreadystatechange = function() {
-    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-        var myArr = JSON.parse(xmlhttp.responseText);
-        if (id) {
-          //modification
-            trLigne='<td id="date_'+id+'">'+date+'</td><td id="activite_'+id+'">'+activite+'</td><td><input type="button" value="Modifier" Onclick="ajoutChrono('+idIncident+','+myArr[0][0]+')"/></td>';
-          $("#tr_chrono_"+id).append(trLigne);
-        }else
-        {
-
-          trLigne='<tr id="tr_chrono'+id+'"><td id="date_'+id+'">'+date+'</td><td id="activite_'+id+'">'+activite+'</td><td><input type="button" value="Modifier" Onclick="ajoutChrono('+idIncident+','+myArr[0][0]+')"/></td></tr>';
-          $("#table-chrono" ).append(trLigne);
-        
-        }
-        
-    }
-};
-xmlhttp.open("GET", url, true);
-xmlhttp.send();
-} 
-
-function ModiftChrono(idIncident,id)
-{
-
-  //recuperation des donnes
- date_origin=$("#date_"+id).text();
- activ_origin=$("#date_"+id).text();
-  //console.log(date_origin+activ_origin);
-
- //repmissage des champs
- $("#dateChrono").val(date_origin);
- $("#ativiteChrono").val(activ_origin);
-
-}
-
-function CreateActivite()
-{
- 
-  var dateActiv=$('#dateChrono').val();
-  var LibelleActiv=$('#ativiteChrono').val();
-  var id=$('#ChronosLignes >tr').length; 
-  var ligne='<tr id="ligne_'+id+'">';
-     ligne+='<td><span id="chrono_date_'+id+'">'+dateActiv+'</span>';
-     ligne+='<input type="text" id="chrono_input_date_'+id+'" name="chrono_input_date_'+id+'" value="'+dateActiv+'" style="display:none;" />';
-     ligne+='</td><td>';
-     ligne+='<span id="chrono_activite_'+id+'">'+LibelleActiv+'</span>';
-     ligne+='<textarea  id="chrono_input_activite_'+id+'" name="chrono_input_activite_'+id+'" style="display:none;" >'+LibelleActiv+'</textarea>';
-     ligne+='</td>';
-     ligne+='<td>';
-     ligne+='<input type="button" value="Modifier" id="chrono_modif_'+id+'" Onclick="Modifier('+id+')"/>';     
-     ligne+='<input type="button" value="Valider" style="display:none;" id="chrono_valid_'+id+'" Onclick="Valider('+id+')"/></td>';
-
-     ligne+='<td><input type="button" value="Supprimer" id="chrono_suppri_'+id+'" Onclick="Supprimer('+id+')"/>';
-     ligne+='<input type="button" value="Annuler"  style="display:none;" id="chrono_annul_'+id+'" Onclick="Annuler('+id+')"/>';
-     ligne+='</td>';
-     ligne+='</tr>';
-
-
-     $('#ChronosLignes').append(ligne);
-
-     ListeId=$('#ListeId').val();
-     $('#ListeId').val(ListeId+','+id);
-
-}
-
-function Supprimer(idLigne)
-{
-
-  var ListeId=$('#ListeId').val();
-  var reg=new RegExp("(,"+idLigne+")", "g");
-  $('#ListeId').val(ListeId.replace(reg,''));
-    $('#ligne_'+idLigne).remove();
-}
-
-
-function Modifier(id)
-{
-
-$("#chrono_date_"+id).css('display','none');
-$("#chrono_activite_"+id).css('display','none');
-$("#chrono_modif_"+id).css('display','none');
-$("#chrono_suppri_"+id).css('display','none');
-
-$("#chrono_input_date_"+id).css('display','inline');
-$("#chrono_input_activite_"+id).css('display','inline');
-$("#chrono_valid_"+id).css('display','inline');
-$("#chrono_annul_"+id).css('display','inline');
-
-}
-
-function Annuler(id)
-{
-
-$("#chrono_date_"+id).css('display','inline');
-$("#chrono_activite_"+id).css('display','inline');
-$("#chrono_modif_"+id).css('display','inline');
-$("#chrono_suppri_"+id).css('display','inline');
-
-$("#chrono_input_date_"+id).css('display','none');
-$("#chrono_input_activite_"+id).css('display','none');
-$("#chrono_valid_"+id).css('display','none');
-$("#chrono_annul_"+id).css('display','none');
-
-}
-function Valider(id)
-{
-  nouveauDate=$('#chrono_input_date_'+id).val();
-  nouveauActivite=$('#chrono_input_activite_'+id).val();
-  $("#chrono_date_"+id).text(nouveauDate);
-  $("#chrono_activite_"+id).text(nouveauActivite);
-  Annuler(id);
-}
-
 function dateDiff(date1, date2){
     var diff = {}                           // Initialisation du retour
     var tmp = date2 - date1;
@@ -386,6 +362,11 @@ function go(id)
 }
 function search()
 {
-  var id= $('#numincident').val();
+  var id= $('#numincident').val();  
   document.location.href="modif.php?NumeroIncident="+id;
+}
+
+function supprimerUser(adresse)
+{
+  document.location.href=adresse;
 }

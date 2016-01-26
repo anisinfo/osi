@@ -36,7 +36,7 @@ class Application
     {
         $tabParam=array();
         if ($name) {
-           $tabParam['name']=$name;
+           $tabParam['libelle']=$name;
         }
         if ($enseigne) {
            $tabParam['enseigne']=$enseigne;
@@ -48,7 +48,7 @@ class Application
            $tabParam['trigramme']=$trigramme;
         }
 
-        $rq="SELECT ID,NAME,ENSEIGNE,IRT,TRIGRAMME  FROM ".SCHEMA.".APPLICATION ";
+        $rq="SELECT ID,LIBELLE,ENSEIGNE,IRT,TRIGRAMME  FROM ".SCHEMA.".APPLICATION ";
         $rq.="WHERE ";
         $l=1;
            foreach ($tabParam as $key => $value) {

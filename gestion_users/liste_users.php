@@ -44,7 +44,7 @@ require ('../inc/header.inc.php');
 		echo "<td>".$ligne[4]."</td>";
 		echo "<td>".$profil."</td>";
 		echo '<td><a href="'.RACINE.'gestion_users/modif.php?id='.$ligne[0].'">Modifier</a></td>';
-		echo '<td><a onclick="supprimer(\''.RACINE.'gestion_users/delete.php?id='.$ligne[0].'\')">Supprimer</a></td>';
+		echo '<td><a onclick="supprimerUser(\''.RACINE.'gestion_users/delete.php?id='.$ligne[0].'\')">Supprimer</a></td>';
 		echo "</tr>";
 		
 	}

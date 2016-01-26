@@ -2,8 +2,6 @@
 if(session_status() == PHP_SESSION_NONE){
 session_start();
 }
-//require('fonctions.inc.php');
-//require_once('config.inc.php');
 ?>
 <html lang="fr" >
   <head>
@@ -15,7 +13,12 @@ session_start();
     <meta name="author" content="">
     <link rel="icon" href="">
 
-    <title><?= TITLE; ?></title>
+    <title>
+    <?php 
+    if(TITLE !== NULL){
+      echo TITLE;
+      } ?>
+    </title>
 
     <!-- Bootstrap core CSS -->
     <link href="<?php echo RACINE; ?>css/bootstrap.css" rel="stylesheet">
@@ -23,7 +26,43 @@ session_start();
      <link rel="stylesheet" type="text/css" href="<?php echo RACINE; ?>datetimepicker/jquery.datetimepicker.css"/>
 
     <!-- Custom styles for this template jquery-1.11.2.min.js-->
-    
+    <script type="text/javascript">
+    var Destinataire="<?= DESTINATAIRE;?>";
+    var DestinataireCc="<?= DESTINATAIRECC;?>";
+    var DestinataireBcc="<?= DESTINATAIREBCC;?>";
+    function EnvoyerMail(id)
+      {
+          var userAgent= window.navigator.userAgent;       
+          if((userAgent.indexOf('MSI') != -1) || (userAgent.indexOf('Trident') != -1))
+      {
+        try
+              {
+                
+                var outlookApp = new ActiveXObject("Outlook.Application");
+                var nameSpace = outlookApp.getNameSpace("MAPI");
+                var contenu = document.getElementById('corp').value;
+                var sujet= document.getElementById('sujet').value;
+                mailFolder = nameSpace.getDefaultFolder(6);
+                mailItem = mailFolder.Items.add('IPM.Note.FormA');
+                mailItem.Subject=objet;
+                mailItem.To = Destinataire;
+                mailItem.Cc = DestinataireCc;
+                mailItem.BCC = DestinataireBcc;
+                mailItem.HTMLBody = "<b>contenux</b>";
+                mailItem.display (0); 
+              }
+            catch(e)
+            {
+              alert(e);
+            //document.location.href ="commachaud.php?idIncident="+id;
+            }
+      }
+      else
+      {
+        document.location.href ="commachaud.php?idIncident="+id;
+      }
+      }
+    </script>
     <script src="<?php echo RACINE; ?>js/jquery-1.11.3.min.js"></script>
     
     <script src="<?php echo RACINE; ?>js/bootstrap.js"></script>
@@ -44,63 +83,6 @@ session_start();
        run then the REM rules should not get parsed.
    -->
   <link rel="stylesheet" type="text/css" href="<?php echo RACINE; ?>css/ignore.css" data-norem />
-
-     <!--   Définition des styles; à copier dans un fichier css  -->
-      <STYLE type="text/css">
-      #element_to_pop_up, #element_to_pop_up2, #element_to_pop_up3 { 
-    background-color:#fff;
-    border-radius:15px;
-    color:#000;
-    display:none; 
-    padding:20px;
-    min-width:700px;
-    min-height: 180px;
-}
-.b-close{
-    cursor:pointer;
-    position:absolute;
-    right:10px;
-    top:5px;
-}
-.btn-ajout{
-
-  position: relative;
-
-}
-
-      .bloc{ width:94%; margin:0 auto; overflow:hidden;}
-      .bloc label.lib{text-align: left; float: none; font-weight: bold;}
-      .fl-left{ float: left;}
-       .fl-left .btn{   padding: 4px 12px;}
-      .width100{width:100%; float: left;    margin: 5px 0; padding: 5px;}
-      .bcg{ background: whitesmoke;border: 1px solid #ccc;
-    border-radius: 4px;}
-      .width50{width:48%; float:left;}
-      .width12{width:12%; float:left; overflow: hidden;height: 50px;}
-      .width20{width:23%; float:left;}
-      .bloc>.width50{width:46%; float:left; margin:0 2%;}
-      .bloc input[type="text"], .bloc input[type="password"],
-      .bloc input[type="date"], .bloc input[type="datetime"], 
-      .bloc input[type="datetime-local"], .bloc input[type="month"], 
-      .bloc input[type="week"], .bloc input[type="email"],
-       .bloc input[type="number"], .bloc input[type="search"], .bloc input[type="button"],
-       .bloc input[type="submit"], .bloc input[type="tel"], .bloc input[type="time"], 
-       .bloc input[type="url"], textarea, .bloc select { float:left; margin-right: 5px;  height: 30px; margin-bottom: 0;}
-       .bloc input[type="number"]{ width:48%; margin-right: 35px;}
-       .mr_35{margin-right: 30px;}
-       .mr_10{margin-right: 14px;}
-       .mr_7{margin-right: 5px;}
-       .bloc input[type="number"],.bloc select{ padding:0;}
-       .bloc fieldset{ padding: 5px 0;    width: 98%; margin-left: 10px; background: #e7e7e7;}
-       .bloc .fl-right{ float: right; margin-right: 25px;}
-       .bloc .fl-right span{ margin-right: 20px;}
-       .right{ float: right;}
-       .bloc fieldset span{ font-size: 11px}
-       input[type="button"].btn-plus{    float: left;    height: 20px;    margin-left: 25px;}
-       .bloc fieldset legend{ font-size: 14px; border: 1px solid #d3d3d3;; background: #eee; text-align: center;border-bottom: none;padding: 10px;}
-  
-      </STYLE>
-
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="<?php echo RACINE; ?>js/html5shiv.min.js"></script>
@@ -126,17 +108,10 @@ session_start();
           <ul class="nav navbar-nav">
           <?php if(isset($_SESSION['auth'])){ ?>
              <li><a href="<?= RACINE; ?>gestion_incidents/">Incidents</a></li>
-             <li><a href="<?= RACINE; ?>gestion_rapports/">Gestion des rapports</a></li>
+             <li><a href="<?= RACINE; ?>gestion_osi/index.php">Rapports & Gestion</a></li>
             <?php  if($_SESSION['auth'][6]==1){?>
              <li><a href="<?= RACINE; ?>gestion_users/liste_users.php">Utilisateurs</a></li>
             <?php  }?>
-          <!--  <li  class="dropdown open">
-            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true" href="#">Gestion OSI<b class="caret"></b>                  </a>
-                <ul class="dropdown-menu" role="menu">
-                  <li><a href="">test</a></li>
-                </ul>
-            </li>
-           -->
               <li><a href="<?= RACINE; ?>gestion_users/modif.php?id=<?php echo $_SESSION['auth'][0]; ?>">Mes données</a></li>
             <li><a href="<?= RACINE; ?>gestion_users/logout.php">Déconnexion</a></li>
           <?php   
