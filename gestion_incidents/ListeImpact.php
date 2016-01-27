@@ -21,7 +21,6 @@ require_once('../classes/db.php');
 require_once('../classes/incidents.php');
 require_once('../classes/Impact.php');
 require_once('../classes/Application.php');
-require_once('../classes/Chronogramme.php');
 require_once('../classes/Application.php');
 $incident= new incidents();
 $incident->chargerIncident($numero);

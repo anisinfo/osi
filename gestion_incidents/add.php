@@ -64,57 +64,9 @@ if(!empty($_POST)){
 		$errors['IdAppli']="Vous devez remplir le application Impactée!";
 	}
 
-
-	$reg='/^[0-2]?[0-9]:[0-5][0-9]$/';
-
-	if(!preg_match($reg,$_POST['Edit_OuvertJf']))
-		{$errors['Edit_OuvertJf']="Le format d'heure d'ouverture de Jour Férier n'est pas valide";}
-
-	if(!preg_match($reg,$_POST['Edit_FermerJf']))
-		{$errors['Edit_FermerJf']="Le format d'heure de fermiture de Jour Férier n'est pas valide";}
-
-	if(!preg_match($reg,$_POST['Edit_OuvertLu']))
-		{$errors['Edit_OuvertLu']="Le format d'heure d'ouverture de Lundi n'est pas valide";}	
-
-	if(!preg_match($reg,$_POST['Edit_FermerLu']))
-		{$errors['Edit_FermerLu']="Le format d'heure de fermiture de Lundi n'est pas valide";}
-
-	if(!preg_match($reg,$_POST['Edit_OuvertMa']))
-		{$errors['Edit_OuvertMa']="Le format d'heure d'ouverture de Mardi n'est pas valide";}	
-
-	if(!preg_match($reg,$_POST['Edit_FermerMa']))
-		{$errors['Edit_FermerMa']="Le format d'heure de fermiture de Mardi n'est pas valide".$_POST['Edit_FermerMa'];}
-
-	if(!preg_match($reg,$_POST['Edit_OuvertMe']))
-		{$errors['Edit_OuvertMe']="Le format d'heure d'ouverture de Mercredi n'est pas valide";}	
-
-	if(!preg_match($reg,$_POST['Edit_FermerMe']))
-		{$errors['Edit_FermerMe']="Le format d'heure de fermiture de Mercredi n'est pas valide";}
-		
-	if(!preg_match($reg,$_POST['Edit_OuvertJe']))
-		{$errors['Edit_OuvertJe']="Le format d'heure d'ouverture de Jeudi n'est pas valide";}	
-
-	if(!preg_match($reg,$_POST['Edit_FermerJe']))
-		{$errors['Edit_FermerJe']="Le format d'heure de fermiture de Jeudi n'est pas valide";}
-
-	if(!preg_match($reg,$_POST['Edit_OuvertVe']))
-		{$errors['Edit_OuvertVe']="Le format d'heure d'ouverture de Vendredi n'est pas valide";}	
-
-	if(!preg_match($reg,$_POST['Edit_FermerVe']))
-		{$errors['Edit_FermerVe']="Le format d'heure de fermiture de Vendredi n'est pas valide";}
-		
-	if(!preg_match($reg,$_POST['Edit_OuvertSa']))
-		{$errors['Edit_OuvertSa']="Le format d'heure d'ouverture de Samedi n'est pas valide";}	
-
-	if(!preg_match($reg,$_POST['Edit_FermerSa']))
-		{$errors['Edit_FermerSa']="Le format d'heure de fermiture de Samedi n'est pas valide";}
-		
-	if(!preg_match($reg,$_POST['Edit_OuvertDi']))
-		{$errors['Edit_OuvertDi']="Le format d'heure d'ouverture de Dimanche n'est pas valide";}	
-
-	if(!preg_match($reg,$_POST['Edit_FermerDi']))
-		{$errors['Edit_FermerDi']="Le format d'heure de fermiture de Dimanche n'est pas valide";}						
-
+	if($_POST['Incident_statut'] ==3 && empty($_POST['finincident'])){
+		$errors['finincident']="Vous devez remplir le champ fin impact puisque l'incident est Résolu!";
+	}
 
 	if(empty($_POST['IdIncident'])){
 		$errors['IdIncident']="Le numéro de l'incident est vide";
@@ -141,13 +93,6 @@ if(!empty($_POST)){
 	$imp = new Impact();
 	$imp->setParam(NULL,$id_incident,$_POST['IdAppli'],$_POST['Incident_Impact_datedebut'],$_POST['Incident_Impact_datefin'],$_POST['Incident_Impact_dureereelle'],$_POST['Incident_Impact_jourhommeperdu'],$_POST['Incident_Impact_impactmetier'],$_POST['Incident_Impact_impact'],$_POST['Incident_Impact_sla'],$_POST['Incident_Impact_criticite'],$_POST['Incident_Impact_description']);
 	$imp->creer();
-
-	//AJout de calendrier
-	if (!empty($_POST['IdAppli'])) {
-	$calendrier= new Calendrier();
-	$calendrier->setParam(NULL,$_POST['IdAppli'],$_POST['Edit_OuvertLu'],$_POST['Edit_FermerLu'],$_POST['Edit_OuvertMa'],$_POST['Edit_FermerMa'],$_POST['Edit_OuvertMe'],$_POST['Edit_FermerMe'],$_POST['Edit_OuvertJe'],$_POST['Edit_FermerJe'],$_POST['Edit_OuvertVe'],$_POST['Edit_FermerVe'],$_POST['Edit_OuvertSa'],$_POST['Edit_FermerSa'],$_POST['Edit_OuvertDi'],$_POST['Edit_FermerDi'],$_POST['Edit_OuvertJf'],$_POST['Edit_FermerJf']);
-	$calendrier->creer();
-	}
 	
 	$_SESSION['flash']['success'] =" L'incident est bien ajouté."; 
 
@@ -187,18 +132,11 @@ require_once('../inc/search.inc.php');
 	<div class="width100 bcg">
 		<div class=" width50 mr_35">
 			<div class="width100">
-		    	<label  class="lib"  for="titreincident"> Incident *</label> 
-		    	<input type="text" name="IdIncident" id="IdIncident" value="<?php getVar('IdIncident'); ?>"  required>
-		    	
-	    	</div>
-
-			<div class="width100">
-		    	<label  class="lib"  for="titreincident"> Titre Incident</label> 
-		    	<input type="text" name="titreincident" id="titreincident" value="<?php getVar('titreincident'); ?>"  >
-	    	</div>
-
-	    	<div class="width100">
-  				<div class=" width50">
+				<div class=" width32 mr_9">
+		    		<label  class="lib"  for="titreincident"> Incident *</label> 
+		    		<input type="text" name="IdIncident" id="IdIncident" value="<?php getVar('IdIncident'); ?>"  required>
+		    	</div>
+		    	<div class=" width32">
   					<label  class="lib" for="statut"> Statut *</label>
   					<select id="statut" name="Incident_statut" required>
   						<?php
@@ -206,7 +144,7 @@ require_once('../inc/search.inc.php');
   						?>
 	        		</select>
   				</div>
-  				<div class=" width50 right">
+  				<div class=" width32 right">
   					<label  class="lib"  for="priorite"> Priorité</label>
   					<select id="priorite" name="Incident_priorite">
   						<?php
@@ -214,32 +152,48 @@ require_once('../inc/search.inc.php');
   						?>
 	        		</select>
   				</div>
-  			</div>
+	    	</div>
+
+			<div class="width100">
+		    	<label  class="lib"  for="titreincident"> Titre Incident</label> 
+		    	<input type="text" name="titreincident" id="titreincident" value="<?php getVar('titreincident'); ?>"  >
+	    	</div>
 
   			<div class="width100">
-  				<div class=" width50">
+  				<div class=" width32 mr_9">
   					<label  class="lib" for="debutincident"> Début Incident *</label> 
   					<input type="text" name="debutincident"  id="debutincident" value="<?php getVar('debutincident'); ?>" required>
   				</div>
-  				<div class=" width50 right">
+  				<div class=" width32">
   					<label  class="lib"  for="finincident"> Fin Incident</label> 
-  					<input type="text" name="finincident" id="finincident"  value="<?php getVar('finincident'); ?>" required>
+  					<input type="text" name="finincident" id="finincident"  value="<?php getVar('finincident'); ?>" >
   				</div>
-  			</div>
-
-  			<div class="width100">
-  				<div class=" width50">
+  			
+  				<div class=" width32 right">
   					<label  class="lib" for="Incident_duree"> Durée Incident</label>
   					<input type="text" id="Incident_duree" name="Incident_duree" maxlength="255"  value="<?php getVar('Incident_duree'); ?>">
   				</div>
+  			</div>
+  			<div class="width100">
 
-  				<div class=" width50 right">
-  					<br/>
+  				<div class="fl-left mr_50">
+  					
   					<label  class="lib">
   						<input type="checkbox" id="Incident_risqueAggravation" name="Incident_risqueAggravation" value="0" <?php Check('Incident_risqueAggravation'); ?>>
                         Risque aggravation
            			</label>
   				</div>
+  				<div class=" fl-left">
+	  				<label class="lib"><input type="checkbox" id="Incident_dejaApparu" name="Incident_dejaApparu" <?php Check('Incident_dejaApparu'); ?>>
+                        Déja apparu
+            		</label>
+            	</div>
+            		
+            	<div class=" width20 right">
+	  				<label class="lib"><input type="checkbox" id="Incident_previsible" name="Incident_previsible" <?php Check('Incident_previsible'); ?>>
+                        Prévisible
+            		</label>
+            	</div>
   			</div>
 
 		   	<div class="width100">
@@ -253,7 +207,7 @@ require_once('../inc/search.inc.php');
  		    </div>
 
 		   	<div class="width100">
-		    	<div class=" width50">
+		    	<div class=" width32 mr_9">
 				    	<label  class="lib" for="incidentresponsabilite"> Responsabilité</label> 
 						<select name="incidentresponsabilite"  id="incidentresponsabilite">
 			    		<?php
@@ -262,7 +216,7 @@ require_once('../inc/search.inc.php');
 			    		</select>
 		    	</div>
 	  		
-	  			<div class=" width50 right">
+	  			<div class="width32 mr_9 ">
 	  				<label  class="lib" for="incidentserviceacteur"> Service Acteur</label>
 	  				<select name="incidentserviceacteur" id="incidentserviceacteur">
 	  					<?php
@@ -271,31 +225,25 @@ require_once('../inc/search.inc.php');
 		     
 		        	</select>
 	  			</div>
-	  		</div>
-
-	  		<div class=" width100">
-	  			<label  class="lib" for="incidentdatecreci"> Date du publication</label> 
-	  			<input type="text"  name="incidentdatecreci" id="incidentdatecreci" value="<?php getVar('incidentdatecreci'); ?>" >
-	  		</div>
-
-	  		<div class=" width100">
-	  			<label  class="lib" for="incidentdatedecision"> Date du prise de décision</label> 
-	  			<input type="text"  name="incidentdatedecision" id="incidentdatedecision" value="<?php getVar('incidentdatedecision'); ?>" >
+	  			<div class="width32 right">
+  					<label class="lib" for="Incident_suivi">Suivi *</label>
+  					<select id="Incident_suivi" name="Incident_suivi" required>
+					<?php Select('Incident_suivi',$SUIVI); ?>
+					</select>
+  				</div>
 	  		</div>
 
 	  		<div class=" width100">
 	  			<div class=" width50">
-	  				<label class="lib"><input type="checkbox" id="Incident_dejaApparu" name="Incident_dejaApparu" <?php Check('Incident_dejaApparu'); ?>>
-                        Déja apparu
-            		</label>
-            	</div>
-            		
-            	<div class=" width50">
-	  				<label class="lib"><input type="checkbox" id="Incident_previsible" name="Incident_previsible" <?php Check('Incident_previsible'); ?>>
-                        Prévisible
-            		</label>
-            	</div>
-	  		</div>
+	  				<label  class="lib" for="incidentdatecreci"> Date du publication</label> 
+	  				<input type="text"  name="incidentdatecreci" id="incidentdatecreci" value="<?php getVar('incidentdatecreci'); ?>" >
+	  			</div>
+
+	  			<div class=" width50 right">
+	  				<label  class="lib" for="incidentdatedecision"> Date du prise de décision</label> 
+	  				<input type="text"  name="incidentdatedecision" id="incidentdatedecision" value="<?php getVar('incidentdatedecision'); ?>" >
+	  			</div>
+	  		</div>  		
 	  	</div>
 		
 		<div class=" width50">
@@ -325,13 +273,6 @@ require_once('../inc/search.inc.php');
   			</div>
 
   			<div class="width100">
-  				<label class="lib" for="Incident_suivi">Suivi *</label>
-  				<select id="Incident_suivi" name="Incident_suivi" required>
-				<?php Select('Incident_suivi',$SUIVI); ?>
-				</select>
-  			</div>
-
-  			<div class="width100">
   				<div class=" width50">
   					<label class="lib" for="Incident_localisation">Localisation</label>
   					<textarea  rows="3" id="Incident_localisation" name="Incident_localisation"><?php getVar('Incident_localisation'); ?></textarea>
@@ -349,16 +290,17 @@ require_once('../inc/search.inc.php');
   			</div>
   		</div>
 
-		<?php require_once('../inc/impact.inc.php'); ?>
-		<div class=" width50">
-	    		<label class="lib" style="float:left;">Chronogramme</label>
-	    		<textarea name="Incident_chronogramme" id="Incident_chronogramme"><?php getVar('Incident_chronogramme'); ?></textarea>
+  		<fieldset>
 
-	    		</div>
-    		</div>
+			<?php require_once('../inc/impact.inc.php'); ?>
+			<div class=" width100">
+		    		<label class="lib" style="float:left;">Chronogramme</label>
+		    		<textarea name="Incident_chronogramme" id="Incident_chronogramme" style="height:300px"><?php getVar('Incident_chronogramme'); ?></textarea>
+
+		    </div>
+    		
     	</fieldset>  		
 		<input type="submit" value="Sauvegarder" name="submit" />
-
 	</div>
 
 </div>

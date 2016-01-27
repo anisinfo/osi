@@ -212,11 +212,6 @@ return $this;
         $rq.="WHERE INCIDENT_ID=".$this->getNumero();
         $base->db_query($rq);
 
-        //Suppression de Chrnogramme
-        $rq="DELETE FROM ".SCHEMA.".CHRONOGRAMME ";
-        $rq.="WHERE INCIDENT_ID=".$this->getNumero();
-        $base->db_query($rq);
-
         // SUppression de l'incident
         $rq="DELETE FROM ".SCHEMA.".INCIDENT ";
         $rq.="WHERE ID=".$this->getNumero();

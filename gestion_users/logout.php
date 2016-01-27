@@ -19,5 +19,5 @@ file_put_contents('../inc/TraceFiche.json', $json);
 
 unset($_SESSION['auth']);
 $_SESSION['flash']['success']="Maintenant vous êtes déconnecté";
-header('Location:index.php');
+header('Location:../index.php');
 ?>

@@ -49,10 +49,6 @@ if(!empty($_POST)){
 		$errors['Incident_Impact_datedebut']="Vous devez remplir le champ début impact!";
 	}
 
-	if(empty($_POST['Incident_Impact_datefin'])){
-		$errors['Incident_Impact_datefin']="Vous devez remplir le champ date fin impact!";
-	}
-
 	if (!$_POST['Incident_Impact_impactmetier']) {
 		$errors['Incident_Impact_impactmetier']="L'Impact métier n'est pas valide!";
 	}
@@ -62,58 +58,6 @@ if(!empty($_POST)){
 		$errors['Incident_Impact_description']="Vous devez remplir le champ Description de l'impact!";
 	}
 
-	$reg='/^[0-2]?[0-9]:[0-5][0-9]$/';
-
-	if(!preg_match($reg,$_POST['Edit_OuvertJf']))
-		{$errors['Edit_OuvertJf']="Le format d'heure d'ouverture de Jour Férier n'est pas valide";}
-
-	if(!preg_match($reg,$_POST['Edit_FermerJf']))
-		{$errors['Edit_FermerJf']="Le format d'heure de fermiture de Jour Férier n'est pas valide";}
-
-	if(!preg_match($reg,$_POST['Edit_OuvertLu']))
-		{$errors['Edit_OuvertLu']="Le format d'heure d'ouverture de Lundi n'est pas valide";}	
-
-	if(!preg_match($reg,$_POST['Edit_FermerLu']))
-		{$errors['Edit_FermerLu']="Le format d'heure de fermiture de Lundi n'est pas valide";}
-
-	if(!preg_match($reg,$_POST['Edit_OuvertMa']))
-		{$errors['Edit_OuvertMa']="Le format d'heure d'ouverture de Mardi n'est pas valide";}	
-
-	if(!preg_match($reg,$_POST['Edit_FermerMa']))
-		{$errors['Edit_FermerMa']="Le format d'heure de fermiture de Mardi n'est pas valide";}
-
-	if(!preg_match($reg,$_POST['Edit_OuvertMe']))
-		{$errors['Edit_OuvertMe']="Le format d'heure d'ouverture de Mercredi n'est pas valide";}	
-
-	if(!preg_match($reg,$_POST['Edit_FermerMe']))
-		{$errors['Edit_FermerMe']="Le format d'heure de fermiture de Mercredi n'est pas valide";}
-		
-	if(!preg_match($reg,$_POST['Edit_OuvertJe']))
-		{$errors['Edit_OuvertJe']="Le format d'heure d'ouverture de Jeudi n'est pas valide";}	
-
-	if(!preg_match($reg,$_POST['Edit_FermerJe']))
-		{$errors['Edit_FermerJe']="Le format d'heure de fermiture de Jeudi n'est pas valide";}
-
-	if(!preg_match($reg,$_POST['Edit_OuvertVe']))
-		{$errors['Edit_OuvertVe']="Le format d'heure d'ouverture de Vendredi n'est pas valide";}	
-
-	if(!preg_match($reg,$_POST['Edit_FermerVe']))
-		{$errors['Edit_FermerVe']="Le format d'heure de fermiture de Vendredi n'est pas valide";}
-		
-	if(!preg_match($reg,$_POST['Edit_OuvertSa']))
-		{$errors['Edit_OuvertSa']="Le format d'heure d'ouverture de Samedi n'est pas valide";}	
-
-	if(!preg_match($reg,$_POST['Edit_FermerSa']))
-		{$errors['Edit_FermerSa']="Le format d'heure de fermiture de Samedi n'est pas valide";}
-		
-	if(!preg_match($reg,$_POST['Edit_OuvertDi']))
-		{$errors['Edit_OuvertDi']="Le format d'heure d'ouverture de Dimanche n'est pas valide";}	
-
-	if(!preg_match($reg,$_POST['Edit_FermerDi']))
-		{$errors['Edit_FermerDi']="Le format d'heure de fermiture de Dimanche n'est pas valide";}						
-
-
-
 	if(empty($errors))
 	{
 
@@ -121,11 +65,7 @@ if(!empty($_POST)){
 	$impacte=new Impact();
 	$impacte->setParam(NULL,$numincident,$_POST['IdAppli'],$_POST['Incident_Impact_datedebut'],$_POST['Incident_Impact_datefin'],$_POST['Incident_Impact_dureereelle'],$_POST['Incident_Impact_jourhommeperdu'],$_POST['Incident_Impact_impactmetier'],$_POST['Incident_Impact_impact'],$_POST['Incident_Impact_sla'],$_POST['Incident_Impact_criticite'],$_POST['Incident_Impact_description']);
 	$impacte->creer();
-	$calendrier= new Calendrier();
-	if (!empty($_POST['IdAppli'])) {
-	$calendrier->setParam($_POST['IdCalend'],$_POST['IdAppli'],$_POST['Edit_OuvertLu'],$_POST['Edit_FermerLu'],$_POST['Edit_OuvertMa'],$_POST['Edit_FermerMa'],$_POST['Edit_OuvertMe'],$_POST['Edit_FermerMe'],$_POST['Edit_OuvertJe'],$_POST['Edit_FermerJe'],$_POST['Edit_OuvertVe'],$_POST['Edit_FermerVe'],$_POST['Edit_OuvertSa'],$_POST['Edit_FermerSa'],$_POST['Edit_OuvertDi'],$_POST['Edit_FermerDi'],$_POST['Edit_OuvertJf'],$_POST['Edit_FermerJf']);
-	$calendrier->creer();	
-	}
+	
 
 	$_SESSION['flash']['success'] =" L'impacte est bien ajoutée."; 
 	header('Location:ListeImpact.php?idIncident='.$numincident);
@@ -169,7 +109,7 @@ if(!empty($errors)){?>
 		<strong><?php getVarUpdate('numincident',$incident->getTitre()); ?> </strong> 
 		</span>	
 	    </div>
-	
+	<fieldset>
 	<?php 
 	include('../inc/impact.inc.php');
 	?>	

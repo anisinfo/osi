@@ -53,8 +53,8 @@ session_start();
               }
             catch(e)
             {
-              alert(e);
-            //document.location.href ="commachaud.php?idIncident="+id;
+            //  alert(e);
+            document.location.href ="commachaud.php?idIncident="+id;
             }
       }
       else

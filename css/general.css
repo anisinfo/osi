@@ -57,6 +57,7 @@ p {font-size: 5rem;}
       .width50{width:48%; float:left;}
       .width12{width:12%; float:left; overflow: hidden;height: 50px;}
       .width20{width:23%; float:left;}
+      .width32{width:32%; float:left;}
       .width30{width:30%; float:left;}
       .bloc>.width50{width:46%; float:left; margin:0 2%;}
       .bloc input[type="text"], .bloc input[type="password"],
@@ -67,9 +68,12 @@ p {font-size: 5rem;}
        .bloc input[type="submit"], .bloc input[type="tel"], .bloc input[type="time"], 
        .bloc input[type="url"], textarea, .bloc select { float:left; margin-right: 5px;  height: 30px; margin-bottom: 0;}
        .bloc input[type="number"]{ width:48%; margin-right: 35px;}
+       textarea{ height: 80px;}
        .mr_35{margin-right: 30px;}
        .mr_10{margin-right: 14px;}
        .mr_7{margin-right: 5px;}
+       .mr_50{margin-right: 50px;}
+       .mr_9{margin-right: 9px;}
        .bloc input[type="number"],.bloc select{ padding:0;}
        .bloc fieldset{ padding: 5px 0;    width: 98%; margin-left: 10px; background: #e7e7e7;}
        .bloc .fl-right{ float: right; margin-right: 25px;}

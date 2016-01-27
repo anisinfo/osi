@@ -10,7 +10,7 @@ class Application
 
 	public function SelectAppliById($id)
 	{
-		$rq="SELECT ID,NAME,ENSEIGNE,IRT,TRIGRAMME FROM ".SCHEMA.".APPLICATION ";
+		$rq="SELECT ID,LIBELLE,ENSEIGNE,IRT,TRIGRAMME FROM ".SCHEMA.".APPLICATION ";
 		$rq.="WHERE ID=".$id;
 
 		$db= new db();
@@ -22,8 +22,8 @@ class Application
 
 	public function SelectAppliByName()
 	{
-		$rq="SELECT ID,NAME  FROM ".SCHEMA.".APPLICATION ";
-		$rq.="WHERE UPPER(REPLACE(NAME,' ','')) LIKE '%".strtoupper(str_replace(' ','',$this->getName()))."%' ORDER BY NAME";
+		$rq="SELECT ID,LIBELLE  FROM ".SCHEMA.".APPLICATION ";
+		$rq.="WHERE UPPER(REPLACE(LIBELLE,' ','')) LIKE '%".strtoupper(str_replace(' ','',$this->getName()))."%' ORDER BY LIBELLE";
 
 		$db= new db();
 		$db->db_connect();

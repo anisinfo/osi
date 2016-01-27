@@ -232,7 +232,7 @@ function RemplirAppli(id)
     {
 
       $('#Edit_O_Jf').val(tabCal[id].JFO);
-       $('#Edit_Jf').val(tabCal[id].JFO);
+       $('#Edit_Jf').val(tabCal[id].JFF);
 
       $('#Edit_O_Lu').val(tabCal[id].LO);
        $('#Edit_Lu').val(tabCal[id].LF);
@@ -258,7 +258,7 @@ function RemplirAppli(id)
     }else
     {
       var hD="00:00";
-      var hF="24:59";
+      var hF="23:59";
 
         $('#Edit_O_Jf').val(hD);
        $('#Edit_Jf').val(hF);
@@ -285,6 +285,25 @@ function RemplirAppli(id)
        $('#Edit_Di').val(hF);  
 
     }
+}
+
+function SauvegarderCal()
+{
+var url='../inc/calendrier.json.php?Edit_OuvertJf='+$('#Edit_O_Jf').val()+'&Edit_OuvertLu='+$('#Edit_O_Lu').val()+'&Edit_OuvertMa='+$('#Edit_O_Ma').val();
+    url+='&Edit_OuvertMe='+$('#Edit_O_Me').val()+'&Edit_OuvertJe='+$('#Edit_O_Je').val()+'&Edit_OuvertVe='+$('#Edit_O_Ve').val();
+    url+='&Edit_OuvertSa='+$('#Edit_O_Sa').val()+'&Edit_OuvertDi='+$('#Edit_O_Di').val();
+    url+='&Edit_FermerJf='+$('#Edit_Jf').val()+'&Edit_FermerLu='+$('#Edit_Lu').val()+'&Edit_FermerMa='+$('#Edit_Ma').val();
+    url+='&Edit_FermerMe='+$('#Edit_Me').val()+'&Edit_FermerJe='+$('#Edit_Je').val()+'&Edit_FermerVe='+$('#Edit_Ve').val();
+    url+='&Edit_FermerSa='+$('#Edit_Sa').val()+'&Edit_FermerDi='+$('#Edit_Di').val()+'&IdAppli='+$('#IdAppli').val();
+var xmlhttp = new XMLHttpRequest(); 
+xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        var myArr = JSON.parse(xmlhttp.responseText);
+        if (myArr) {alert(myArr);}else CalculeDuree();
+      }
+    };
+  xmlhttp.open("GET", url, true);
+  xmlhttp.send();   
 }   
 
 function TestHeure()
