@@ -54,7 +54,7 @@ if (!empty($_POST)) {
 	}
 	$stat= new Stat();
 	$statLegacy=(isset($_POST['statLegacy']))?$_POST['statLegacy']:'';
-    $stat->SetParam($idStat,$idIncident,$_POST['refchangement'],$_POST['stat_publicationIR'],$_POST['stat_publicationPM'],$_POST['stat_typecause'],$_POST['stat_typecause_second'],$_POST['stat_typologiegts'],$_POST['stat_kindImpact'],$_POST['stat_equipeResp'],$_POST['fournisseurResp'],$_POST['statPowerprod'],$statLegacy,$_POST['stat_Composant'],$_POST['Composant_complement'],$listeCheck);
+    $stat->SetParam($idStat,$idIncident,$_POST['refchangement'],$_POST['stat_publicationIR'],$_POST['stat_publicationPM'],$_POST['stat_typecause'],$_POST['stat_typecause_second'],$_POST['stat_typologiegts'],$_POST['stat_equipeResp'],$_POST['fournisseurResp'],$_POST['statPowerprod'],$statLegacy,$_POST['stat_Composant'],$_POST['Composant_complement'],$listeCheck);
     $stat->Modifier();
     $_SESSION['flash']['success']="Le Stat est bien modifié!";
 	}
@@ -87,8 +87,8 @@ require_once('../inc/header.inc.php');
 	<span class="lib" style="float:left; margin-left:25px; line-height:2.5;">Titre comm <strong><?= $incident->getTitre(); ?> </strong> </span>
 	</div>
 	<div class="width100 bcg">
-    		<div class=" width50 mr_35"> 
-    			<div class="width100">
+    		<div class=" width50 fl-left"> 
+    			<div class="width50">
 		    		<label  class="lib"  for="Incident_Impact_stat_refchangement"> Ref changement</label> 
 		    		<input type="text"  name="refchangement"  value="<?php getVarUpdate('refchangement',$stat->getRefChangement()); ?>" >
 	    		</div>
@@ -139,7 +139,7 @@ require_once('../inc/header.inc.php');
 	    		</div>
     		</div>
 
-    		<div class=" width50">
+    		<div class=" width50 right">
 
     			<div class="width100">
 
@@ -160,7 +160,7 @@ require_once('../inc/header.inc.php');
     				    			
 
     			<div class="width100">
-    				<div class=" width50 mr_10">
+    				<div class=" width50">
 	    				<label  class="lib"  for="Incident_Impact_stat_typologiegts"> Typologie GTS</label> 
 		    			<select id="stat_typologiegts" name="stat_typologiegts">
 		    			<?php
@@ -168,20 +168,8 @@ require_once('../inc/header.inc.php');
 		    			?>
 		    			</select>
 	    			</div>
-
-	    			<div class=" width50">
-	    			
-	    				<label  class="lib"  for="stat_kindImpact"> Kind of impact</label> 
-		    			<select id="stat_kindImpact" name="stat_kindImpact">
-		    			<?php
-		    			SelectUpdate('stat_kindImpact',$stat->getKindOfImpact(),$STATKINDIMPACT);
-		    			?>
-		    			</select>
-	    			</div>	    			
-	    		</div>
-
-	    		<div class="width100">
-	    			<div class=" width50 mr_10">
+    			
+	    			<div class=" width50 right">
 	    				<label  class="lib"  for="statPowerprod"> Powerprod</label> 
 		    			<select id="statPowerprod" name="statPowerprod" >
 		    			<?php
@@ -211,7 +199,7 @@ require_once('../inc/header.inc.php');
 
     		
 
-    	<input type="submit" value="Soumettre la requête" name="submit" />
+    	<input type="submit" value="Sauvegarder" name="submit" />
 	</div>
 </form>
 <?php

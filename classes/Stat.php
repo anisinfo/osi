@@ -8,7 +8,6 @@ class Stat
  private $_TypeCause;
  private $_TypeCauseSecondaire;
  private $_TypologieGts;
- private $_KindOfImpact;
  private $_EquipeResponsable;
  private $_FournisseurResponsable;
  private $_PowerProd;
@@ -25,7 +24,7 @@ class Stat
      *
      * @return $this
      */
-	public function SetParam($Id,$IdIncident,$RefChangement,$DatePublicationIr,$DatePublicationPm,$TypeCause,$TypeCauseSecondaire,$TypologieGts,$KindOfImpact,$EquipeResponsable,$FournisseurResponsable,$PowerProd,$Legacy,$Composant,$ComposantComplement,$ZoneGeographique)
+	public function SetParam($Id,$IdIncident,$RefChangement,$DatePublicationIr,$DatePublicationPm,$TypeCause,$TypeCauseSecondaire,$TypologieGts,$EquipeResponsable,$FournisseurResponsable,$PowerProd,$Legacy,$Composant,$ComposantComplement,$ZoneGeographique)
 	{
 	  	
         $this->_setId($Id);
@@ -36,7 +35,6 @@ class Stat
 	  	$this->_setTypeCause($TypeCause);
 	  	$this->_setTypeCauseSecondaire($TypeCauseSecondaire);
 	  	$this->_setTypologieGts($TypologieGts);
-	  	$this->_setKindOfImpact($KindOfImpact);
 	  	$this->_setEquipeResponsable($EquipeResponsable);
 	  	$this->_setFournisseurResponsable($FournisseurResponsable);
 	  	$this->_setPowerProd($PowerProd);
@@ -58,7 +56,7 @@ class Stat
 	{
       //  debug($this);
 		$requette="INSERT INTO ".SCHEMA.".STATISTIQUE ";
-		$requette.="(REFCHANGEMENT,DATEPUBIR,DATEPUBPM,TYPECAUSE,TYPECAUSESECONDAIRE,TYPOLIGYGTS,KINDIMPACT,RESPONSIBLETEAM,FOURNISSEURRESPONSIBLE,POWERPROD,LEGACY,COMPOSANT,COMPOSANTCOMPLEMENT,ZONEGEOGRAPHIQUE,CREATED,UPDATED) ";
+		$requette.="(REFCHANGEMENT,DATEPUBIR,DATEPUBPM,TYPECAUSE,TYPECAUSESECONDAIRE,TYPOLIGYGTS,RESPONSIBLETEAM,FOURNISSEURRESPONSIBLE,POWERPROD,LEGACY,COMPOSANT,COMPOSANTCOMPLEMENT,ZONEGEOGRAPHIQUE,CREATED,UPDATED) ";
 		$requette.="VALUES(";
 		$requette.="'".$this->getRefChangement()."',";
 	  	$requette.="TO_TIMESTAMP('".$this->getDatePublicationIr()."','DD/MM/YYYY'),";
@@ -66,7 +64,6 @@ class Stat
 	  	$requette.="'".$this->getTypeCause()."',";
 	  	$requette.="'".$this->getTypeCauseSecondaire()."',";
 	  	$requette.="'".$this->getTypologieGts()."',";
-	  	$requette.="'".$this->getKindOfImpact()."',";
 	  	$requette.="'".$this->getEquipeResponsable()."',";
 	  	$requette.="'".$this->getFournisseurResponsable()."',";
 	  	$requette.="'".$this->getPowerProd()."',";
@@ -111,7 +108,6 @@ class Stat
 	  	$requette.="TYPECAUSE='".$this->getTypeCause()."',";
 	  	$requette.="TYPECAUSESECONDAIRE='".$this->getTypeCauseSecondaire()."',";
 	  	$requette.="TYPOLIGYGTS='".$this->getTypologieGts()."',";
-	  	$requette.="KINDIMPACT='".$this->getKindOfImpact()."',";
 	  	$requette.="RESPONSIBLETEAM='".$this->getEquipeResponsable()."',";
 	  	$requette.="FOURNISSEURRESPONSIBLE='".$this->getFournisseurResponsable()."',";
 	  	$requette.="POWERPROD='".$this->getPowerProd()."',";
@@ -157,7 +153,7 @@ class Stat
      */
 	public function SelectStatById($id,$IdIncident)
 	{
-		$requette="SELECT REFCHANGEMENT,TO_CHAR(DATEPUBIR,'DD/MM/YYYY'),TO_CHAR(DATEPUBPM,'DD/MM/YYYY'),TYPECAUSE,TYPECAUSESECONDAIRE,TYPOLIGYGTS,KINDIMPACT,RESPONSIBLETEAM,FOURNISSEURRESPONSIBLE,POWERPROD,LEGACY,COMPOSANT,COMPOSANTCOMPLEMENT,ZONEGEOGRAPHIQUE ";
+		$requette="SELECT REFCHANGEMENT,TO_CHAR(DATEPUBIR,'DD/MM/YYYY'),TO_CHAR(DATEPUBPM,'DD/MM/YYYY'),TYPECAUSE,TYPECAUSESECONDAIRE,TYPOLIGYGTS,RESPONSIBLETEAM,FOURNISSEURRESPONSIBLE,POWERPROD,LEGACY,COMPOSANT,COMPOSANTCOMPLEMENT,ZONEGEOGRAPHIQUE ";
 		$requette.=" FROM  ".SCHEMA.".STATISTIQUE ";
         $requette.=" WHERE ID=".$id;
 	
@@ -168,7 +164,7 @@ class Stat
 		$res=$db->db_fetch_array();
 		$db->close();
 		$valeur=$res[0];
-		$this->SetParam($id,$IdIncident,$valeur[0],$valeur[1],$valeur[2],$valeur[3],$valeur[4],$valeur[5],$valeur[6],$valeur[7],$valeur[8],$valeur[9],$valeur[10],$valeur[11],$valeur[12],$valeur[13]);
+		$this->SetParam($id,$IdIncident,$valeur[0],$valeur[1],$valeur[2],$valeur[3],$valeur[4],$valeur[5],$valeur[6],$valeur[7],$valeur[8],$valeur[9],$valeur[10],$valeur[11],$valeur[12]);
 
 		return $this;
 	}

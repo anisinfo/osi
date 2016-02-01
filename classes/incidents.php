@@ -151,7 +151,7 @@ return $this;
 	public function Modifier()
 	{
 		$rq="UPDATE ".SCHEMA.".INCIDENT SET ";
-		$rq.="TITRE='".$this->getTitre()."',";
+		$rq.="TITRE='".htmlentities($this->getTitre(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
         $rq.="INCIDENT='".htmlentities($this->getIncident(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
 		$rq.="DEPARTEMENT='".htmlentities($this->getDepartement(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
 		$rq.="STATUT='".$this->getStatut()."',";

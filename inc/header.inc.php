@@ -32,7 +32,7 @@ session_start();
     var DestinataireBcc="<?= DESTINATAIREBCC;?>";
     function EnvoyerMail(id)
       {
-          var userAgent= window.navigator.userAgent;       
+       /*   var userAgent= window.navigator.userAgent;       
           if((userAgent.indexOf('MSI') != -1) || (userAgent.indexOf('Trident') != -1))
       {
         try
@@ -60,7 +60,8 @@ session_start();
       else
       {
         document.location.href ="commachaud.php?idIncident="+id;
-      }
+      }*/
+      document.location.href ="commachaud.php?idIncident="+id;
       }
     </script>
     <script src="<?php echo RACINE; ?>js/jquery-1.11.3.min.js"></script>

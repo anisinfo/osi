@@ -46,7 +46,7 @@ if (!empty($_POST)) {
 	}
 
 	$stat= new Stat();
-    $stat->SetParam(NULL,$idIncident,$_POST['refchangement'],$_POST['stat_publicationIR'],$_POST['stat_publicationPM'],$_POST['stat_typecause'],$_POST['stat_typecause_second'],$_POST['stat_typologiegts'],$_POST['stat_kindImpact'],$_POST['stat_equipeResp'],$_POST['fournisseurResp'],$_POST['statPowerprod'],$_POST['statLegacy'],$_POST['stat_Composant'],$_POST['Composant_complement'],$listeCheck);
+    $stat->SetParam(NULL,$idIncident,$_POST['refchangement'],$_POST['stat_publicationIR'],$_POST['stat_publicationPM'],$_POST['stat_typecause'],$_POST['stat_typecause_second'],$_POST['stat_typologiegts'],$_POST['stat_equipeResp'],$_POST['fournisseurResp'],$_POST['statPowerprod'],$_POST['statLegacy'],$_POST['stat_Composant'],$_POST['Composant_complement'],$listeCheck);
     $idStat=$stat->Creer();
     $_SESSION['flash']['success']="Le stat est Bien Ajouté !";
     header('Location:modifStat.php?idStat='.$idStat.'&idIncident='.$idIncident);
@@ -76,7 +76,7 @@ require_once('../inc/header.inc.php');
 	</div>
 	<div class="width100 bcg">
     		<div class=" width50 mr_35"> 
-    			<div class="width100">
+    			<div class="width50">
 		    		<label  class="lib"  for="Incident_Impact_stat_refchangement"> Ref changement</label> 
 		    		<input type="text"  name="refchangement"  value="<?php getVar('refchangement'); ?>" >
 	    		</div>
@@ -148,7 +148,7 @@ require_once('../inc/header.inc.php');
     				    			
 
     			<div class="width100">
-    				<div class=" width50 mr_10">
+    				<div class=" width50 ">
 	    				<label  class="lib"  for="Incident_Impact_stat_typologiegts"> Typologie GTS</label> 
 		    			<select id="stat_typologiegts" name="stat_typologiegts">
 		    			<?php
@@ -156,20 +156,8 @@ require_once('../inc/header.inc.php');
 		    			?>
 		    			</select>
 	    			</div>
-
-	    			<div class=" width50">
 	    			
-	    				<label  class="lib"  for="stat_kindImpact"> Kind of impact</label> 
-		    			<select id="stat_kindImpact" name="stat_kindImpact">
-		    			<?php
-		    			Select('stat_kindImpact',$STATKINDIMPACT);
-		    			?>
-		    			</select>
-	    			</div>	    			
-	    		</div>
-
-	    		<div class="width100">
-	    			<div class=" width50 mr_10">
+	    			<div class=" width50 right">
 	    				<label  class="lib"  for="statPowerprod"> Powerprod</label> 
 		    			<select id="statPowerprod" name="statPowerprod" >
 		    			<?php
@@ -187,17 +175,16 @@ require_once('../inc/header.inc.php');
 	    			</div>
 
 	    			    			
-	    		</div>
+	    		
 	    		<div class="width100">
                 <label class="lib" for="stat_zonegeo">Zone géographique</label>
                 <?php getCheckListe('stat_zonegeo',$STATGEOL); ?>
     		</div>
-
+</div>
     		</div>
     	
 	</div>
-	<input type="submit" value="Soumettre la requête" name="submit" />
-    <input type="button" value="Annuler" onclick="javascript:document.location.href='modif.php?id=<?= $_GET['idIncident'];?>'" />
+	<input type="submit" value="Sauvegarder" name="submit" />
 	</div>
 
 </form>

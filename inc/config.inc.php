@@ -34,4 +34,6 @@ $STATGEOL= array(1=>'FRANCE',2=>'AMER',3=>'ASIA',4=>'WE');
 define("DESTINATAIRE","test@test.fr");
 define("DESTINATAIRECC","test2@test.fr");
 define("DESTINATAIREBCC","test3@test.fr");
+define("TELCOMMACHAUD","01234567890");
+define("MAILCOMMACHAUD", "test@test.com");
 ?>

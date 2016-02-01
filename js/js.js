@@ -157,18 +157,22 @@ xmlhttp.onreadystatechange = function() {
 };
   xmlhttp.open("GET", url, true);
   xmlhttp.send();
+ }else
+ {
+   $('#Incident_Impact_dureereelle').val('');
  }
 } 
 
 function dateTime(dat)
 {
+ 
   var d1J= dat.substring(0,2);
   var d1M= dat.substring(3,5);
   var d1A= dat.substring(6,10);
   var d1H= dat.substring(11,13);
-  var d1M= dat.substring(14,16);
+  var d1Mi= dat.substring(14,16);
 
-  d1 = new Date(d1A,d1M,d1J,d1H,d1M);
+  d1 = new Date(parseInt(d1A),parseInt(d1M)-1,parseInt(d1J),parseInt(d1H),parseInt(d1Mi));
   return d1.getTime();
 }
 
@@ -179,7 +183,7 @@ function CalculeDureeIncident()
   var xmlhttp = new XMLHttpRequest();
   var url = "../inc/duree.inc.php?td1="+dateDeb+"&td2="+dateFin;
   var reg="^(3[01]|[2][0-9]|0)/(1[0-2]|0[1-9])/{4} [0-2]?[0-3]:[0-5][0-9]$";
-  var duree=dateTime(dateFin)-dateTime(dateDeb);
+ 
 
 /*  if (dateFin =="" && dateDeb !="")
     {
@@ -187,10 +191,14 @@ function CalculeDureeIncident()
        $('#finincident').datetimepicker({format:'d/m/Y H:i',minDate:'10/01/2016',minTime:dateDeb.substring(11,16)});           
     }
     else */
+  $("#Incident_Impact_datedebut").val(dateDeb);
+  $("#Incident_Impact_datefin").val(dateFin); 
+  CalculeDuree();  
   if (dateDeb!="" && dateFin!="")
   {
+     var duree=(dateTime(dateFin)-dateTime(dateDeb));
     if (duree < 0) {
-      alert('Veuillez choisir une date aprés la date de début');
+      alert('Veuillez choisir une date aprés la date de début'+dateTime(dateDeb)+'/'+dateTime(dateFin)+'/'+duree+'/'+(dateTime(dateFin)-dateTime(dateDeb)));
       $('#finincident').val('');
       $('#finincident').datetimepicker({format:'d/m/Y H:i'});
     }
@@ -202,6 +210,9 @@ function CalculeDureeIncident()
     };
   xmlhttp.open("GET", url, true);
   xmlhttp.send();
+  }else 
+  {
+   $('#Incident_duree').val(''); 
   }
 } 
 

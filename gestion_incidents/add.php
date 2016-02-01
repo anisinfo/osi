@@ -130,7 +130,7 @@ if ($idIncident) {
 require_once('../inc/search.inc.php');
 ?>
 	<div class="width100 bcg">
-		<div class=" width50 mr_35">
+		<div class=" width50 fl-left">
 			<div class="width100">
 				<div class=" width32 mr_9">
 		    		<label  class="lib"  for="titreincident"> Incident *</label> 
@@ -196,12 +196,12 @@ require_once('../inc/search.inc.php');
             	</div>
   			</div>
 
-		   	<div class="width100">
+		   	<div class="width50">
 		    			<label  class="lib" for="incidentConnex"> Incidents connexes</label> 
 		    			<input type="text" name="incidentConnex"  id="incidentConnex" value="<?php getVar('incidentConnex'); ?>">
 		   	</div>
 
-		    <div class="width100">
+		    <div class="width50 right">
 		   			<label  class="lib" for="incidentprobleme">Problème</label> 
 		   			<input type="text" name="incidentprobleme" id="incidentprobleme"  value="<?php getVar('incidentprobleme'); ?>">
  		    </div>
@@ -235,36 +235,41 @@ require_once('../inc/search.inc.php');
 
 	  		<div class=" width100">
 	  			<div class=" width50">
-	  				<label  class="lib" for="incidentdatecreci"> Date du publication</label> 
+	  				<label  class="lib" for="incidentdatecreci"> Date de publication</label> 
 	  				<input type="text"  name="incidentdatecreci" id="incidentdatecreci" value="<?php getVar('incidentdatecreci'); ?>" >
 	  			</div>
 
 	  			<div class=" width50 right">
-	  				<label  class="lib" for="incidentdatedecision"> Date du prise de décision</label> 
+	  				<label  class="lib" for="incidentdatedecision"> Date de prise de décision</label> 
 	  				<input type="text"  name="incidentdatedecision" id="incidentdatedecision" value="<?php getVar('incidentdatedecision'); ?>" >
 	  			</div>
+
+	  			<div class="width100">
+  				<label class="lib" for="Incident_commentaire">Commentaire</label>
+  				<textarea  rows="3" id="Incident_commentaire" name="Incident_commentaire" style="height:180"><?php getVAr('Incident_commentaire'); ?></textarea>
+  			</div>
 	  		</div>  		
 	  	</div>
 		
-		<div class=" width50">
-			<div class="width100">
+		<div class=" width50 right">
+			<div class="width50">
 		    			<label  class="lib" for="Incident_departement"> Département</label> 
 		    			<input type="text" name="Incident_departement"  id="Incident_departement" value="<?php getVar('Incident_departement'); ?>">
 		   	</div>
 
-		    <div class="width100">
+		    <div class="width50 right">
 		   			<label  class="lib" for="incidentuserimpacte">Utilisateurs impactés</label> 
 		   			<input type="text" name="incidentuserimpacte" id="incidentuserimpacte" value="<?php getVar('incidentuserimpacte'); ?>" >
 		    </div>
 		
 	    	<div class="width100">
   				<label class="lib" for="Incident_IncImpact_description">Description de l'incident *</label>
-  				<textarea  rows="3" id="IncImpact_description" name="IncImpact_description" required><?php getVar('IncImpact_description'); ?></textarea>
+  				<textarea  rows="3" id="IncImpact_description" name="IncImpact_description" required style="height:150"><?php getVar('IncImpact_description'); ?></textarea>
   			</div>
 
   			<div class="width100">
   				<label class="lib" for="Incident_cause">Cause*</label>
-  				<textarea  rows="3" id="Incident_cause" name="Incident_cause" required><?php getVar('Incident_cause'); ?></textarea>
+  				<textarea  rows="3" id="Incident_cause" name="Incident_cause" required style="height:150"><?php getVar('Incident_cause'); ?></textarea>
   			</div>
 
   			<div class="width100">
@@ -282,11 +287,6 @@ require_once('../inc/search.inc.php');
   					<label class="lib" for="Incident_useraction">Actions utilisateur</label>
   					<textarea  rows="3" id="Incident_useraction" name="Incident_useraction"><?php getVar('Incident_useraction'); ?></textarea>
   				</div>
-  			</div>
-
-  			<div class="width100">
-  				<label class="lib" for="Incident_commentaire">Commentaire</label>
-  				<textarea  rows="3" id="Incident_commentaire" name="Incident_commentaire"><?php getVAr('Incident_commentaire'); ?></textarea>
   			</div>
   		</div>
 

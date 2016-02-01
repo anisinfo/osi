@@ -227,7 +227,7 @@ require_once('../inc/search.inc.php');
 ?>	
 	<div class="width100 bcg">
 		
-		<div class=" width50 mr_35">
+		<div class=" width50 fl-left">
 			<div class="width100">
 				<div class=" width32 mr_9">
 
@@ -292,11 +292,11 @@ require_once('../inc/search.inc.php');
             		</label>
             	</div>  	
   			</div>
-		   	<div class="width100">
+		   	<div class="width50">
 		    			<label  class="lib" for="incidentConnex"> Incidents connexes</label> 
 		    			<input type="text" name="incidentConnex"  id="incidentConnex" value="<?php getVarUpdate('incidentConnex',$incident->getConnexe()); ?>">
 		   	</div>
-		    <div class="width100">
+		    <div class="width50 right">
 		   			<label  class="lib" for="incidentprobleme">Problème</label> 
 		   			<input type="text" name="incidentprobleme" id="incidentprobleme"  value="<?php getVarUpdate('incidentprobleme',$incident->getProbleme()); ?>">
  		    </div>
@@ -329,35 +329,39 @@ require_once('../inc/search.inc.php');
 	  		<div class="width100">
 
 		  		<div class=" width50">
-		  			<label  class="lib" for="incidentdatecreci"> Date du publication</label> 
+		  			<label  class="lib" for="incidentdatecreci"> Date de publication</label> 
 		  			<input type="text"  name="incidentdatecreci" id="incidentdatecreci" value="<?php getVarUpdate('incidentdatecreci',$incident->getDateCreci()); ?>" >
 		  		</div>
 		  		<div class=" width50 right">
-		  			<label  class="lib" for="incidentdatedecision"> Date du prise de décision</label> 
+		  			<label  class="lib" for="incidentdatedecision"> Date de prise de décision</label> 
 		  			<input type="text"  name="incidentdatedecision" id="incidentdatedecision" value="<?php getVarUpdate('incidentdatedecision',$incident->getDateDecision()); ?>" >
 		  		</div>
+		  		<div class="width100">
+  				<label class="lib" for="Incident_commentaire">Commentaire</label>
+  				<textarea  rows="3" id="Incident_commentaire" name="Incident_commentaire" style="height:180"><?php getVarUpdate('Incident_commentaire',$incident->getCommentaire()); ?></textarea>
+  				</div>
 	  		</div>	  		
 	  	</div>
 		
-		<div class=" width50">
-			<div class="width100">
+		<div class=" width50 right">
+			<div class="width50">
 		    			<label  class="lib" for="Incident_departement"> Département</label> 
 		    			<input type="text" name="Incident_departement"  id="Incident_departement" value="<?php getVarUpdate('Incident_departement',$incident->getDepartement()); ?>">
 		   	</div>
 
-		    <div class="width100">
+		    <div class="width50 right">
 		   			<label  class="lib" for="incidentuserimpacte">Utilisateurs impactés</label> 
 		   			<input type="text" name="incidentuserimpacte" id="incidentuserimpacte" value="<?php getVarUpdate('incidentuserimpacte',$incident->getUtilisImpacte()); ?>" >
 		    </div>
 		
 	    	<div class="width100">
   				<label class="lib" for="Incident_IncImpact_description">Description de l'incident *</label>
-  				<textarea  rows="3" id="IncImpact_description" name="IncImpact_description" required><?php getVarUpdate('IncImpact_description',$incident->getDescripIncident()); ?></textarea>
+  				<textarea  rows="3" id="IncImpact_description" name="IncImpact_description" required style="height:150"><?php getVarUpdate('IncImpact_description',$incident->getDescripIncident()); ?></textarea>
   			</div>
 
   			<div class="width100">
   				<label class="lib" for="Incident_cause">Cause*</label>
-  				<textarea  rows="3" id="Incident_cause" name="Incident_cause" required><?php getVarUpdate('Incident_cause',$incident->getCause()); ?></textarea>
+  				<textarea  rows="3" id="Incident_cause" name="Incident_cause" required style="height:150"><?php getVarUpdate('Incident_cause',$incident->getCause()); ?></textarea>
   			</div>
   			<div class="width100">
   				<label class="lib" for="Incident_retablissement" >Retablissement</label>
@@ -377,10 +381,6 @@ require_once('../inc/search.inc.php');
   				</div>
   			</div>
 
-  			<div class="width100">
-  				<label class="lib" for="Incident_commentaire">Commentaire</label>
-  				<textarea  rows="3" id="Incident_commentaire" name="Incident_commentaire"><?php getVarUpdate('Incident_commentaire',$incident->getCommentaire()); ?></textarea>
-  			</div>
   		</div>
 <fieldset>
   			<?php require_once('../inc/impactmodif.inc.php'); ?>
