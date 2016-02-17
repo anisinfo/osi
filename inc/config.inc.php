@@ -11,7 +11,7 @@ define("DUREE", 60*60);// En Secondes
 
 $STATUT =array(''=>'--',1=>'Nouveau',2=>'En Cours',3=>'Résolu');
 $STATUTCOMMACHAUD=array(''=>'--',1=>'Nouveau / New',2=>'En Cours / In Progress',3=>'Résolu / Resolved');
-$STATUTCOLOR =array(1=>'#FB0000',2=>'#FBF300',3=>'#24B500');
+$STATUTCOLOR =array(1=>'#FB0000',2=>'#ED7F10',3=>'#24B500');
 $PRIORITE =array(''=>'--',1=>'P1',2=>'P2',3=>'P3');
 $RESPONSABILITE=array(''=>'--',1=>'GTS',2=>'CLIENT',3=>'AUTRE');
 $SERVICEACTEUR=array(''=>'--',1=>'RET',2=>'TFO',3=>'EUS',4=>'ENSEIGNE',5=>'PARTENAIRE',6=>'AUTRE');
@@ -36,4 +36,29 @@ define("DESTINATAIRECC","test2@test.fr");
 define("DESTINATAIREBCC","test3@test.fr");
 define("TELCOMMACHAUD","01234567890");
 define("MAILCOMMACHAUD", "test@test.com");
+
+//Migration 
+//array('ColonneExcel','ChampsBase','TableBase','TypeChamp',(UNique=TRUE or False))
+$CORRESPONDANCE= array(
+	'STATISTIQUE'=>array(
+		array('ZONEGEOGRAPHIQUE',array('France','AMER','ASIA','WE'),'CHECKLISTE',False),
+		array('TYPOLIGYGTS','Typology GTS','TEXTE',False))
+		,
+	'APPLICATION'=>array(
+		array('LIBELLE','Impacted application','TEXTE',False)
+		),	
+	'INCIDENT'=>array(
+		array('INCIDENT','Ticket number','TEXTE',True),
+		array('DATEDEBUT','Start','DATE',False),
+		array('DATEFIN','End','DATE',False),
+		array('DESCRIPTION','Incident description','TEXTE',False),
+		array('CAUSE','Cause','TEXTE',False)
+		),
+	'IMPACT'=>array(
+		array('DESCRIPTION','Technical impact description','TEXTE',False),
+		array('DUREEREELLE','Impact duration','INT',False),
+		array('DESCRIPTION','Incident description','TEXTE',False),
+		array('DATESTART','Start','DATE',False)
+		)
+	);
 ?>

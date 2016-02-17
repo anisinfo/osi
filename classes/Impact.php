@@ -41,7 +41,7 @@ class Impact
 	public function creer()
 	{
 		$rq="INSERT INTO ".SCHEMA.".IMPACT (INCIDENT_ID,APPLICATION_ID,DATESTART,DATEEND,DUREEREELLE,JOURHOMME,IMPACTMETIER,IMPACT,SLA,SEVERITE,DESCRIPTION,CREATED,UPDATED)";
-		$rq.=" VALUES (".$this->getIncidentId().",".$this->getApplicationId().",TO_TIMESTAMP('".$this->getDateDebut()."','DD/MM/YYYY HH24:MI'),TO_TIMESTAMP('".$this->getDateFin()."','DD/MM/YYYY HH24:MI'),'".htmlentities($this->getDureeReelle(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".htmlentities($this->getJourHomme(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".$this->getImpactMetier()."','".$this->getImpact()."','".$this->getSla()."','".$this->getSeverite()."','".htmlentities($this->getDescription(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',sysdate,sysdate)";
+		$rq.=" VALUES (".$this->getIncidentId().",".$this->getApplicationId().",TO_TIMESTAMP('".$this->getDateDebut()."','DD/MM/YYYY HH24:MI'),TO_TIMESTAMP('".$this->getDateFin()."','DD/MM/YYYY HH24:MI'),'".oci_escape_string(html_entity_decode($this->getDureeReelle()))."','".oci_escape_string(html_entity_decode($this->getJourHomme()))."','".$this->getImpactMetier()."','".$this->getImpact()."','".$this->getSla()."','".$this->getSeverite()."','".oci_escape_string(html_entity_decode($this->getDescription()))."',sysdate,sysdate)";
 	   echo $rq;
 		$db = new db();
 		$db->db_connect();
@@ -56,13 +56,13 @@ class Impact
 		$rq.="APPLICATION_ID='".$this->getApplicationId()."',";
 		$rq.="DATESTART=TO_TIMESTAMP('".$this->getDateDebut()."','DD/MM/YYYY HH24:MI'),";
 		$rq.="DATEEND=TO_TIMESTAMP('".$this->getDateFin()."','DD/MM/YYYY HH24:MI'),";
-		$rq.="DUREEREELLE='".htmlentities($this->getDureeReelle(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
-		$rq.="JOURHOMME='".htmlentities($this->getJourHomme(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
+		$rq.="DUREEREELLE='".oci_escape_string(html_entity_decode($this->getDureeReelle()))."',";
+		$rq.="JOURHOMME='".oci_escape_string(html_entity_decode($this->getJourHomme()))."',";
 		$rq.="IMPACTMETIER='".$this->getImpactMetier()."',";
 		$rq.="IMPACT='".$this->getImpact()."',";
 		$rq.="SLA='".$this->getSla()."',";
 		$rq.="SEVERITE='".$this->getSeverite()."',";
-		$rq.="DESCRIPTION='".htmlentities($this->getDescription(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
+		$rq.="DESCRIPTION='".oci_escape_string(html_entity_decode($this->getDescription()))."',";
 		$rq.="UPDATED=sysdate";
 
 		$rq.=" WHERE ID=".$this->getId();

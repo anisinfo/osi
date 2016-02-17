@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 if(!isset($_SESSION['auth'])){
 		
 			 	 $_SESSION['flash']['danger'] ="Vous devez être connecté!"; 

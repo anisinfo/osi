@@ -37,8 +37,8 @@
 	{
 		// Insertion du partie commun d'un incidents
 		$rq="INSERT INTO ".SCHEMA.".INCIDENT (INCIDENT,TITRE,DEPARTEMENT,STATUT,PRIORITE,AFFECTEDUSER,DATEDEBUT,DATEFIN,DUREE,DESCRIPTION,RISQUEAGGRAVATION,CAUSE,INCIDENTSCONNEXES,PROBLEME,RETABLISSEMENT,RESPONSABILITE,SERVICEACTEUR,LOCALISATION,USERACTION,DATEPUBLICATION,COMMENTAIRE,DEJAAPPARU,PREVISIBLE,CREATED,UPDATED,SUIVI,DATE_DECISION,CHRONOGRAMME)";
-		$rq.=" VALUES ('".htmlentities($this->getIncident(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".htmlentities($this->getTitre(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".htmlentities($this->getDepartement(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".$this->getStatut()."','".$this->getPriorite()."','".htmlentities($this->getUtilisImpacte(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',TO_TIMESTAMP('".$this->getDateDebut()."','DD/MM/YYYY HH24:MI'),TO_TIMESTAMP('".$this->getDateFin()."','DD/MM/YYYY HH24:MI'),'".$this->getDuree()."',";
-		$rq.="'".htmlentities($this->getDescripIncident(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',".$this->getRisqueAggravation().",'".htmlentities($this->getCause(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".$this->getConnexe()."','".htmlentities($this->getProbleme(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".htmlentities($this->getRetablissement(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".$this->getResponsabilite()."','".$this->getActeur()."','".htmlentities($this->getLocalisation(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."','".htmlentities($this->getActionUtlisateur(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',TO_TIMESTAMP('".$this->getDateCreci()."','DD/MM/YYYY'),'".htmlentities($this->getCommentaire(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',".$this->getDejaApparu().",".$this->getPrevisible().",sysdate,sysdate,".$this->getSuivi().",TO_TIMESTAMP('".$this->getDateDecision()."','DD/MM/YYYY HH24:MI'),'".htmlentities($this->getChronogramme(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."')";
+		$rq.=" VALUES ('".oci_escape_string(html_entity_decode($this->getIncident()))."','".oci_escape_string(html_entity_decode($this->getTitre()))."','".oci_escape_string(html_entity_decode($this->getDepartement()))."','".$this->getStatut()."','".$this->getPriorite()."','".oci_escape_string(html_entity_decode($this->getUtilisImpacte()))."',TO_TIMESTAMP('".$this->getDateDebut()."','DD/MM/YYYY HH24:MI'),TO_TIMESTAMP('".$this->getDateFin()."','DD/MM/YYYY HH24:MI'),'".$this->getDuree()."',";
+		$rq.="'".oci_escape_string(html_entity_decode($this->getDescripIncident()))."',".$this->getRisqueAggravation().",'".oci_escape_string(html_entity_decode($this->getCause()))."','".$this->getConnexe()."','".oci_escape_string(html_entity_decode($this->getProbleme()))."','".oci_escape_string(html_entity_decode($this->getRetablissement()))."','".$this->getResponsabilite()."','".$this->getActeur()."','".oci_escape_string(html_entity_decode($this->getLocalisation()))."','".oci_escape_string(html_entity_decode($this->getActionUtlisateur()))."',TO_TIMESTAMP('".$this->getDateCreci()."','DD/MM/YYYY'),'".oci_escape_string(html_entity_decode($this->getCommentaire()))."',".$this->getDejaApparu().",".$this->getPrevisible().",sysdate,sysdate,".$this->getSuivi().",TO_TIMESTAMP('".$this->getDateDecision()."','DD/MM/YYYY HH24:MI'),'".oci_escape_string(html_entity_decode($this->getChronogramme()))."')";
 		$db = new db();
 		$db->db_connect();
 		$db->db_query($rq);
@@ -151,37 +151,37 @@ return $this;
 	public function Modifier()
 	{
 		$rq="UPDATE ".SCHEMA.".INCIDENT SET ";
-		$rq.="TITRE='".htmlentities($this->getTitre(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
-        $rq.="INCIDENT='".htmlentities($this->getIncident(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
-		$rq.="DEPARTEMENT='".htmlentities($this->getDepartement(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
+		$rq.="TITRE='".oci_escape_string(html_entity_decode($this->getTitre()))."',";
+        $rq.="INCIDENT='".oci_escape_string(html_entity_decode($this->getIncident()))."',";
+		$rq.="DEPARTEMENT='".oci_escape_string(html_entity_decode($this->getDepartement()))."',";
 		$rq.="STATUT='".$this->getStatut()."',";
 		$rq.="PRIORITE='".$this->getPriorite()."',";
 		$rq.="AFFECTEDUSER='".$this->getUtilisImpacte()."',";
 		$rq.="DATEDEBUT=TO_TIMESTAMP('".$this->getDateDebut()."','DD/MM/YYYY HH24:MI'),";
 		$rq.="DATEFIN=TO_TIMESTAMP('".$this->getDateFin()."','DD/MM/YYYY HH24:MI'),";
 		$rq.="DUREE='".$this->getDuree()."',";
-		$rq.="DESCRIPTION='".htmlentities($this->getDescripIncident(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
+		$rq.="DESCRIPTION='".oci_escape_string(html_entity_decode($this->getDescripIncident()))."',";
 		$rq.="RISQUEAGGRAVATION='".$this->getRisqueAggravation()."',";
-		$rq.="CAUSE='".htmlentities($this->getCause(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
-		$rq.="INCIDENTSCONNEXES='".htmlentities($this->getConnexe(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
-		$rq.="PROBLEME='".htmlentities($this->getProbleme(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
-		$rq.="RETABLISSEMENT='".htmlentities($this->getRetablissement(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
+		$rq.="CAUSE='".oci_escape_string(html_entity_decode($this->getCause()))."',";
+		$rq.="INCIDENTSCONNEXES='".oci_escape_string(html_entity_decode($this->getConnexe()))."',";
+		$rq.="PROBLEME='".oci_escape_string(html_entity_decode($this->getProbleme()))."',";
+		$rq.="RETABLISSEMENT='".oci_escape_string(html_entity_decode($this->getRetablissement()))."',";
 		$rq.="RESPONSABILITE='".$this->getResponsabilite()."',";
 		$rq.="SERVICEACTEUR='".$this->getActeur()."',";
-		$rq.="LOCALISATION='".htmlentities($this->getLocalisation(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
-		$rq.="USERACTION='".htmlentities($this->getActionUtlisateur(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
+		$rq.="LOCALISATION='".oci_escape_string(html_entity_decode($this->getLocalisation()))."',";
+		$rq.="USERACTION='".oci_escape_string(html_entity_decode($this->getActionUtlisateur()))."',";
 		$rq.="DATEPUBLICATION=TO_TIMESTAMP('".$this->getDateCreci()."','DD/MM/YYYY'),";
-		$rq.="COMMENTAIRE='".htmlentities($this->getCommentaire(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
+		$rq.="COMMENTAIRE='".oci_escape_string(html_entity_decode($this->getCommentaire()))."',";
 		$rq.="DEJAAPPARU='".$this->getDejaApparu()."',";
 		$rq.="PREVISIBLE='".$this->getPrevisible()."',";
         $rq.="SUIVI=".$this->getSuivi().",";
         $rq.="DATE_DECISION=TO_TIMESTAMP('".$this->getDateDecision()."','DD/MM/YYYY HH24:MI'),";
-        $rq.="CHRONOGRAMME='".htmlentities($this->getChronogramme(),ENT_QUOTES | ENT_IGNORE, "UTF-8")."',";
+        $rq.="CHRONOGRAMME='".oci_escape_string(html_entity_decode($this->getChronogramme()))."',";
 		$rq.="UPDATED=sysdate";
 
 		$rq.=" WHERE ID=".$this->getNumero();
 
-     //   debug($rq);
+       // debug($rq);
 		$base= new db();
 		$base->db_connect();
 		$base->db_query($rq);

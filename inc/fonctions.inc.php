@@ -7,7 +7,7 @@ function debug($err){
 *  Fonctions pour la page ajout 
 */
 function getVar($var){
-	echo (isset($_POST[$var]))?$_POST[$var]:'';
+	echo htmlentities((isset($_POST[$var]))?$_POST[$var]:'');
 	}
 
 function Select($var,$arr)
@@ -97,7 +97,7 @@ return calc_impact($date1, $date2, $idAppli,$conn);
 
 function getVarUpdate($var,$obj)
 {
-	echo (isset($_POST[$var]))?$_POST[$var]:$obj;
+	echo htmlentities((isset($_POST[$var]))?$_POST[$var]:$obj);
 }
 
 function SelectUpdate($var,$obj,$arr)
@@ -167,3 +167,17 @@ function RadioUpdate($var,$obj,$arr)
 function isInteger($input){
     return(ctype_digit(strval($input)));
 } 
+function oci_escape_string($str) {
+  return str_replace("'","''", $str);
+}
+function getIdVar($var,$tabVar)
+{
+  foreach ($tabVar as $k => $v)
+    {
+      if (strtoupper($v) == strtoupper($var))
+      {
+        return $k;
+      }
+
+    }
+}

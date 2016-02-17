@@ -1,12 +1,5 @@
 <?php
-session_start();
-if(!isset($_SESSION['auth'])){
-		
-			 	 $_SESSION['flash']['danger'] ="Vous devez être connecté!"; 
-			 	 header('Location:index.php');
-			 	 die();
-	}
-$userConnected=$_SESSION['auth'][2].' '.$_SESSION['auth'][1];	
+header('Content-Disposition: attachment; filename='.basename('commachaud.vbs'));
 $numero=(isset($_GET['idIncident']))?$_GET['idIncident']:'';
 if (!$numero) {
 	$_SESSION['flash']['erreur']="Pas de numéro d'incident passé !";
@@ -25,9 +18,6 @@ $incident->chargerIncident($numero);
 $impacte->chargerFirstIncident($numero);
 $application= new Application();
 $application->SelectAppliById($impacte->getApplicationId());
-//header ('Content-Type: application/octet-stream');
-header('Content-type: text/html; charset=utf-8');
-header('Content-Disposition: attachment; filename='.basename('commachaud.vbs'));
 ?>
 Const tmpD = "c:/temp/"
 function GetFileName(url)
@@ -63,6 +53,10 @@ Set objOL = CreateObject("Outlook.Application")
     Set colAttach = objMail.Attachments
     Call writeImage(binaryURL("<?= RACINE; ?>img/logo.png"), tmpD & GetFileName("<?= RACINE; ?>img/logo.png"))
     Set oAttach = colAttach.Add(tmpD & GetFileName("<?= RACINE; ?>img/logo.png"))
+	content = "" 
+    content = content & "<HTML xmlns='http://www.w3.org/1999/xhtml' lang='fr'><HEAD>"
+    content = content & "<meta charset='utf-8'>"
+    content = content & "</HEAD><BODY>"
     content = "<img src='cid:logo.png' /><br /><br />"
 	content = content & "<table border='1' cellspacing='0' cellpadding='0' style='border:outset #767676 3.0pt' width='100%'>"
 	content = content & "<tbody><tr>"
@@ -113,19 +107,19 @@ Set objOL = CreateObject("Outlook.Application")
 	content = content & "<td colspan='2' style='background:#dedfde;padding:.75pt .75pt .75pt .75pt'><?=  str_replace(array("\r\n", "\r", "\n"), '<br />',$incident->getActionUtlisateur());?>	"
 	content = content & "</td></tr>	<tr><td colspan='2'  style='width:2.0%;background:#a5a6a5;padding:.75pt .75pt .75pt .75pt'>"
 	content = content & "<b>Source</b></td></tr>"
-	content = content & "<tr><td colspan='2' style='background:#dedfde;padding:.75pt .75pt .75pt .75pt'><?=  str_replace( array("\r\n", "\r", "\n"), '<br />',$incident->getCause());?>(cause)"	
+	content = content & "<tr><td colspan='2' style='background:#dedfde;padding:.75pt .75pt .75pt .75pt'><?=  str_replace( array("\r\n", "\r", "\n"), '<br />',$incident->getCause());?>"	
 	content = content & "</td>"
 	content = content & "</tr><tr><td colspan='2'  style='width:2.0%;background:#a5a6a5;padding:.75pt .75pt .75pt .75pt'>"
 	content = content & "<b>Y a-t-il un risque d'aggravation ?</b>"
 	content = content & "</td></tr>"
-	content = content & "<tr><td colspan='2' style='background:#dedfde;padding:.75pt .75pt .75pt .75pt'><?= ($incident->getRisqueAggravation())?'Oui':'Non';?>"	
+	content = content & "<tr><td colspan='2' style='background:#dedfde;padding:.75pt .75pt .75pt .75pt'><?= ($incident->getRisqueAggravation())?'Oui':'';?>"	
 	content = content & "</td></tr><tr><td colspan='2'  style='width:2.0%;background:#a5a6a5;padding:.75pt .75pt .75pt .75pt'>"
 	content = content & "<b>Description</b></td></tr><tr>"
 	content = content & "<td colspan='2' style='background:#dedfde;padding:.75pt .75pt .75pt .75pt'><?= str_replace( array("\r\n", "\r", "\n"), '<br />',$incident->getDescripIncident());?>	</td></tr>"
 	content = content & "<tr><td colspan='2'  style='width:2.0%;background:#a5a6a5;padding:.75pt .75pt .75pt .75pt'>"
 	content = content & "<b>D&eacute;partement / utilisateurs affect&eacute;s</b></td></tr><tr>	"
 	content = content & "<td colspan='2' style='background:#dedfde;padding:.75pt .75pt .75pt .75pt'>"
-	content = content & "<?= $incident->getDepartement().' / '.$incident->getUtilisImpacte(); ?></td></tr>"
+	content = content & "<?= ($incident->getDepartement() !='' && $incident->getUtilisImpacte() != '')?$incident->getDepartement().' / '.$incident->getUtilisImpacte():$incident->getDepartement().''.$incident->getUtilisImpacte();?></td></tr>"
 	content = content & "<tr><td colspan='2'  style='width:2.0%;background:#a5a6a5;padding:.75pt .75pt .75pt .75pt'><b>Actions en cours</b>"
 	content = content & "</td></tr><tr>	<td colspan='2' style='background:#dedfde;padding:.75pt .75pt .75pt .75pt'>"
 	content = content & "<?= str_replace( array("\r\n", "\r", "\n"), '<br />',$incident->getChronogramme()); ?>"
@@ -138,10 +132,10 @@ Set objOL = CreateObject("Outlook.Application")
 	content = content & "<span style='font-size:10.0pt;font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;'>Tel : <?= TELCOMMACHAUD; ?>"
 	content = content & "</span></p><br><br><br><br>"
 	content = content & "<p class='MsoNormal' align='center' style='text-align:center'>Num&eacute;ro Incident : <span style='color:#1f497d'><?= $incident->getIncident();?></span></p>"
-	content = content & "</td></tr></tbody></table>"
+	content = content & "</td></tr></tbody></table></BODY></HTML>"
 With objMail
 		.SentOnBehalfOfName = ""
-		.Subject = "{<?= $STATUTCOMMACHAUD[$incident->getStatut()]; ?>} - [<?= $incident->getIncident();?>] - <?php if($incident->getPriorite()) echo '['.$PRIORITE[$incident->getPriorite()].']';?> - [RETAIL][<?= $application->getEnseigne();?>][<?= $application->getName();?>] - <?= html_entity_decode($incident->getTitre());?>"
+		.Subject = "{<?= $STATUTCOMMACHAUD[$incident->getStatut()]; ?>} - [<?= str_replace('"', '""',$incident->getIncident());?>] - <?php if($incident->getPriorite()) echo '['.$PRIORITE[$incident->getPriorite()].']';?> - [RETAIL][<?= $application->getEnseigne();?>][<?= $application->getName();?>] - <?= str_replace('"', '""', $incident->getTitre());?>"
 		.To = "<?= DESTINATAIRE; ?>"
 		.Cc = "<?= DESTINATAIRECC; ?>"
 		.BCC = "<?= DESTINATAIREBCC; ?>"
