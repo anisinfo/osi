@@ -130,6 +130,10 @@ if ($idIncident) {
 require_once('../inc/search.inc.php');
 ?>
 	<div class="width100 bcg">
+	<div class="width100">
+
+	<input type="submit" value="Sauvegarder" name="submit" />
+</div>
 		<div class=" width50 fl-left">
 			<div class="width100">
 				<div class=" width32 mr_9">

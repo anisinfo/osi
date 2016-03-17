@@ -105,7 +105,10 @@ class Impact
         $base->db_query($req);
         $res=$base->db_fetch_array();
         $base->close();
-        $this->setParam($res[0][0],$res[0][1],$res[0][2],$res[0][3],$res[0][4],$res[0][5],$res[0][6],$res[0][7],$res[0][8],$res[0][9],$res[0][10],$res[0][11],$res[0][12],$res[0][13]);
+        if (isset($res[0])) {
+            $this->setParam($res[0][0],$res[0][1],$res[0][2],$res[0][3],$res[0][4],$res[0][5],$res[0][6],$res[0][7],$res[0][8],$res[0][9],$res[0][10],$res[0][11],$res[0][12],$res[0][13]);
+        }
+        
         
         return $this;           
     }

@@ -11,12 +11,12 @@
 	    		<div class="width100">
 	    			<div class=" width50 mr_10">
 	    				<label  class="lib"  for="Incident_Impact_datedebut"> Début impact *</label> 
-		    			<input type="text" name="Incident_Impact_datedebut" id="Incident_Impact_datedebut" value="<?php getVar('Incident_Impact_datedebut'); ?>" required>
+		    			<input type="text" name="Incident_Impact_datedebut" id="Incident_Impact_datedebut" value="<?php if(!isset($_POST['Incident_Impact_datedebut'])) echo $incident->getDateDebut(); else getVar('Incident_Impact_datedebut'); ?>" required>
 	    			</div>
 
 	    			<div class=" width50">
 	    				<label  class="lib"  for="Incident_Impact_datefin"> Fin impact</label> 
-		    			<input type="text" name="Incident_Impact_datefin" id="Incident_Impact_datefin"  value="<?php getVar('Incident_Impact_datefin'); ?>">
+		    			<input type="text" name="Incident_Impact_datefin" id="Incident_Impact_datefin"  value="<?php if(!isset($_POST['Incident_Impact_datefin'])) echo $incident->getDateFin(); else getVar('Incident_Impact_datefin'); ?>">
 	    			</div>	    			
 	    		</div>
 

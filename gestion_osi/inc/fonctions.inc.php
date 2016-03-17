@@ -496,7 +496,7 @@ function printf_date($time){
 	if( isset($_POST['type_data']) && $_POST['type_data'] === 'creci') $format_creci = 1;
 
 	if($format_tout) $tab_unit = array( "Minutes" => 60);
-	if($format_creci) $tab_unit = array("j " => 86400, ":" => 3600, "" => 60);
+	if($format_creci) $tab_unit = array("Jours" => 86400, ":" => 3600, "" => 60);
 
 	$dt_fm = null;
 	foreach($tab_unit as $uniteT => $nbSecsDansUnite) {
@@ -507,7 +507,7 @@ function printf_date($time){
 			if($format_tout){
 				$dt_fm .= $$uniteT;
 			}else{
-				$dt_fm .= $$uniteT." $uniteT ";
+				$dt_fm .= $$uniteT."$uniteT ";
 			}
 	}
 

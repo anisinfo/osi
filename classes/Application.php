@@ -17,7 +17,9 @@ class Application
 		$db->db_connect();
 		$db->db_query($rq);
 		$res=$db->db_fetch_array();
+         if (isset($res[0])) {
 		$this->SetAppliParam($res[0][0],$res[0][1],$res[0][2],$res[0][3],$res[0][4]);
+    }
 	}
 
 	public function SelectAppliByName()

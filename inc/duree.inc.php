@@ -1,9 +1,10 @@
 <?php
 // Recharger les fichiers nécissaires pour l'execution de script
 require_once('config.inc.php');
+require_once('../gestion_osi/inc/fonctions.inc.php');
 require_once('fonctions.inc.php');
 require_once('../classes/db.php');
-require_once('../gestion_osi/inc/fonctions.inc.php');
+
 
 
 $array= array();
@@ -26,7 +27,7 @@ $obj = new DateTime();
 
 $dateDeb=$obj::createFromFormat('d/m/Y G:i',$td1);
 $dateFin=$obj::createFromFormat('d/m/Y G:i',$td2);
-$res= calc_impact($dateDeb->format('Y-m-d H:i:00'), $dateFin->format('Y-m-d H:i:59'), $_GET['idappli'], $dbcnx);
+$res= calc_impactDiff($dateDeb->format('Y-m-d H:i:00'), $dateFin->format('Y-m-d H:i:59'), $_GET['idappli'], $dbcnx);
 }
 
 $json = json_encode($res);

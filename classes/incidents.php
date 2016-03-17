@@ -31,13 +31,14 @@
     private $_suivi;
     private $_dateDecision;
     private $_chronogramme;
+    private $_Bcci;
 	
 
 	public function CreateIncident()
 	{
 		// Insertion du partie commun d'un incidents
 		$rq="INSERT INTO ".SCHEMA.".INCIDENT (INCIDENT,TITRE,DEPARTEMENT,STATUT,PRIORITE,AFFECTEDUSER,DATEDEBUT,DATEFIN,DUREE,DESCRIPTION,RISQUEAGGRAVATION,CAUSE,INCIDENTSCONNEXES,PROBLEME,RETABLISSEMENT,RESPONSABILITE,SERVICEACTEUR,LOCALISATION,USERACTION,DATEPUBLICATION,COMMENTAIRE,DEJAAPPARU,PREVISIBLE,CREATED,UPDATED,SUIVI,DATE_DECISION,CHRONOGRAMME)";
-		$rq.=" VALUES ('".oci_escape_string(html_entity_decode($this->getIncident()))."','".oci_escape_string(html_entity_decode($this->getTitre()))."','".oci_escape_string(html_entity_decode($this->getDepartement()))."','".$this->getStatut()."','".$this->getPriorite()."','".oci_escape_string(html_entity_decode($this->getUtilisImpacte()))."',TO_TIMESTAMP('".$this->getDateDebut()."','DD/MM/YYYY HH24:MI'),TO_TIMESTAMP('".$this->getDateFin()."','DD/MM/YYYY HH24:MI'),'".$this->getDuree()."',";
+		$rq.=" VALUES ('".oci_escape_string(html_entity_decode(trim($this->getIncident())))."','".oci_escape_string(html_entity_decode($this->getTitre()))."','".oci_escape_string(html_entity_decode($this->getDepartement()))."','".$this->getStatut()."','".$this->getPriorite()."','".oci_escape_string(html_entity_decode($this->getUtilisImpacte()))."',TO_TIMESTAMP('".$this->getDateDebut()."','DD/MM/YYYY HH24:MI'),TO_TIMESTAMP('".$this->getDateFin()."','DD/MM/YYYY HH24:MI'),'".$this->getDuree()."',";
 		$rq.="'".oci_escape_string(html_entity_decode($this->getDescripIncident()))."',".$this->getRisqueAggravation().",'".oci_escape_string(html_entity_decode($this->getCause()))."','".$this->getConnexe()."','".oci_escape_string(html_entity_decode($this->getProbleme()))."','".oci_escape_string(html_entity_decode($this->getRetablissement()))."','".$this->getResponsabilite()."','".$this->getActeur()."','".oci_escape_string(html_entity_decode($this->getLocalisation()))."','".oci_escape_string(html_entity_decode($this->getActionUtlisateur()))."',TO_TIMESTAMP('".$this->getDateCreci()."','DD/MM/YYYY'),'".oci_escape_string(html_entity_decode($this->getCommentaire()))."',".$this->getDejaApparu().",".$this->getPrevisible().",sysdate,sysdate,".$this->getSuivi().",TO_TIMESTAMP('".$this->getDateDecision()."','DD/MM/YYYY HH24:MI'),'".oci_escape_string(html_entity_decode($this->getChronogramme()))."')";
 		$db = new db();
 		$db->db_connect();
@@ -152,7 +153,7 @@ return $this;
 	{
 		$rq="UPDATE ".SCHEMA.".INCIDENT SET ";
 		$rq.="TITRE='".oci_escape_string(html_entity_decode($this->getTitre()))."',";
-        $rq.="INCIDENT='".oci_escape_string(html_entity_decode($this->getIncident()))."',";
+        $rq.="INCIDENT='".oci_escape_string(html_entity_decode(trim($this->getIncident())))."',";
 		$rq.="DEPARTEMENT='".oci_escape_string(html_entity_decode($this->getDepartement()))."',";
 		$rq.="STATUT='".$this->getStatut()."',";
 		$rq.="PRIORITE='".$this->getPriorite()."',";
@@ -195,7 +196,36 @@ return $this;
 			return $this->Modifier();			
 	}
 
-     public function Supprimer()
+
+
+    public function chargerBcci()
+    {
+        $rq="SELECT BCCI FROM ".SCHEMA.".INCIDENT ";
+        $rq.=" WHERE ID=".$this->getNumero();
+
+        $base= new db();
+        $base->db_connect();
+        $base->db_query($rq);
+        $res=$base->db_fetch_array();
+        $base->close();
+        return $res[0][0];
+    }
+
+    public function modifierBcci()
+    {
+        $rq="UPDATE ".SCHEMA.".INCIDENT ";
+        $rq.=" SET  BCCI='".$this->getBcci()."'";
+        $rq.=" WHERE ID=".$this->getNumero();
+        debug($rq);
+        $base= new db();
+        $base->db_connect();
+        $base->db_query($rq);
+        $base->close();
+      
+    }
+    
+
+    public function Supprimer()
     {
         $base= new db();
         $base->db_connect();
@@ -236,7 +266,7 @@ return $this;
      *
      * @return self
      */
-    private function _setNumero($numero)
+    public function _setNumero($numero)
     {
         $this->_numero = $numero;
 
@@ -935,6 +965,30 @@ return $this;
     private function _setChronogramme($chronogramme)
     {
         $this->_chronogramme = $chronogramme;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of _Bcci.
+     *
+     * @return mixed
+     */
+    public function getBcci()
+    {
+        return $this->_Bcci;
+    }
+
+    /**
+     * Sets the value of _Bcci.
+     *
+     * @param mixed $_Bcci the bcci
+     *
+     * @return self
+     */
+    public function _setBcci($Bcci)
+    {
+        $this->_Bcci = $Bcci;
 
         return $this;
     }

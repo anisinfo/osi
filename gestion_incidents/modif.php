@@ -21,17 +21,19 @@ require_once('../classes/Calendrier.php');
 
 
 if (isset($_GET['NumeroIncident'])) {
-	$rq="SELECT ID FROM ".SCHEMA.".INCIDENT WHERE INCIDENT='".htmlentities($_GET['NumeroIncident'],ENT_QUOTES | ENT_IGNORE, "UTF-8")."'";	 
+	$idSearch=str_replace("'", "''", trim($_GET['NumeroIncident']));
+	$rq="SELECT ID FROM ".SCHEMA.".INCIDENT WHERE INCIDENT='".$idSearch."'";	
+	$rq.="  OR INCIDENTSCONNEXES='".$idSearch."'";	 
 			$db= new db();
 			$db->db_connect();
 			$db->db_query($rq);
 			$res=$db->db_fetch_array();
 			if(isset($res[0])){
-				header('Location:modif.php?id='.$res[0][0]);
+				header('Location:modif.php?id='.$res[0][0].'&NumeroIncidentF='.$_GET['NumeroIncident']);
 				die();
 			}else
 			{
-				$_SESSION['flash']['danger']="Le numéro de l'incident n'est pas dans la base!";
+				$_SESSION['flash']['danger']="Le numéro de l'incident <b>".$idSearch."</b> n'est pas dans la base!";
 				header('Location:index.php');
 				die();
 			}
@@ -96,7 +98,7 @@ if(!empty($_POST)){
 	}
 
 	if($_POST['Incident_statut'] ==3 && empty($_POST['finincident'])){
-		$errors['finincident']="Vous devez remplir le champ fin impact puisque l'incident est Résolu!";
+		$errors['finincident']="Vous devez remplir le champ fin incident puisque l'incident est Résolu!";
 	}
 
 	if(empty($_POST['IdIncident'])){
@@ -219,15 +221,21 @@ if(!empty($errors)){?>
 ?>
 
 <form action="" method="POST">
+
 <div class="bloc">
 <?php 
 $link="Incident";
 require_once('../inc/search.inc.php');
-?>	
+?>			
 	<div class="width100 bcg">
-		
+		<div class="width100">
+
+	<input type="submit" value="Sauvegarder" name="submit" />
+</div>
 		<div class=" width50 fl-left">
+
 			<div class="width100">
+
 				<div class=" width32 mr_9">
 
 		    	<label  class="lib"  for="titreincident"> Incident *</label> 
@@ -236,7 +244,7 @@ require_once('../inc/search.inc.php');
 		    	</div>
 		    	<div class=" width32">
   					<label  class="lib" for="statut"> Statut *</label>
-  					<select id="statut" name="Incident_statut" required>
+  					<select id="statut" name="Incident_statut" required onchange="VerifImpactFermer(this.value,<?= $_GET['id'];?>)">
   						<?php
   						SelectUpdate('Incident_statut',$incident->getStatut(),$STATUT);
   						?>
@@ -329,7 +337,7 @@ require_once('../inc/search.inc.php');
 
 		  		<div class=" width50">
 		  			<label  class="lib" for="incidentdatecreci"> Date de publication</label> 
-		  			<input type="text"  name="incidentdatecreci" id="incidentdatecreci" value="<?php getVarUpdate('incidentdatecreci',$incident->getDateCreci()); ?>" >
+		  			<input type="text"  name="incidentdatecreci" id="incidentdatecreci" value="<?php getVarUpdate('incidentdatecreci',$incident->getDateCreci()); ?>" onchange="VerifDate()">
 		  		</div>
 		  		<div class=" width50 right">
 		  			<label  class="lib" for="incidentdatedecision"> Date de prise de décision</label> 
@@ -341,9 +349,10 @@ require_once('../inc/search.inc.php');
   				</div>
 	  		</div>	  		
 	  	</div>
-		
+
 		<div class=" width50 right">
 			<div class="width50">
+
 		    			<label  class="lib" for="Incident_departement"> Département</label> 
 		    			<input type="text" name="Incident_departement"  id="Incident_departement" value="<?php getVarUpdate('Incident_departement',$incident->getDepartement()); ?>">
 		   	</div>

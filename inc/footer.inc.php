@@ -1,3 +1,4 @@
+
 </div>
 <script>
         $.datetimepicker.setLocale('fr');
@@ -16,7 +17,7 @@
        //   if (finImpact !='' && finImpact!=undefined) {
              $('#Incident_Impact_datefin').datetimepicker({format:'d/m/Y H:i'});
       //  };
-        $('#incidentdatecreci').datetimepicker({format:'d/m/Y',timepicker:false});
+      //  $('#incidentdatecreci').datetimepicker({format:'d/m/Y',timepicker:false});
 
         $('#dateChrono').datetimepicker({format:'d/m/Y H:i'});
 

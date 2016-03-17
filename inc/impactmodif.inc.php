@@ -11,6 +11,7 @@
 	    		</div>
 
 	    		<div class="width100">
+	    		
 	    			<div class=" width50 mr_10">
 	    				<label  class="lib"  for="Incident_Impact_datedebut"> Début impact *</label> 
 		    			<input type="text" name="Incident_Impact_datedebut" id="Incident_Impact_datedebut" value="<?php getVarUpdate('Incident_Impact_datedebut',$impacte->getDateDebut()); ?>" required>

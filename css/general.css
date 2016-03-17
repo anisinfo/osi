@@ -25,7 +25,7 @@ p {font-size: 5rem;}
     .test {background-color: green;}
 }
 
-#element_to_pop_up, #element_to_pop_up2, #element_to_pop_up3 { 
+#element_to_pop_up, #element_to_pop_up2, #element_to_pop_up3, #element_to_pop { 
     background-color:#fff;
     border-radius:15px;
     color:#000;

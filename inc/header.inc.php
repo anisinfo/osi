@@ -29,46 +29,16 @@ session_start();
     <script type="text/javascript">
     var Destinataire="<?= DESTINATAIRE;?>";
     var DestinataireCc="<?= DESTINATAIRECC;?>";
-    var DestinataireBcc="<?= DESTINATAIREBCC;?>";
-    function EnvoyerMail(id)
-      {
-       /*   var userAgent= window.navigator.userAgent;       
-          if((userAgent.indexOf('MSI') != -1) || (userAgent.indexOf('Trident') != -1))
-      {
-        try
-              {
-                
-                var outlookApp = new ActiveXObject("Outlook.Application");
-                var nameSpace = outlookApp.getNameSpace("MAPI");
-                var contenu = document.getElementById('corp').value;
-                var sujet= document.getElementById('sujet').value;
-                mailFolder = nameSpace.getDefaultFolder(6);
-                mailItem = mailFolder.Items.add('IPM.Note.FormA');
-                mailItem.Subject=objet;
-                mailItem.To = Destinataire;
-                mailItem.Cc = DestinataireCc;
-                mailItem.BCC = DestinataireBcc;
-                mailItem.HTMLBody = "<b>contenux</b>";
-                mailItem.display (0); 
-              }
-            catch(e)
-            {
-            //  alert(e);
-            document.location.href ="commachaud.php?idIncident="+id;
-            }
-      }
-      else
-      {
-        document.location.href ="commachaud.php?idIncident="+id;
-      }*/
-      document.location.href ="commachaud.php?idIncident="+id;
-      }
+    var DestinataireBcc={<?php foreach ($DESTINATAIREBCC as $key => $value): 
+      echo '"'.$key.'":"'.$value.'",';
+    endforeach ?>};
+ 
+   
     </script>
     <script src="<?php echo RACINE; ?>js/jquery-1.11.3.min.js"></script>
     
     <script src="<?php echo RACINE; ?>js/bootstrap.js"></script>
     <script src="<?php echo RACINE; ?>js/rem.min.js"></script>
-    <script src="<?php echo RACINE; ?>js/rem.js"></script>
     <script src="<?php echo RACINE; ?>js/js.js"></script>
 
     <script src="<?php echo RACINE; ?>datetimepicker/build/jquery.datetimepicker.full.js"></script>
@@ -128,6 +98,7 @@ session_start();
     </nav>
 
     <div class="container">
+
     <?php if(isset($_SESSION['flash']))
     {
       foreach($_SESSION['flash'] as $type=>$message){?>

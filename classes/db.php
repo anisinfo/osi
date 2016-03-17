@@ -8,7 +8,7 @@ class db{
       whenever object is created. */
 
         function db_connect(){
-                $this->connection = oci_connect(SCHEMA_LOGIN, SCHEMA_PASS,HOST.':'.PORT.'/','AL32UTF8') or die ($this->get_error_msg($this->connection,"Problem while connecting to ".$this->sid." server..."));//username,password,sid
+                $this->connection = oci_connect(SCHEMA_LOGIN, SCHEMA_PASS,HOST.':'.PORT.'/'.BASE,'AL32UTF8') or die ($this->get_error_msg($this->connection,"Problem while connecting to ".$this->sid." server..."));//username,password,sid
            }
 
 
@@ -17,6 +17,7 @@ class db{
        {
            if($this->connection)
            {
+
             $this->sid = @oci_parse($this->connection, $query_str);
             $this->query=$query_str;
             oci_execute($this->sid) or "erreur:<b>".$query_str."</b>";

@@ -72,6 +72,21 @@ function AjouterIncident(adresse)
          });
      })(jQuery);
 
+     (function($) {
+        $(function() {
+            $('#button_commachaud').bind('click', function(e) {
+                e.preventDefault();
+                $('#element_to_pop_up4').bPopup({
+                   //follow: [false, false]
+                   appendTo: 'form'
+                    , zIndex: 2
+                    , modalClose: false
+                });
+            });
+         });
+     })(jQuery);
+
+
 function myFunction(arr) {
   var out ='<thead>';
       out +='<th>Libellé court</th>';
@@ -296,6 +311,7 @@ function RemplirAppli(id)
        $('#Edit_Di').val(hF);  
 
     }
+    CalculeDuree();
 }
 
 function SauvegarderCal()
@@ -392,11 +408,83 @@ function go(id)
 }
 function search()
 {
-  var id= $('#numincident').val();  
+  var id= $('#numincident').val();
   document.location.href="modif.php?NumeroIncident="+id;
 }
 
 function supprimerUser(adresse)
 {
   document.location.href=adresse;
+}
+
+ function EnvoyerMail(id)
+      {
+         var xmlhttp = new XMLHttpRequest();
+         var url = "../inc/priorite.php?idIncident="+id;
+         xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
+    {
+        var myArr = JSON.parse(xmlhttp.responseText);
+        if (myArr) {
+          $('#element_to_pop').bPopup({
+                   follow: [false, false]
+                    , appendTo: 'form'
+                    , zIndex: 2
+                    , modalClose: false
+                });
+        }else alert('Il est indisponsable de choisir une priorité dans la base des données pour accéder à la comm à chaud!');
+    }
+    };
+    xmlhttp.open("GET", url, true);
+  xmlhttp.send();     
+      }
+
+function ValiderBcci(id)
+{
+  var Bcci='';
+  var xmlhttp = new XMLHttpRequest();
+  
+  for(key in DestinataireBcc)
+  {
+    if ($('#CCi_'+key).is(':checked')) {
+      Bcci+=key+',';
+    }  
+  }
+var url = "../inc/modifBcci.php?id="+id+"&Bcci="+Bcci;  
+xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+
+    }
+};
+xmlhttp.open("GET", url, true);
+xmlhttp.send();
+
+document.location.href ="commachaud.php?idIncident="+id;
+}      
+
+function VerifDate()
+{
+  var date_pas_sure = document.getElementById('incidentdatecreci').value;
+    var format = /^(\d{1,2}\/){2}\d{4}$/;
+    if(!format.test(date_pas_sure)){alert('Date de publication non valable !')}
+}
+
+function VerifImpactFermer(valeur,id)
+{
+if (valeur==3){
+  var xmlhttp = new XMLHttpRequest();
+  var url = "../inc/impactfermer.php?idIncident="+id;  
+xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+       var myArr = JSON.parse(xmlhttp.responseText);
+       if(myArr){
+        alert('Veuillez fermer les impactes des applications suivantes : '+myArr);
+       }
+    }
+};
+xmlhttp.open("GET", url, true);
+xmlhttp.send();
+  
+}
+
 }
